@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+	<display-name>egov.sample</display-name>
+    
+    <!-- 모든 .do 요청에 대하여 UTF-8로 한글 문자 깨짐 방지하는 필터 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+    
+    <!-- 클라이언트 요청에 포함된 HTML 태그를 필터링(잠재적 XSS 공격, 보안 이슈 방지) -->
+	<filter>
+		<filter-name>HTMLTagFilter</filter-name>
+		<filter-class>org.egovframe.rte.ptl.mvc.filter.HTMLTagFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+    
+    <!-- egovframework/spring 내의 context-*.xml 형식에 맞게 spring 전역 설정 파일들 로드하도록 설정 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:egovframework/spring/context-*.xml</param-value>
+	</context-param>
+    
+    <!-- 웹 앱 시작시 전역 스프링 컨텍스트 로딩 (전자정부/스프링 설정 파일 읽음) -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    
+    <!-- DispatcherServlet 등록: 컨트롤러 요청 매핑 (.do 사용) -->
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/egovframework/springmvc/dispatcher-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		
+		<multipart-config>
+ 			<location>C:/uploadFiles/tmp</location>
+ 			<max-file-size>524288000</max-file-size> <!-- 500MB -->
+ 			<max-request-size>524288000</max-request-size> <!-- 500MB -->
+ 			<file-size-threshold>0</file-size-threshold>
+ 		</multipart-config>
+	</servlet>
+    
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+    
+    <!-- 기본 접속 페이지 -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+    
+    <!-- 웹 어플리케이션의 인증 방식을 BASIC 인증으로 지정 -->
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+    
+    <!-- 에러 페이지 -->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/common/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/common/error.jsp</location>
+	</error-page>
+    
+</web-app>
