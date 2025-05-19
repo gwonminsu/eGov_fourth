@@ -9,5 +9,6 @@
     	<!-- SQL 결과의 컬럼명(columnName)‑값(value) 쌍을 EgovMap에 담아 돌려주는 역할 -->
 		<typeAlias alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
 		<typeAlias alias="userVO" type="egovframework.fourth.homework.service.UserVO"/>
+		<typeAlias alias="programVO" type="egovframework.fourth.homework.service.ProgramVO"/>
     </typeAliases>
 </configuration>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="programDAO">
+	<!-- 프로그램 등록 -->
+	<insert id="insertProgram" parameterType="programVO">
+		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
+			SELECT 'PROGRAM-' ||
+				(
+					SELECT (SUBSTRING(idx FROM 9))::int + 1
+					FROM program
+					ORDER BY (SUBSTRING(idx FROM 9))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				)
+		</selectKey>
+		INSERT INTO program
+			(idx, create_user_idx, program_name, user_type, description, created_at, updated_at)
+		VALUES
+			(#{idx}, #{createUserIdx}, #{programName}, #{userType}, #{description}, NOW(), NOW())
+	</insert>
+	
+</mapper>
