@@ -19,7 +19,8 @@
 	<script>
 		// 서버에서 렌더링 시점에 loginUser.userName 이 없으면 빈 문자열로
 		var loginUserName = '<c:out value="${sessionScope.loginUser.userName}" default="" />';
-		var isAdmin = '<c:out value="${sessionScope.loginUser.role}" default="" />';
+		var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
+		console.log(isAdmin);
 		
 		// GET아닌 POST로 진입하기
 		function postTo(url, params) {
@@ -52,6 +53,8 @@
 	            <th>아이디</th>
 	            <th>비밀번호</th>
 	            <th>권한여부</th>
+	            <th>부서</th>
+	            <th>직급</th>
 	            <th>가입일</th>
 	        </tr>
     	</thead>
@@ -72,12 +75,15 @@
 		                var $tbody = $('#userListTbl').find('tbody');
 		                $tbody.empty();
 		                $.each(data, function(i, item) {
+		                	console.log(JSON.stringify(item));
 		                    var row = '<tr>' +
 		                              '<td>' + item.idx + '</td>' +
 		                              '<td>' + item.userName + '</td>' +
 		                              '<td>' + item.userId + '</td>' +
-		                              '<td>' + item.password + '</td>' +
-		                              '<td>' + item.role + '</td>' +
+		                              '<td>' + item.userPw + '</td>' +
+		                              '<td>' + item.isAdmin + '</td>' +
+		                              '<td>' + item.department + '</td>' +
+		                              '<td>' + item.position + '</td>' +
 		                              '<td>' + item.createdAt + '</td>' +
 		                              '</tr>';
 		                    $tbody.append(row);  

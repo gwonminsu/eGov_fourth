@@ -26,7 +26,7 @@
 		<input type="text" id="userId" required maxlength="15"/>
 	</label><br/>
 	<label>비밀번호: 
-		<input type="password" id="password" required maxlength="15"/>
+		<input type="password" id="userPw" required maxlength="15"/>
 	</label><br/>
 	<label>이름: 
 		<input type="text" id="userName" required maxlength="20"/>
@@ -36,8 +36,8 @@
 	<script>
     $('#btnRegister').click(function(){
     	// 폼 검증(하나라도 인풋이 비어있으면 알림)
-		var idVal   = $('#userId')[0];
-		var passwordVal  = $('#password')[0];
+		var idVal = $('#userId')[0];
+		var passwordVal = $('#userPw')[0];
 		var nameVal = $('#userName')[0];
 		
 		if (!idVal.reportValidity()) return;
@@ -45,7 +45,7 @@
 		if (!nameVal.reportValidity()) return;
     	
 		// 검증 통과 시 회원가입 api 실행
-		var data={userId:$('#userId').val(), password:$('#password').val(), userName:$('#userName').val()};
+		var data={userId:$('#userId').val(), userPw:$('#userPw').val(), userName:$('#userName').val()};
 		$.ajax({
 			url:'<c:url value="/api/user/register.do"/>',
 			type:'POST',

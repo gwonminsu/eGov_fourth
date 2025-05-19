@@ -42,9 +42,9 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
         	 throw new RuntimeException("이미 존재하는 아이디입니다");
          }
          // 비밀번호 암호화 텍스트로 변환
-         String raw = user.getPassword(); // 평문
+         String raw = user.getUserPw(); // 평문
          String enc = passwordEncoder.encode(raw); // 비밀번호 해시 생성
-         user.setPassword(enc); // 생성한 해시를 비밀번호로 교체
+         user.setUserPw(enc); // 생성한 해시를 비밀번호로 교체
          userDAO.insertUser(user);
 	 }
 
@@ -57,7 +57,7 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 			 return null; // 아이디 자체가 없으면 로그인 실패
 		 }
 		 
-		 boolean ok = passwordEncoder.matches(user.getPassword(), dbUser.getPassword()); // 평문해시와 저장된해시 일치하는지 검사
+		 boolean ok = passwordEncoder.matches(user.getUserPw(), dbUser.getUserPw()); // 평문해시와 저장된해시 일치하는지 검사
 		 if (!ok) return null; // 비밀번호 불일치
 		 
 		 return dbUser;

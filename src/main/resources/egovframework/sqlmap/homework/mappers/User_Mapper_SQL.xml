@@ -3,12 +3,27 @@
 <mapper namespace="userDAO">
 	<!-- 사용자 리스트 가져오기 -->
     <select id="selectUserList" resultType="userVO">
-        SELECT idx, user_name AS userName, user_id AS userId, password, role, created_at FROM "user"
+        SELECT idx,
+        	user_name,
+        	user_id,
+        	user_pw,
+        	is_admin,
+        	department,
+        	position,
+        	created_at
+        FROM "user"
     </select>
     
 	<!-- 아이디로 사용자 조회 -->
 	<select id="selectUserByUserId" parameterType="String" resultType="userVO">
-		SELECT idx, user_name AS userName, user_id AS userId, password, role, created_at
+		SELECT 
+        	user_name,
+        	user_id,
+        	user_pw,
+        	is_admin,
+        	department,
+        	position,
+        	created_at
 		FROM "user"
 		WHERE user_id = #{userId}
 	</select>
@@ -16,11 +31,17 @@
 	<!-- 회원가입 -->
 	<insert id="insertUser" parameterType="userVO">
 		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
-			SELECT 'USER-' || (COALESCE(MAX((SUBSTRING(idx FROM 6))::int), 0) + 1)
-			FROM "user"
+			SELECT 'USER-' ||
+				(
+					SELECT (SUBSTRING(idx FROM 6))::int + 1
+					FROM "user"
+					ORDER BY (SUBSTRING(idx FROM 6))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				)
 		</selectKey>
-		INSERT INTO "user" (idx, user_name, user_id, password, role, created_at)
-		VALUES (#{idx}, #{userName}, #{userId}, #{password}, #{role}, NOW())
+		INSERT INTO "user" (idx, user_name, user_id, user_pw, is_admin, created_at)
+		VALUES (#{idx}, #{userName}, #{userId}, #{userPw}, #{isAdmin}, NOW())
 	</insert>
 	
 </mapper>

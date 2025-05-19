@@ -26,7 +26,7 @@
 		<input type="text" id="userId" required maxlength="15"/>
 	</label><br/>
 	<label>비밀번호: 
-		<input type="password" id="password" required maxlength="15"/>
+		<input type="password" id="userPw" required maxlength="15"/>
 	</label><br/>
 	<button id="btnLogin">로그인</button>
 	<button type="button" id="btnGoRegister">회원가입</button>
@@ -34,13 +34,13 @@
     $('#btnLogin').click(function(){
     	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 		var idVal = $('#userId')[0];
-		var passwordVal = $('#password')[0];
+		var passwordVal = $('#userPw')[0];
 		
 		if (!idVal.reportValidity()) return;
 		if (!passwordVal.reportValidity()) return;
     	
 		// 검증 통과 시 로그인 api 실행
-		var data={userId:$('#userId').val(), password:$('#password').val()};
+		var data={userId:$('#userId').val(), userPw:$('#userPw').val()};
 		$.ajax({
 			url:'<c:url value="/api/user/login.do"/>',
 			type:'POST',
@@ -58,6 +58,13 @@
     		// 회원가입 페이지 이동
     		postTo('${registerUrl}', {});
     	});
+    	
+    	// 엔터키 누르면 로그인 버튼 클릭 실행
+        $('#userId, #userPw').on('keypress', function(e){
+            if (e.which === 13) {
+                $('#btnLogin').click();
+            }
+        });
     });
 	</script>
 </body>
