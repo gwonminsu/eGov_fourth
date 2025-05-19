@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+/* form-table(프로그램 등록 폼) 스타일 */
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	vertical-align: middle;
+}
+table.form-table th {
+	width: 15%;
+	background: #f7f7f7;
+	text-align: center;
+}
+table.form-table #userType {
+	width: 100px;
+}
+table.form-table textarea {
+	width: 100%;
+	box-sizing: border-box;
+	resize: none;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* 버튼 스타일 */
+.btn-area {
+	text-align: right;
+	margin-top: 16px;
+}
+.btn-area button {
+	min-width: 80px;
+	padding: 6px 12px;
+	margin-left: 8px;
+}
+#btnSubmit {
+	background-color: #3498DB;
+	color: #FFFFFF;
+	border: none;
+}
+#btnSubmit:hover {
+	background-color: #2980B9;
+}
+#btnDelete {
+	background-color: #ff7979;
+	color: #FFFFFF;
+	border: none;
+}
+#btnDelete:hover {
+	background-color: #ff0000;
+}
+#btnCancel {
+	background-color: #E9ECEF;
+	border: none;
+}
+#btnCancel:hover {
+	background-color: #CED4DA;
+}
+

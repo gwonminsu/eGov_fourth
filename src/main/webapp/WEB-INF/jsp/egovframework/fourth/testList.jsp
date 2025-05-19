@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>사용자 페이지(테스트용)</title>
+	<title>예약 페이지(테스트용)</title>
 	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
 	
 	<!-- 사용자 리스트 json 가져오는 api 호출 url -->
@@ -36,7 +36,7 @@
 	</script>
 </head>
 <body>
-    <h2>사용자 목록</h2>
+    <h2>예약 페이지(테스트용)</h2>
     
 	<!-- 사용자 로그인 상태 영역 -->
 	<div id="userInfo">
@@ -63,6 +63,11 @@
     
     <script>
 	    $(function(){
+			// 페이지 권한 에러 메시지 처리
+			var errorMsg = "${errorMsg}";  
+			if (errorMsg) {
+				alert(decodeURIComponent(errorMsg)); 
+			}
 	    	// 페이지 렌더링 시 사용자 리스트 가져오기
 		    $(document).ready(function() {
 		    	console.log('AJAX 호출 URL=', '${userListUrl}');
@@ -75,7 +80,6 @@
 		                var $tbody = $('#userListTbl').find('tbody');
 		                $tbody.empty();
 		                $.each(data, function(i, item) {
-		                	console.log(JSON.stringify(item));
 		                    var row = '<tr>' +
 		                              '<td>' + item.idx + '</td>' +
 		                              '<td>' + item.userName + '</td>' +
