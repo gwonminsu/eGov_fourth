@@ -8,6 +8,7 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.fourth.homework.service.ProgramService;
 import egovframework.fourth.homework.service.ProgramVO;
@@ -22,7 +23,7 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 
 	// 프로그램 등록
 	@Override
-	public void createprogram(ProgramVO vo) throws Exception {
+	public void createProgram(ProgramVO vo, MultipartFile file) throws Exception {
 		programDAO.insertProgram(vo);
 		log.info("INSERT 프로그램({}) 등록 성공", vo.getIdx());
 	}
@@ -45,7 +46,7 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 
 	// 프로그램 수정
 	@Override
-	public void modifyProgram(ProgramVO vo) throws Exception {
+	public void modifyProgram(ProgramVO vo, MultipartFile file) throws Exception {
 		programDAO.updateProgram(vo);
 		log.info("UPDATE 프로그램({}) 수정 완료", vo.getIdx());
 	}

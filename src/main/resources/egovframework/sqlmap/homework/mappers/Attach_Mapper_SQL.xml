@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="attachDAO">
+
+	<!-- 첨부 파일 등록 -->
+	<insert id="insertAttach" parameterType="attachVO">
+		<selectKey keyProperty="idx, fileUuid" keyColumn="gen_idx, gen_uuid" resultType="map" order="BEFORE">
+			SELECT 'ATTACH-' || COALESCE(
+				(
+					SELECT (SUBSTRING(idx FROM 8))::int + 1
+					FROM attach
+					ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				), 1) AS gen_idx,
+			SELECT gen_random_uuid()::text AS gen_uuid
+			FROM attach
+		</selectKey>
+		INSERT INTO attach
+			(idx, approval_req_idx, program_idx, file_name, file_uuid, file_path, file_size, ext, created_at)
+		VALUES
+			(#{idx}, #{approvalReqIdx}, #{programIdx}, #{fileName}, #{fileUuid}, #{filePath}, #{fileSize}, #{ext}, NOW())
+	</insert>
+
+	<!-- 프로그램 idx로 첨부 이미지 파일 조회 -->
+	<select id="selectAttachByProgramIdx" parameterType="String" resultType="attachVO">
+		SELECT * FROM attach
+		WHERE program_idx = #{programIdx}
+		ORDER BY created_at ASC
+		LIMIT 1
+	</select>
+
+	<!-- 첨부 파일 단일 조회 -->
+	<select id="selectAttach" parameterType="String" resultType="attachVO">
+		SELECT *
+		FROM attach
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 첨부 파일 삭제 -->
+	<delete id="deleteAttach" parameterType="String">
+		DELETE FROM attach WHERE idx = #{idx}
+	</delete>
+	
+	<!-- 프로그램에 있는 이미지 첨부파일 삭제 -->
+	<delete id="deleteAttachByProgramIdx" parameterType="String">
+		DELETE FROM attach WHERE program_idx = #{programIdx}
+	</delete>
+	
+</mapper>

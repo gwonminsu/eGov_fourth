@@ -23,6 +23,10 @@
 	    </mvc:message-converters>
 	</mvc:annotation-driven>
 	
+	<!-- 업로드된 파일을 /uploads/** URL 로 서빙 -->
+	<mvc:resources mapping="/uploads/**" location="file:///C:/uploadFiles/"/>
+	<mvc:default-servlet-handler/>
+	
     <context:component-scan base-package="egovframework">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>

@@ -36,7 +36,7 @@ public class ProgramController {
     public Map<String, String> write(
     		@RequestPart("program") ProgramVO vo,
 			@RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
-    	programService.createprogram(vo);
+    	programService.createProgram(vo, file);
         return Collections.singletonMap("status","OK");
     }
     
@@ -45,7 +45,7 @@ public class ProgramController {
     public Map<String,String> edit(
     		@RequestPart("program") ProgramVO vo,
 			@RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
-        programService.modifyProgram(vo);
+        programService.modifyProgram(vo, file);
         return Collections.singletonMap("status","OK");
     }
 	
