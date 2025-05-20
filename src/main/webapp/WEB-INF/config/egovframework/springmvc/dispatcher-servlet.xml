@@ -48,6 +48,19 @@
     
    	<!-- 멀티파트 리졸버 -->
  	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+ 	
+	<!-- 설문 권한 확인 인터셉터 -->
+	<bean id="permissionInterceptor" class="egovframework.fourth.cmmn.web.PermissionInterceptor"/>
+ 	<bean class="org.springframework.web.servlet.handler.MappedInterceptor">
+ 		<constructor-arg>
+ 			<list>
+ 				<value>/api/program/create.do</value>
+ 				<value>/api/program/edit.do</value>
+ 				<value>/api/program/delete.do</value>
+ 			</list>
+ 		</constructor-arg>
+ 		<constructor-arg ref="permissionInterceptor"/>
+ 	</bean>
     
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
     <!-- 쿠키를 이용한 Locale 이용시 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/> -->
