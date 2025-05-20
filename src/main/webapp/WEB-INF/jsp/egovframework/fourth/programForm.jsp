@@ -29,6 +29,18 @@
             });
             form.appendTo('body').submit();
         }
+        
+		// 바이트 수를 읽기 편한 문자열로 변환
+		function formatBytes(bytes) {
+			if (bytes === 0) return '0 Bytes';
+			var k = 1024;
+			var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+			// 지수 계산
+			var i = Math.floor(Math.log(bytes) / Math.log(k));
+			// 해당 단위로 나눈 값
+			var value = bytes / Math.pow(k, i);
+			return value.toFixed(2) + ' ' + sizes[i];
+		}
 	</script>
 </head>
 <body>
@@ -59,6 +71,14 @@
 			<th>프로그램 개요</th>
 			<td colspan="3">
 				<textarea id="description" rows="1" required oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px';"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th>첨부 이미지</th>
+			<td colspan="3">
+				<div id="attachFileWrapper">
+					<input type="file" id="imageInput" accept="image/jpeg,image/png,image/gif,image/bmp,image/svg+xml"/>
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -109,7 +129,32 @@
 	    	} else {
 	    		$('#programFormGuide').hide();
 	    	}
-			
+	    	
+	    	// 첨부파일 선택 시
+	    	$('#imageInput').on('change', function(e) {
+	    		var file = e.target.files[0];
+	    		$('#imagePreview').remove(); // 이미지 미리보기 제거
+	    		$('#fileInfoText').remove(); // 파일 정보 텍스트 제거
+	    		$('#removeImageBtn').remove(); // 선택 이미지 삭제 버튼 제거
+	    		if (file) {
+	    			var fileInfo = file.name + ' [' + formatBytes(file.size) + ']';
+	    			var $fileInfo = $('<div>').attr('id', 'fileInfoText').text(fileInfo);
+	    			var $img = $('<img>').attr('id', 'imagePreview');
+	    			var $removeBtn = $('<button>').attr('id', 'removeImageBtn').text('이미지 제거');
+	    			$('#attachFileWrapper').append($img).append($fileInfo).append($removeBtn);
+	    			var reader = new FileReader();
+	    			reader.onload = function(e) {
+	    				$('#imagePreview').attr('src', e.target.result);
+	    			};
+	    			reader.readAsDataURL(file);
+	    		}
+	    	});
+	    	// 첨부 이미지 제거 핸들러
+	    	$('#attachFileWrapper').on('click', '#removeImageBtn', function () {
+	    		$('#imagePreview').remove();
+	    		$('#removeImageBtn').remove();
+	    		$('#imageInput').val("");
+	    	});
 	    	
 	        $('#btnSubmit').click(function(e){
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
@@ -132,14 +177,22 @@
 				}
 				
 				console.log(JSON.stringify(payload));
+				
+				// FormData에 payload와 파일 추가
+				var formData = new FormData();
+				formData.append("program", new Blob([JSON.stringify(payload)], { type: "application/json" }));
+				var file = $('#imageInput')[0].files[0];
+				if (file) {
+					formData.append("file", file);
+				}
 	    		
 	    		// 프로그램 등록 요청
 	    		$.ajax({
 	    			url: apiUrl,
 	    			type:'POST',
-	    			contentType: 'application/json',
-	    			dataType: 'json',
-	    			data: JSON.stringify(payload),
+	    			processData: false,
+	    			contentType: false,
+	    			data: formData,
 	    			success: function(res){
 						if (res.error) {
 							alert(res.error);

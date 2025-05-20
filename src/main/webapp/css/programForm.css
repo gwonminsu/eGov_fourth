@@ -27,6 +27,36 @@ table.form-table textarea {
 	overflow-x: hidden;
 }
 
+/* 첨부파일 영역 스타일 */
+#attachFileWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+#imagePreview {
+	max-width: 200px;
+	margin-top: 10px;
+}
+#fileInfoText {
+	font-size: 13px;
+	color: #555;
+	margin-top: 8px;
+}
+#removeImageBtn {
+	background-color: #e0e0e0; /* 연회색 */
+	color: #333;
+	border: 1px solid #ccc;
+	padding: 4px 10px;
+	margin-top: 8px;
+	border-radius: 999px;
+	cursor: pointer;
+	font-size: 13px;
+	transition: background-color 0.2s ease;
+}
+#removeImageBtn:hover {
+	background-color: #d5d5d5;
+}
+
 /* 버튼 스타일 */
 .btn-area {
 	text-align: right;

@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,15 +32,19 @@ public class ProgramController {
 	private ProgramService programService;
 	
     // 프로그램 등록
-    @PostMapping(value="/create.do", consumes="application/json", produces="application/json")
-    public Map<String, String> write(@RequestBody ProgramVO vo) throws Exception {
+    @PostMapping(value="/create.do", consumes = "multipart/form-data", produces="application/json")
+    public Map<String, String> write(
+    		@RequestPart("program") ProgramVO vo,
+			@RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
     	programService.createprogram(vo);
         return Collections.singletonMap("status","OK");
     }
     
     // 프로그램 수정
-    @PostMapping(value="/edit.do", consumes="application/json", produces="application/json")
-    public Map<String,String> edit(@RequestBody ProgramVO vo) throws Exception {
+    @PostMapping(value="/edit.do", consumes = "multipart/form-data", produces="application/json")
+    public Map<String,String> edit(
+    		@RequestPart("program") ProgramVO vo,
+			@RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
         programService.modifyProgram(vo);
         return Collections.singletonMap("status","OK");
     }
