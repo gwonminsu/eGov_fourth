@@ -78,6 +78,7 @@
 			<td colspan="3">
 				<div id="attachFileWrapper">
 					<input type="file" id="imageInput" accept="image/jpeg,image/png,image/gif,image/bmp,image/svg+xml"/>
+					<div id="dropZone">여기에 파일을 드래그 앤 드롭 해 주세요</div>
 				</div>
 			</td>
 		</tr>
@@ -165,11 +166,28 @@
 	    		$('#programFormGuide').hide();
 	    	}
 	    	
-	    	// 첨부파일 선택 시
-	    	$('#imageInput').on('change', function(e) {
-	    		var file = e.target.files[0];
+	    	function handleFiles(fileList) {
+	    		if (fileList.length > 1) {
+	    			alert('파일을 하나만 넣어주세요');
+	    			return;
+	    		}
+	    		var file = fileList[0];
 	    	    if (!file) return; // 파일이 실제로 선택되지 않았다면 그냥 무시
-	    	    currentFile = e.target.files[0];
+	    	    
+	    	    // 허용 파일 타입 목록
+	    		var allowedTypes = [
+	    			'image/jpeg',
+	    			'image/png',
+	    			'image/gif',
+	    			'image/bmp',
+	    			'image/svg+xml'
+	    		];
+	    		// 허용 파일이 아니면 거절
+	    		if (!allowedTypes.includes(file.type)) {
+	    			alert('지원하지 않는 파일 형식입니다.\n허용된 파일 형식: JPG, PNG, GIF, BMP, SVG');
+	    			return;
+	    		}
+	    	    currentFile = file;
 	    		fileChanged = true;
 	    		$('#imagePreview').remove(); // 이미지 미리보기 제거
 	    		$('#fileInfoText').remove(); // 파일 정보 텍스트 제거
@@ -184,7 +202,28 @@
     				$('#imagePreview').attr('src', e.target.result);
     			};
     			reader.readAsDataURL(file);
+	    	}
+	    	
+	    	// 첨부파일 선택기로 선택 시
+	    	$('#imageInput').on('change', function(e) {
+	    		handleFiles(e.target.files);
 	    	});
+	    	// 드래그 앤 드랍으로 선택 시
+			var $dz = $('#dropZone');
+			$dz.on('dragover', function(e){
+				e.preventDefault();
+				e.originalEvent.dataTransfer.dropEffect = 'copy';
+				$dz.addClass('dragover');
+			});
+			$dz.on('dragleave dragend', function(e){
+				e.preventDefault();
+				$dz.removeClass('dragover');
+			});
+			$dz.on('drop', function(e){
+				e.preventDefault();
+				$dz.removeClass('dragover');
+				handleFiles(e.originalEvent.dataTransfer.files);
+			});
 	    	// 첨부 이미지 제거 핸들러
 	    	$('#attachFileWrapper').on('click', '#removeImageBtn', function () {
 	    		$('#imagePreview').remove();

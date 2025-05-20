@@ -35,6 +35,8 @@ table.form-table textarea {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	width: 100%;
+	box-sizing: border-box;
 }
 #imagePreview {
 	max-width: 200px;
@@ -58,6 +60,21 @@ table.form-table textarea {
 }
 #removeImageBtn:hover {
 	background-color: #d5d5d5;
+}
+#dropZone {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1em;
+	margin-top: 15px;
+	border: 2px dashed #ccc;
+	text-align: center;
+	color: #888;
+	margin-bottom: 1em;
+}
+#dropZone.dragover {
+	border-color: #66afe9;
+	background: #f0f8ff;
+	color: #333;
 }
 
 /* 버튼 스타일 */
