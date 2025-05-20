@@ -8,6 +8,10 @@
 	<title>예약 일정 관리 페이지</title>
 	<link rel="stylesheet" href="<c:url value='/css/bookManage.css'/>" />
 	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 	
 	<!-- 프로그램 리스트 가져오는 api 호출 url -->
 	<c:url value="/api/program/list.do" var="programListUrl"/>
@@ -54,6 +58,9 @@
     	<div id="programListWrapper" class="program-scroll">
 		</div>
    	</div>
+   	
+   	<!-- 캘린더 -->
+   	<div id='calendar'></div>
     
     <button type="button" id="btnCreateProgram">프로그램 신규 등록</button>
     <button type="button" id="btnEditProgram" style="display: none;">선택한 프로그램 수정</button>
@@ -104,6 +111,22 @@
 				$('#btnGoLogin').show();
 				$('#btnLogout').hide();
 	        }
+	        
+	        var calendar = $('#calendar').fullCalendar({
+	            header: {
+	                left: 'prev,next today',
+	                center: 'title',
+	                right: 'month,agendaWeek,agendaDay'
+	            },
+	            selectable: true,
+	            selectHelper: true,
+	            editable: true,
+	            eventLimit: true,
+	            events: function(start, end, timezone, callback) {
+	                // AJAX를 통해 서버에서 일정 데이터를 가져옵니다.
+	                
+	            },
+	        });
 	    	
 	    	// 로그인 버튼 핸들러
 	    	$('#btnGoLogin').click(function() {
