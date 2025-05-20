@@ -26,6 +26,18 @@
 				<arg0 key="title.user.regUser" />
 			</field>
 		</form>
+		
+		<form name="programVO">
+			<field property="programName" depends="required">
+				<arg0 key="title.program.name" />
+			</field>
+			<field property="userType" depends="required">
+				<arg0 key="title.program.userType" />
+			</field>
+			<field property="description" depends="required">
+				<arg0 key="title.program.description" />
+			</field>
+		</form>
     </formset>
 
 </form-validation>

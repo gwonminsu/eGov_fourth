@@ -43,6 +43,9 @@
         </property>
     </bean>
     
+   	<!-- json ObjectMapper 빈 -->
+ 	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
+    
    	<!-- 멀티파트 리졸버 -->
  	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
     

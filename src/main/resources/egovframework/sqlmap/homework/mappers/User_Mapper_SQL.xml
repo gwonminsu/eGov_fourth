@@ -16,7 +16,7 @@
     
 	<!-- 아이디로 사용자 조회 -->
 	<select id="selectUserByUserId" parameterType="String" resultType="userVO">
-		SELECT 
+		SELECT idx,
         	user_name,
         	user_id,
         	user_pw,
@@ -31,14 +31,14 @@
 	<!-- 회원가입 -->
 	<insert id="insertUser" parameterType="userVO">
 		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
-			SELECT 'USER-' ||
+			SELECT 'USER-' || COALESCE(
 				(
 					SELECT (SUBSTRING(idx FROM 6))::int + 1
 					FROM "user"
 					ORDER BY (SUBSTRING(idx FROM 6))::int DESC
 					LIMIT 1
 					FOR UPDATE
-				)
+				), 1)
 		</selectKey>
 		INSERT INTO "user" (idx, user_name, user_id, user_pw, is_admin, created_at)
 		VALUES (#{idx}, #{userName}, #{userId}, #{userPw}, #{isAdmin}, NOW())

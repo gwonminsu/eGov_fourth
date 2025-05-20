@@ -122,7 +122,7 @@
 	    		}
 	    		
 				var payload = {
-						authorIdx: sessionUserIdx,
+						createUserIdx: sessionUserIdx,
 						programName: $('#programName').val(),
 						userType: $('#userType').val(),
 						description: $('#description').val(),
@@ -130,13 +130,16 @@
 				if (mode === 'edit') {
 					payload.idx = idx;
 				}
+				
+				console.log(JSON.stringify(payload));
 	    		
 	    		// 프로그램 등록 요청
 	    		$.ajax({
 	    			url: apiUrl,
 	    			type:'POST',
+	    			contentType: 'application/json',
 	    			dataType: 'json',
-	    			data: payload,
+	    			data: JSON.stringify(payload),
 	    			success: function(res){
 						if (res.error) {
 							alert(res.error);
