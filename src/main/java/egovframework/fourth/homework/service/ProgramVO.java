@@ -27,5 +27,6 @@ public class ProgramVO {
     
 	private Timestamp updatedAt; // 수정일
 
+	private Boolean fileChanged; // 첨부파일 변경 여부
 	
 }

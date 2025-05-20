@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.fourth.homework.service.AttachService;
+import egovframework.fourth.homework.service.AttachVO;
 import egovframework.fourth.homework.service.ProgramService;
 import egovframework.fourth.homework.service.ProgramVO;
 
@@ -20,11 +22,15 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 	
 	@Resource(name = "programDAO")
 	private ProgramDAO programDAO;
+	
+    @Resource(name="attachService")
+    private AttachService attachService;
 
 	// 프로그램 등록
 	@Override
 	public void createProgram(ProgramVO vo, MultipartFile file) throws Exception {
-		programDAO.insertProgram(vo);
+		programDAO.insertProgram(vo); // 프로그램 등록하고
+		attachService.createProgramAttach(vo.getIdx(), file); // 첨부파일 저장
 		log.info("INSERT 프로그램({}) 등록 성공", vo.getIdx());
 	}
 
@@ -47,7 +53,21 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 	// 프로그램 수정
 	@Override
 	public void modifyProgram(ProgramVO vo, MultipartFile file) throws Exception {
-		programDAO.updateProgram(vo);
+		programDAO.updateProgram(vo); // 프로그램 수정하고
+		// 파일 변경 여부 판단
+		if (Boolean.TRUE.equals(vo.getFileChanged())) {
+			// 변경 플래그가 true일 때만 파일 교체 로직 수행
+			attachService.removeAttachByProgramIdx(vo.getIdx());
+			if (file != null && !file.isEmpty()) {
+				attachService.createProgramAttach(vo.getIdx(), file);
+				log.info("UPDATE 프로그램({}) → 첨부파일 교체 완료", vo.getIdx());
+			} else {
+				log.info("UPDATE 프로그램({}) → 첨부파일 삭제 완료", vo.getIdx());
+			}
+		} else {
+			log.info("UPDATE 프로그램({}) → 첨부파일 변경 없음", vo.getIdx());
+		}
+
 		log.info("UPDATE 프로그램({}) 수정 완료", vo.getIdx());
 	}
 

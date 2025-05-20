@@ -4,8 +4,9 @@
 
 	<!-- 첨부 파일 등록 -->
 	<insert id="insertAttach" parameterType="attachVO">
-		<selectKey keyProperty="idx, fileUuid" keyColumn="gen_idx, gen_uuid" resultType="map" order="BEFORE">
-			SELECT 'ATTACH-' || COALESCE(
+		<selectKey keyProperty="idx,fileUuid" keyColumn="gen_idx,gen_uuid" resultType="map" order="BEFORE">
+			SELECT 
+				'ATTACH-' || COALESCE(
 				(
 					SELECT (SUBSTRING(idx FROM 8))::int + 1
 					FROM attach
@@ -13,8 +14,7 @@
 					LIMIT 1
 					FOR UPDATE
 				), 1) AS gen_idx,
-			SELECT gen_random_uuid()::text AS gen_uuid
-			FROM attach
+				gen_random_uuid()::text AS gen_uuid
 		</selectKey>
 		INSERT INTO attach
 			(idx, approval_req_idx, program_idx, file_name, file_uuid, file_path, file_size, ext, created_at)

@@ -16,8 +16,11 @@ table.form-table th {
 	background: #f7f7f7;
 	text-align: center;
 }
+table.form-table #programName {
+	width: 200px;
+}
 table.form-table #userType {
-	width: 100px;
+	width: 300px;
 }
 table.form-table textarea {
 	width: 100%;

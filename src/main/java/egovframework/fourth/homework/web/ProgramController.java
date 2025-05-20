@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import egovframework.fourth.homework.service.AttachService;
+import egovframework.fourth.homework.service.AttachVO;
 import egovframework.fourth.homework.service.ProgramService;
 import egovframework.fourth.homework.service.ProgramVO;
 
@@ -30,6 +32,9 @@ public class ProgramController {
 	
 	@Resource(name="programService")
 	private ProgramService programService;
+	
+	@Resource(name="attachService")
+	private AttachService attachService;
 	
     // 프로그램 등록
     @PostMapping(value="/create.do", consumes = "multipart/form-data", produces="application/json")
@@ -54,6 +59,12 @@ public class ProgramController {
     public ProgramVO detail(@RequestBody Map<String,String> param) throws Exception {
         return programService.getProgram(param.get("idx"));
     }
+    
+    // 프로그램의 이미지 정보 조회
+    @PostMapping(value="/image.do", consumes="application/json", produces="application/json")
+	public AttachVO getImageInfo(@RequestBody Map<String,String> param) throws Exception {
+		return attachService.getAttachByProgramIdx(param.get("programIdx"));
+	}
     
 	// 프로그램 목록 조회
     @PostMapping(value="/list.do", consumes="application/json", produces="application/json")

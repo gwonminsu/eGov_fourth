@@ -58,11 +58,11 @@
 			<th>주요 대상 연령</th>
 			<td colspan="3">
 				<select id="userType" required>
-				    <option value="">선택해주세요</option>
-				    <option value="baby">미취학 아동</option>
-				    <option value="child">어린이</option>
-				    <option value="youth">청소년</option>
-				    <option value="adult">성인</option>
+				    <option value="">선택해주세요(만 나이 기준)</option>
+				    <option value="baby">미취학 아동(0~5세)</option>
+				    <option value="child">어린이(6~12세)</option>
+				    <option value="youth">청소년(13~18세)</option>
+				    <option value="adult">성인(19~)</option>
 				    <option value="all">전연령</option>
 				</select>
 			</td>
@@ -107,6 +107,9 @@
 		    apiUrl = '${createApi}';
 		}
 		
+		var fileChanged = false;
+		var currentFile = null;
+		
 		$(function(){
 	    	if (mode === 'edit') {
 	    		$('#formTitle').text('프로그램 수정 폼');
@@ -120,12 +123,44 @@
 	    			type: 'POST',
 	    			contentType: 'application/json',
 	    			data: JSON.stringify({ idx: idx }),
-	    			dataType: 'json'
-	    		}).done(function(item) {
-		   	        $('#programName').val(item.programName);
-		   	        $('#description').val(item.description);
-		   	     	$('#userType').val(item.userType);
-				});
+	    			dataType: 'json',
+	    			success: function(item) {
+	    				$('#programName').val(item.programName);
+		   	        	$('#description').val(item.description);
+		   	     		$('#userType').val(item.userType);
+	    			},
+					error: function(){
+						console.log('프로그램 메타 정보 조회 실패');
+					}
+	    		});
+	    		
+	    		// 이미지 정보 불러와서 이미지 미리보기
+	    		$.ajax({
+	    			url: '/api/program/image.do',
+	    			type: 'POST',
+	    			contentType: 'application/json',
+	    			data: JSON.stringify({ programIdx: idx }),
+	    			dataType: 'json',
+	    			success: function(imageInfo) {
+	    				// 이미지 URL 구성
+	    				var imageUrl = '/uploads/' + imageInfo.fileUuid + imageInfo.ext;
+	    				var $img = $('<img>').attr({ id: 'imagePreview', src: imageUrl });
+
+	    				// 파일 이름 + 사이즈 텍스트
+	    				var size = formatBytes(imageInfo.fileSize);
+	    				var fileInfoText = imageInfo.fileName + ' [' + size + ']';
+	    				var $fileInfo = $('<div>').attr('id', 'fileInfoText').text(fileInfoText);
+
+	    				// 이미지 제거 버튼
+	    				var $removeBtn = $('<button>').attr('id', 'removeImageBtn').text('이미지 제거');
+
+	    				$('#attachFileWrapper').append($img, $fileInfo, $removeBtn);
+	    			},
+					error: function(){
+						console.log('이미지 정보 조회 실패');
+					}
+	    		});
+	    		
 	    	} else {
 	    		$('#programFormGuide').hide();
 	    	}
@@ -133,27 +168,31 @@
 	    	// 첨부파일 선택 시
 	    	$('#imageInput').on('change', function(e) {
 	    		var file = e.target.files[0];
+	    	    if (!file) return; // 파일이 실제로 선택되지 않았다면 그냥 무시
+	    	    currentFile = e.target.files[0];
+	    		fileChanged = true;
 	    		$('#imagePreview').remove(); // 이미지 미리보기 제거
 	    		$('#fileInfoText').remove(); // 파일 정보 텍스트 제거
 	    		$('#removeImageBtn').remove(); // 선택 이미지 삭제 버튼 제거
-	    		if (file) {
-	    			var fileInfo = file.name + ' [' + formatBytes(file.size) + ']';
-	    			var $fileInfo = $('<div>').attr('id', 'fileInfoText').text(fileInfo);
-	    			var $img = $('<img>').attr('id', 'imagePreview');
-	    			var $removeBtn = $('<button>').attr('id', 'removeImageBtn').text('이미지 제거');
-	    			$('#attachFileWrapper').append($img).append($fileInfo).append($removeBtn);
-	    			var reader = new FileReader();
-	    			reader.onload = function(e) {
-	    				$('#imagePreview').attr('src', e.target.result);
-	    			};
-	    			reader.readAsDataURL(file);
-	    		}
+    			var fileInfo = file.name + ' [' + formatBytes(file.size) + ']';
+    			var $fileInfo = $('<div>').attr('id', 'fileInfoText').text(fileInfo);
+    			var $img = $('<img>').attr('id', 'imagePreview');
+    			var $removeBtn = $('<button>').attr('id', 'removeImageBtn').text('이미지 제거');
+    			$('#attachFileWrapper').append($img).append($fileInfo).append($removeBtn);
+    			var reader = new FileReader();
+    			reader.onload = function(e) {
+    				$('#imagePreview').attr('src', e.target.result);
+    			};
+    			reader.readAsDataURL(file);
 	    	});
 	    	// 첨부 이미지 제거 핸들러
 	    	$('#attachFileWrapper').on('click', '#removeImageBtn', function () {
 	    		$('#imagePreview').remove();
+	    		$('#fileInfoText').remove();
 	    		$('#removeImageBtn').remove();
 	    		$('#imageInput').val("");
+	    		fileChanged = true;
+	    		currentFile = null;
 	    	});
 	    	
 	        $('#btnSubmit').click(function(e){
@@ -171,6 +210,7 @@
 						programName: $('#programName').val(),
 						userType: $('#userType').val(),
 						description: $('#description').val(),
+						fileChanged: fileChanged
 				}
 				if (mode === 'edit') {
 					payload.idx = idx;
@@ -181,9 +221,9 @@
 				// FormData에 payload와 파일 추가
 				var formData = new FormData();
 				formData.append("program", new Blob([JSON.stringify(payload)], { type: "application/json" }));
-				var file = $('#imageInput')[0].files[0];
-				if (file) {
-					formData.append("file", file);
+				// var file = $('#imageInput')[0].files[0];
+				if (currentFile) {
+					formData.append("file", currentFile);
 				}
 	    		
 	    		// 프로그램 등록 요청
