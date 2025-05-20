@@ -47,7 +47,7 @@
 			contentType:'application/json',
 			data:JSON.stringify(data),
 			success:function(res){
-		        if(res.user) window.location='<c:url value="/testList.do"/>';
+		        if(res.user) window.location='<c:url value="/booking.do"/>';
 		        else alert(res.error);
 			}
 		});

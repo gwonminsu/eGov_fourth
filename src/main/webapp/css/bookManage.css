@@ -1,0 +1,75 @@
+@charset "UTF-8";
+
+/* 가로 스크롤 영역 */
+.program-scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* 기본 프로그램 선택 버튼 스타일 */
+.program-btn {
+    padding: 8px 12px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* 선택된 버튼 스타일 */
+.program-btn.active {
+    background-color: #ff6600;
+    color: white;
+    font-weight: bold;
+    border-color: #ff6600;
+}
+
+/* 버튼 공통 스타일 */
+#btnCreateProgram,
+#btnEditProgram,
+#btnGoBooking,
+#btnGoLogin,
+#btnLogout {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+/* 프로그램 등록/수정 버튼 */
+#btnCreateProgram,
+#btnEditProgram {
+    background-color: #3498DB;
+    color: #fff;
+    margin-top: 10px;
+}
+#btnCreateProgram:hover,
+#btnEditProgram:hover {
+    background-color: #2980B9;
+}
+
+/* 로그인/로그아웃 버튼 */
+#btnGoLogin,
+#btnLogout {
+	border-radius: 8px;
+    background-color: #E9ECEF;
+    color: #333;
+}
+#btnGoLogin:hover,
+#btnLogout:hover {
+    background-color: #CED4DA;
+}
+
+/* 사용자 정보 영역 */
+#userInfo {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+#userInfo span {
+    margin-right: 12px;
+    font-weight: bold;
+}

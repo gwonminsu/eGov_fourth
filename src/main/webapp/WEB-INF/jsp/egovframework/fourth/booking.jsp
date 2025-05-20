@@ -80,17 +80,16 @@
 		                var $tbody = $('#userListTbl').find('tbody');
 		                $tbody.empty();
 		                $.each(data, function(i, item) {
-		                    var row = '<tr>' +
-		                              '<td>' + item.idx + '</td>' +
-		                              '<td>' + item.userName + '</td>' +
-		                              '<td>' + item.userId + '</td>' +
-		                              '<td>' + item.userPw + '</td>' +
-		                              '<td>' + item.isAdmin + '</td>' +
-		                              '<td>' + item.department + '</td>' +
-		                              '<td>' + item.position + '</td>' +
-		                              '<td>' + item.createdAt + '</td>' +
-		                              '</tr>';
-		                    $tbody.append(row);  
+		                	var $tr = $('<tr>');
+		                	$tr.append($('<td>').text(item.idx));
+		                	$tr.append($('<td>').text(item.userName));
+		                	$tr.append($('<td>').text(item.userId));
+		                	$tr.append($('<td>').text(item.userPw));
+		                	$tr.append($('<td>').text(item.isAdmin));
+		                	$tr.append($('<td>').text(item.department));
+		                	$tr.append($('<td>').text(item.position));
+		                	$tr.append($('<td>').text(item.createdAt));
+		                    $tbody.append($tr);  
 		                });
 		            },
 		            error: function(xhr, status, error) {

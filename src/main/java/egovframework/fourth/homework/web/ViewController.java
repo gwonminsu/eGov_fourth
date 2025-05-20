@@ -31,19 +31,31 @@ public class ViewController {
 	}
 	
 	// 사용자 목록(테스트 용) 페이지
-	@RequestMapping(value = "/testList.do")
-	public String testListPage() throws Exception {
-		return "testList";
+	@RequestMapping(value = "/booking.do")
+	public String bookingPage() throws Exception {
+		return "booking";
 	}
 	
-	// 프로그램 폼 페이지
-	@RequestMapping(value = "/programForm.do")
-	public String showSurveyForm(HttpSession session, RedirectAttributes rt) {
+	// 예약 관리 페이지(관리자 페이지)
+	@RequestMapping(value = "/bookManage.do")
+	public String bookManagePage(HttpSession session, RedirectAttributes rt) {
 		UserVO me = (UserVO) session.getAttribute("loginUser");
         // 로그인 안 했거나, 관리자 아니면
         if (me == null || !me.getIsAdmin()) {
             rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
-            return "redirect:/testList.do";
+            return "redirect:/booking.do";
+        }
+		return "bookManage";
+	}
+	
+	// 프로그램 폼 페이지
+	@RequestMapping(value = "/programForm.do")
+	public String programFormPage(HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
         }
 		return "programForm";
 	}

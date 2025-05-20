@@ -29,9 +29,9 @@
 			user_type,
 			description,
 			created_at AS createdAt,
-			updated_at AS updatedAt,
+			updated_at AS updatedAt
 		FROM program
-		ORDER BY (SUBSTRING(idx FROM 9))::int DESC
+		ORDER BY (SUBSTRING(idx FROM 9))::int ASC
 	</select>
 
 	<!-- 프로그램 상세 조회 -->
@@ -43,7 +43,7 @@
 			user_type,
 			description,
 			created_at AS createdAt,
-			updated_at AS updatedAt,
+			updated_at AS updatedAt
 		FROM program
 		WHERE idx = #{idx}
 	</select>

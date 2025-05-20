@@ -102,7 +102,7 @@
 	    			data: JSON.stringify({ idx: idx }),
 	    			dataType: 'json'
 	    		}).done(function(item) {
-		   	        $('#programName').val(item.title);
+		   	        $('#programName').val(item.programName);
 		   	        $('#description').val(item.description);
 		   	     	$('#userType').val(item.userType);
 				});

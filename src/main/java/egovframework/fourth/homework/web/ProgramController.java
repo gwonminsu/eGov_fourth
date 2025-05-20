@@ -51,7 +51,7 @@ public class ProgramController {
     
 	// 프로그램 목록 조회
     @PostMapping(value="/list.do", consumes="application/json", produces="application/json")
-	public List<ProgramVO> programs() throws Exception {
+	public List<ProgramVO> programs(@RequestBody Map<String, String> param) throws Exception {
 		return programService.getProgramList();
 	}
 

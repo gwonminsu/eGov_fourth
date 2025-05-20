@@ -38,6 +38,11 @@
 				<arg0 key="title.program.description" />
 			</field>
 		</form>
+		
+		<!-- 검증 경고 메시지 방지 폼 -->
+		<form name="linkedHashMap">
+			<field property="dummy"/>
+		</form>
     </formset>
 
 </form-validation>
