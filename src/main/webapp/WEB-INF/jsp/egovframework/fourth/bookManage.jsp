@@ -6,8 +6,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title>예약 일정 관리 페이지</title>
-	<link rel="stylesheet" href="<c:url value='/css/bookManage.css'/>" />
+
 	<link rel="stylesheet" href="<c:url value='/css/tui-calendar.min.css'/>" />
+	<link rel="stylesheet" href="<c:url value='/css/bookManage.css'/>" />
 	
 	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
 	<script src="<c:url value='/js/tui/tui-code-snippet.min.js'/>"></script>
@@ -24,6 +25,8 @@
 	<c:url value="/programForm.do" var="programFormUrl"/>
 	<!-- 목록 페이지 URL -->
 	<c:url value="/booking.do" var="bookingUrl"/>
+	<!-- 예약 일정 생성 페이지 URL -->
+	<c:url value="/scheduleCreate.do" var="scheduleCreateUrl"/>
 	
 	<!-- 세션에 담긴 사용자 이름을 JS 변수로 -->
 	<script>
@@ -42,6 +45,7 @@
 		    // body에 붙이고 제출
 		    form.appendTo('body').submit();
 		}
+		
 	</script>
 </head>
 <body>
@@ -77,7 +81,10 @@
     <button type="button" id="btnGoBooking">예약 페이지로 돌아가기</button>
     
     <script>
+    	var idx = '${param.programIdx}';
     	var currentProgramIdx = null;
+    	var currentProgramName = '';
+    	var calendar;
     	
     	// 프로그램 버튼 렌더
     	function renderProgramButtons(programList) {
@@ -85,13 +92,19 @@
     	    $wrapper.empty();
 
     	    programList.forEach(program => {
-    	        var $btn = $('<button>').addClass('program-btn').text(program.programName).data('idx', program.idx)
+    	        var $btn = $('<button>').addClass('program-btn').text(program.programName).data('idx', program.idx).data('name', program.programName)
     	            .click(function () {
     	                $('.program-btn').removeClass('active');
     	                $(this).addClass('active');
     	                currentProgramIdx = $(this).data('idx');
+    	                currentProgramName = $(this).data('name');
     	                $('#btnEditProgram').show();
+    	                calendar.render();
     	            });
+    	        // 파라미터로 받아온 프로그램 idx에 해당하는 버튼 클릭
+    	        if (program.idx == idx) {
+    	            $btn.trigger('click');
+    	        }
     	        $wrapper.append($btn);
     	    });
     	}
@@ -118,7 +131,6 @@
 				$('#btnGoLogin').hide();
 				$('#btnLogout').show();
 	        } else {
-				$('#welcomeMsg').text('');
 				$('#btnGoLogin').show();
 				$('#btnLogout').hide();
 	        }
@@ -136,9 +148,25 @@
 				month: {
 					startDayOfWeek: 1, // 월요일부터 시작
 					daynames: ['일', '월', '화', '수', '목', '금', '토']  // 요일 한글 설정
+				},
+				template: {
+					monthGridFooter: function(date) {
+						$btn = $('<button>').addClass('btnGoNewSchedule').attr('data-date', date.date).text('신규 등록');
+						/* {"date":"2025-04-28","month":4,"day":1,"isToday":false,
+							"ymd":"20250428","hiddenSchedules":0,"width":14.285714285714286,
+							"left":0,"color":"rgba(51, 51, 51, 0.4)",
+							"backgroundColor":"inherit","isOtherMonth":true} */
+						if (!currentProgramIdx) {
+							return '';
+						}
+						if (date.isOtherMonth || date.day === 0) {
+							return '';
+						}
+						return $btn.prop('outerHTML'); // monthGridFooter는 html 문자열을 반환하므로
+					}
 				}
 	        }
-	        var calendar = new Calendar('#calendar', options);
+	        calendar = new Calendar('#calendar', options);
 	        
 	     	// 초기 년/월 input 채우기
 	        var today = calendar.getDate();
@@ -172,6 +200,14 @@
 	                calendar.setDate(new Date(year, month - 1, 1));
 	            }
 	        });
+	        
+	        // 일정 생성 버튼 핸들러
+	        $('#calendar').on('click', '.btnGoNewSchedule', function(e){
+				e.stopPropagation();
+				var date = $(this).data('date');
+				console.log(date);
+				postTo('${scheduleCreateUrl}', { programIdx: currentProgramIdx, programName: currentProgramName, date: date });
+			});
 	        
 	        /* ----------------------------------- 여기까지 캘린더 ----------------------------------- */
 	    	

@@ -88,12 +88,12 @@ table.form-table textarea {
 	margin-left: 8px;
 }
 #btnSubmit {
-	background-color: #3498DB;
+	background-color: #ff6600;
 	color: #FFFFFF;
 	border: none;
 }
 #btnSubmit:hover {
-	background-color: #2980B9;
+	background-color: #f26100;
 }
 #btnDelete {
 	background-color: #ff7979;

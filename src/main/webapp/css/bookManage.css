@@ -11,12 +11,16 @@
 
 /* 기본 프로그램 선택 버튼 스타일 */
 .program-btn {
+	display: inline-block;
+	width: 120px;
     padding: 8px 12px;
     background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 선택된 버튼 스타일 */
@@ -41,6 +45,31 @@
 #monthInput {
 	width: 30px;
 }
+.tui-full-calendar-month-guide-block,
+.tui-full-calendar-month-creation-guide {
+    display: none !important;
+}
+.tui-full-calendar-weekday-grid-footer {
+	display: block;
+	width: 100%;
+	padding: 0 6px 0 0;
+	box-sizing: border-box;
+}
+.btnGoNewSchedule {
+	display: block;
+	width: 100% !important;
+	padding: 4px 0;
+	margin-top: 4px;
+	background-color: #d8d8d8;
+	color: #fff;
+	border: none;
+	border-radius: 3px;
+	font-size: 0.6rem;
+	cursor: pointer;
+}
+.btnGoNewSchedule:hover {
+	background-color: #b2b2b2;
+}
 
 /* 버튼 공통 스타일 */
 #btnCreateProgram,
@@ -58,13 +87,13 @@
 /* 프로그램 등록/수정 버튼 */
 #btnCreateProgram,
 #btnEditProgram {
-    background-color: #3498DB;
+    background-color: #f7b740;
     color: #fff;
     margin-top: 10px;
 }
 #btnCreateProgram:hover,
 #btnEditProgram:hover {
-    background-color: #2980B9;
+    background-color: #f5a40c;
 }
 
 /* 로그인/로그아웃 버튼 */

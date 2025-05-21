@@ -114,7 +114,6 @@
 		$(function(){
 	    	if (mode === 'edit') {
 	    		$('#formTitle').text('프로그램 수정 폼');
-	    		$('#surveyFormGuide').show();
 	    		$('#idxShow').text(idx);
 	    		$('#btnDelete').show();
 	    		
