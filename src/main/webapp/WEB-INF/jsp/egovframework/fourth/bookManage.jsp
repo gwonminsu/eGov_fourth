@@ -205,7 +205,6 @@
 	        $('#calendar').on('click', '.btnGoNewSchedule', function(e){
 				e.stopPropagation();
 				var date = $(this).data('date');
-				console.log(date);
 				postTo('${scheduleCreateUrl}', { programIdx: currentProgramIdx, programName: currentProgramName, date: date });
 			});
 	        

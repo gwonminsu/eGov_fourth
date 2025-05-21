@@ -11,5 +11,6 @@
 		<typeAlias alias="userVO" type="egovframework.fourth.homework.service.UserVO"/>
 		<typeAlias alias="programVO" type="egovframework.fourth.homework.service.ProgramVO"/>
 		<typeAlias alias="attachVO" type="egovframework.fourth.homework.service.AttachVO"/>
+		<typeAlias alias="programScheduleVO" type="egovframework.fourth.homework.service.ProgramScheduleVO"/>
     </typeAliases>
 </configuration>
