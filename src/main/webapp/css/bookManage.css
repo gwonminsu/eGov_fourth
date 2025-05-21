@@ -27,6 +27,21 @@
     border-color: #ff6600;
 }
 
+/* 캘린더 관련 스타일 */
+#calendarHeader {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+#yearInput {
+	width: 50px;
+}
+#monthInput {
+	width: 30px;
+}
+
 /* 버튼 공통 스타일 */
 #btnCreateProgram,
 #btnEditProgram,

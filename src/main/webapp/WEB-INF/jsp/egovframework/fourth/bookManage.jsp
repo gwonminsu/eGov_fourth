@@ -7,11 +7,12 @@
 	<meta charset="UTF-8">
 	<title>예약 일정 관리 페이지</title>
 	<link rel="stylesheet" href="<c:url value='/css/bookManage.css'/>" />
+	<link rel="stylesheet" href="<c:url value='/css/tui-calendar.min.css'/>" />
+	
 	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+	<script src="<c:url value='/js/tui/tui-code-snippet.min.js'/>"></script>
+    <script src="<c:url value='/js/tui/tui-dom.min.js'/>"></script>
+    <script src="<c:url value='/js/tui/tui-calendar.min.js'/>"></script>
 	
 	<!-- 프로그램 리스트 가져오는 api 호출 url -->
 	<c:url value="/api/program/list.do" var="programListUrl"/>
@@ -59,6 +60,15 @@
 		</div>
    	</div>
    	
+   	<div id="calendarHeader">
+		<input type="number" id="yearInput" min="2000" max="2100" />
+		<span>년</span>
+		<input type="number" id="monthInput" min="1" max="12" />
+		<span>월</span>
+		<button id="btnPrevMonth">◀</button>
+		<button id="btnNextMonth">▶</button>
+	</div>
+
    	<!-- 캘린더 -->
    	<div id='calendar'></div>
     
@@ -69,6 +79,7 @@
     <script>
     	var currentProgramIdx = null;
     	
+    	// 프로그램 버튼 렌더
     	function renderProgramButtons(programList) {
     	    var $wrapper = $('#programListWrapper');
     	    $wrapper.empty();
@@ -112,21 +123,57 @@
 				$('#btnLogout').hide();
 	        }
 	        
-	        var calendar = $('#calendar').fullCalendar({
-	            header: {
-	                left: 'prev,next today',
-	                center: 'title',
-	                right: 'month,agendaWeek,agendaDay'
-	            },
-	            selectable: true,
-	            selectHelper: true,
-	            editable: true,
-	            eventLimit: true,
-	            events: function(start, end, timezone, callback) {
-	                // AJAX를 통해 서버에서 일정 데이터를 가져옵니다.
-	                
-	            },
+	        /* ----------------------------------- 여기부터 캘린더 ----------------------------------- */
+	        
+	        // 토스트 캘린더
+	        var Calendar = tui.Calendar;
+	        var options = {
+				defaultView: 'month',  // 월 별로 보기
+				taskView: false,  // 할 일 뷰 끄기
+				scheduleView: ['time'], // 시간 일정만
+				useFormPopup: false, // 기본 팝업 끄기
+				useDetailPopup: false, // 기본 디테일 팝업 끄기
+				month: {
+					startDayOfWeek: 1, // 월요일부터 시작
+					daynames: ['일', '월', '화', '수', '목', '금', '토']  // 요일 한글 설정
+				}
+	        }
+	        var calendar = new Calendar('#calendar', options);
+	        
+	     	// 초기 년/월 input 채우기
+	        var today = calendar.getDate();
+	        $('#yearInput').val(today.getFullYear());
+	        $('#monthInput').val(today.getMonth() + 1);
+
+	        // 현재 캘린더 기준으로 input 갱신
+	        function updateDateInputs() {
+	            var currentDate = calendar.getDate();
+	            $('#yearInput').val(currentDate.getFullYear());
+	            $('#monthInput').val(currentDate.getMonth() + 1);
+	        }
+	        
+	        // 이전 달 이동 버튼 핸들러
+	        $('#btnPrevMonth').click(function () {
+	            calendar.prev();
+	            updateDateInputs();
 	        });
+
+	        // 다음 달 이동 버튼 핸들러
+	        $('#btnNextMonth').click(function () {
+	            calendar.next();
+	            updateDateInputs();
+	        });
+
+	        // 년/월 인풋으로 이동
+	        $('#yearInput, #monthInput').on('change', function () {
+	            var year = parseInt($('#yearInput').val());
+	            var month = parseInt($('#monthInput').val());
+	            if (!isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {
+	                calendar.setDate(new Date(year, month - 1, 1));
+	            }
+	        });
+	        
+	        /* ----------------------------------- 여기까지 캘린더 ----------------------------------- */
 	    	
 	    	// 로그인 버튼 핸들러
 	    	$('#btnGoLogin').click(function() {
