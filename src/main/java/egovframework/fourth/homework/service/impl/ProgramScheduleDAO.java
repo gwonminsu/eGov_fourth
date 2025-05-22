@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -24,6 +25,12 @@ public class ProgramScheduleDAO {
     public List<ProgramScheduleVO> selectProgramScheduleListByProgramIdx(String programIdx) throws Exception {
         return sqlSession.selectList("programScheduleDAO.selectProgramScheduleListByProgramIdx", programIdx);
     }
+    
+    // 특정 날짜의 프로그램 일정 목록 조회
+    public List<ProgramScheduleVO> selectProgramScheduleListByProgramIdxAndDate(Map<String,Object> param) throws Exception {
+        return sqlSession.selectList("programScheduleDAO.selectProgramScheduleListByProgramIdxAndDate", param);
+    }
+    
     
     // 프로그램 일정 상세 조회
     public ProgramScheduleVO selectProgramSchedule(String idx) throws Exception {

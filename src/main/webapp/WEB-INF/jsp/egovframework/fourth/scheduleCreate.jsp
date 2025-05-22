@@ -13,6 +13,8 @@
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
 	<!-- 프로그램 일정 생성 API URL -->
     <c:url value="/api/schedule/createSchedule.do" var="createApi"/>
+   	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
+    <c:url value="/api/schedule/getDateSchedule.do" var="getDateScheduleApi"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -60,6 +62,14 @@
 			<th>제한인수</th>
 			<td colspan="3">
 				<input type="number" id="capacity" name="capacity" min="1" required />명
+			</td>
+		</tr>
+		<tr>
+			<th>등록된 일정</th>
+			<td colspan="3">
+				<div id="scheduleListArea">
+					<!-- 여기에 태그 형식으로 "[2025-xx-xx] hh:mm - hh:mm" 내용으로 세로 배치로 나열될 예정  -->
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -125,6 +135,35 @@
 			$('#scheduleDate').text(date);
 			generateTimeOptions('#scheduleStartTime', 9, 18);
 			generateTimeOptions('#scheduleEndTime', 9, 18);
+			
+    		// 현재 날짜의 프로그램 일정 조회 요청
+    		$.ajax({
+    			url: '${getDateScheduleApi}',
+    			type:'POST',
+    			contentType: 'application/json',
+    			dataType: 'json',
+    			data: JSON.stringify({ programIdx: idx, date: date }),
+    			success: function(list){
+					console.log(JSON.stringify(list));
+					
+					var $listView = $('#scheduleListArea');
+					$listView.empty();
+					
+					if(list.length === 0) {
+						$listView.append($('<div>').addClass('no-data-text').text('아직 등록된 일정이 없습니다.'))
+					} else {
+						list.forEach(function(item) {
+							var itemDate = item.startDatetime.substr(0,10) // 날짜 구간만 자르기
+							var start = item.startDatetime.substr(11,5); // 시간 구간만 자르기
+							var end = item.endDatetime.substr(11,5);
+							$listView.append($('<div>').addClass('schedule-item').text('[' + itemDate + '] ' + start + ' - ' + end));
+						})
+					}
+    			},
+				error: function(){
+					alert(date + '의 프로그램 일정 조회 중 에러 발생');
+				}
+    		});
 			
 			// 시작 시간 선택 시 종료 시간 필터링
 			$('#scheduleStartTime').on('change', function() {

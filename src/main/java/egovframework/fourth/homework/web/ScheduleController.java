@@ -1,6 +1,8 @@
 package egovframework.fourth.homework.web;
 
+import java.sql.Date;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -35,4 +37,13 @@ public class ScheduleController {
         return Collections.singletonMap("status","OK");
     }
     
+    // 특정 날짜의 프로그램 일정 조회
+    @PostMapping(value="/getDateSchedule.do", consumes="application/json", produces="application/json")
+    public List<ProgramScheduleVO> getDateSchedule(@RequestBody Map<String,String> req) throws Exception {
+        String programIdx = req.get("programIdx");
+        String dateStr = req.get("date");
+        Date date = Date.valueOf(dateStr);
+        List<ProgramScheduleVO> list = programScheduleService.getProgramDateScheduleList(programIdx, date);
+        return list;
+    }
 }

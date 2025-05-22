@@ -1,6 +1,9 @@
 package egovframework.fourth.homework.service.impl;
 
+import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -35,6 +38,17 @@ public class ProgramScheduleServiceImpl extends EgovAbstractServiceImpl implemen
 	public List<ProgramScheduleVO> getProgramScheduleList(String programIdx) throws Exception {
 		List<ProgramScheduleVO> list = programScheduleDAO.selectProgramScheduleListByProgramIdx(programIdx);
 		log.info("SELECT 프로그램의 일정 목록 조회 완료");
+		return list;
+	}
+	
+	// 특정 날짜의 프로그램 일정 목록 조회
+	@Override
+	public List<ProgramScheduleVO> getProgramDateScheduleList(String programIdx, Date date) throws Exception {
+		Map<String,Object> param = new HashMap<>();
+		param.put("programIdx", programIdx);
+		param.put("date", date);
+		List<ProgramScheduleVO> list = programScheduleDAO.selectProgramScheduleListByProgramIdxAndDate(param);
+		log.info("SELECT {}에 있는 프로그램의 일정 목록 조회 완료", date.toString());
 		return list;
 	}
 

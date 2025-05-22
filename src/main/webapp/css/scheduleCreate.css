@@ -35,6 +35,25 @@ table.form-table #capacity {
 	width: 50px;
 	margin-right: 5px;
 }
+#scheduleListArea {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
+}
+.schedule-item {
+	display: inline-block;
+	width: 175px;
+	background-color: #dddddd;
+	border-radius: 12px;
+	padding: 6px 12px;
+	font-size: 0.9rem;
+	color: #333;
+}
 
 /* 버튼 스타일 */
 .btn-area {
