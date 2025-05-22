@@ -16,7 +16,7 @@
 		INSERT INTO program_schedule
 			(idx, create_user_idx, program_idx, start_datetime, end_datetime, capacity, created_at, updated_at)
 		VALUES
-			(#{idx}, #{createUserIdx}, #{programIdx}, #{startDatetime}, #{endDatetime}, #{capacity} NOW(), NOW())
+			(#{idx}, #{createUserIdx}, #{programIdx}, #{startDatetime}, #{endDatetime}, #{capacity}, NOW(), NOW())
 	</insert>
 	
 	

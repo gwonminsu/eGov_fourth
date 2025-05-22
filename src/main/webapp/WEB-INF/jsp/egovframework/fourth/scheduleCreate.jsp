@@ -11,8 +11,8 @@
 
 	<!-- 목록 페이지 URL -->
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
-	<!-- 임시 API URL -->
-    <c:url value="/api/manage/createSchedule.do" var="createApi"/>
+	<!-- 프로그램 일정 생성 API URL -->
+    <c:url value="/api/schedule/createSchedule.do" var="createApi"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -136,7 +136,7 @@
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 	            var startTime = $('#scheduleStartTime').val();
 	            var endTime = $('#scheduleEndTime').val();
-	            var capacity = $('#capacity').val();
+	            var capacity = parseInt($('#capacity').val());
 
 	            // 빈 값 확인
 	            if (!startTime || !endTime || !capacity) {
@@ -156,15 +156,44 @@
 	                return;
 	            }
 
-	            const payload = {
-	                programIdx: idx,
-	                date: date,
-	                startTime: startTime,
-	                endTime: endTime,
-	                capacity: capacity
+	            
+	            var payload = {
+	            		createUserIdx: sessionUserIdx,
+	            		programIdx: idx,
+	            		startDatetime: date + ' ' + startTime + ':00',
+	            		endDatetime: date + ' ' + endTime + ':00',
+	            		capacity: capacity
 	            };
 
 	            console.log("제출할 데이터:", payload);
+	            
+	    		// 프로그램 일정 등록 요청
+	    		$.ajax({
+	    			url: '${createApi}',
+	    			type:'POST',
+	    			contentType: 'application/json',
+	    			dataType: 'json',
+	    			data: JSON.stringify(payload),
+	    			success: function(res){
+						if (res.error) {
+							alert(res.error);
+						} else {
+							alert('프로그램 일정 등록 완료');
+							postTo('${bookManageUrl}', {});
+			            }
+	    			},
+					error: function(xhr){
+						var errMsg = xhr.responseJSON && xhr.responseJSON.error; // 인터셉터에서 에러메시지 받아옴
+						if (!errMsg) {
+							try {
+								errMsg = JSON.parse(xhr.responseText).error;
+							} catch (e) {
+								errMsg = '프로그램 일정 등록 중 에러 발생';
+							}
+						}
+						alert(errMsg);
+					}
+	    		});
 	    		
 	        });
 	    	
