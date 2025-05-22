@@ -17,6 +17,8 @@
 	
 	<!-- 프로그램 리스트 가져오는 api 호출 url -->
 	<c:url value="/api/program/list.do" var="programListUrl"/>
+   	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
+    <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
 	<!-- 로그인 페이지 url -->
 	<c:url value="/login.do" var="loginUrl"/>
 	<!-- 로그아웃 api 호출 url -->
@@ -27,7 +29,7 @@
 	<c:url value="/booking.do" var="bookingUrl"/>
 	<!-- 예약 일정 생성 페이지 URL -->
 	<c:url value="/scheduleCreate.do" var="scheduleCreateUrl"/>
-	
+
 	<!-- 세션에 담긴 사용자 이름을 JS 변수로 -->
 	<script>
 		// 서버에서 렌더링 시점에 loginUser.userName 이 없으면 빈 문자열로
@@ -84,6 +86,7 @@
     	var idx = '${param.programIdx}';
     	var currentProgramIdx = null;
     	var currentProgramName = '';
+    	var programSchedules = [];
     	var calendar;
     	
     	// 프로그램 버튼 렌더
@@ -92,21 +95,56 @@
     	    $wrapper.empty();
 
     	    programList.forEach(program => {
-    	        var $btn = $('<button>').addClass('program-btn').text(program.programName).data('idx', program.idx).data('name', program.programName)
-    	            .click(function () {
-    	                $('.program-btn').removeClass('active');
-    	                $(this).addClass('active');
-    	                currentProgramIdx = $(this).data('idx');
-    	                currentProgramName = $(this).data('name');
-    	                $('#btnEditProgram').show();
-    	                calendar.render();
-    	            });
+    	        var $btn = $('<button>').addClass('program-btn').text(program.programName)
+    	        				.data('idx', program.idx).data('name', program.programName).click(onProgramBtnClick);
     	        // 파라미터로 받아온 프로그램 idx에 해당하는 버튼 클릭
     	        if (program.idx == idx) {
     	            $btn.trigger('click');
     	        }
     	        $wrapper.append($btn);
     	    });
+    	}
+    	
+    	// 프로그램 버튼 핸들러
+    	function onProgramBtnClick() {
+            $('.program-btn').removeClass('active');
+            $(this).addClass('active');
+            currentProgramIdx = $(this).data('idx');
+            currentProgramName = $(this).data('name');
+            $('#btnEditProgram').show();
+            calendar.clear();
+            
+            // 프로그램의 전체 일정 조회
+    		$.ajax({
+    			url: '${getProgramScheduleApi}',
+    			type:'POST',
+    			contentType: 'application/json',
+    			dataType: 'json',
+    			data: JSON.stringify({ programIdx: currentProgramIdx }),
+    			success: function(list){
+					programSchedules = list;
+					console.log(JSON.stringify(programSchedules));
+					
+					// Toast UI 에 맞는 스케줄 객체로 변환
+					var schedules = programSchedules.map(function(item){
+						return {
+							id: item.idx,
+							calendarId: item.programIdx,
+							title: item.startDatetime.substr(11,5) + ' - ' + item.endDatetime.substr(11,5),
+							category: 'time',
+							start: item.startDatetime.replace(' ', 'T'),
+							end: item.endDatetime.replace(' ', 'T'),
+							raw: item
+						};
+					});
+					calendar.createSchedules(schedules); // 캘린더에 일정 등록
+    			},
+				error: function(){
+					alert('프로그램 일정 조회 중 에러 발생');
+				}
+    		});
+            
+            calendar.render();
     	}
     	
 	    $(function(){
@@ -145,11 +183,21 @@
 				scheduleView: ['time'], // 시간 일정만
 				useFormPopup: false, // 기본 팝업 끄기
 				useDetailPopup: false, // 기본 디테일 팝업 끄기
+				height: '800px',
 				month: {
 					startDayOfWeek: 1, // 월요일부터 시작
-					daynames: ['일', '월', '화', '수', '목', '금', '토']  // 요일 한글 설정
+					daynames: ['일', '월', '화', '수', '목', '금', '토'],  // 요일 한글 설정
 				},
 				template: {
+					time: function(schedule) {
+						var bookingCtn = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
+						var start = schedule.raw.startDatetime.substr(11,5);
+						var end = schedule.raw.startDatetime.substr(11,5);
+						$tag = $('<span>').addClass('timeTag').text(start);
+						$status = $('<span>').addClass('scheduleStatus').text('예약 상황(' + bookingCtn + '/' + schedule.raw.capacity + ')');
+						$btn = $('<span>').addClass('btnGoSchedule').attr('data-id', schedule.id).append($tag).append($status);
+						return $btn.prop('outerHTML');
+					},
 					monthGridFooter: function(date) {
 						$btn = $('<button>').addClass('btnGoNewSchedule').attr('data-date', date.date).text('신규 등록');
 						/* {"date":"2025-04-28","month":4,"day":1,"isToday":false,

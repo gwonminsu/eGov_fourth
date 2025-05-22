@@ -28,7 +28,7 @@ public class ProgramScheduleDAO {
     
     // 프로그램 idx로 프로그램 일정 목록 조회
     public List<ProgramScheduleVO> selectProgramScheduleListByProgramIdx(String programIdx) throws Exception {
-        return sqlSession.selectList("programScheduleDAO.countOverlap", programIdx);
+        return sqlSession.selectList("programScheduleDAO.selectProgramScheduleListByProgramIdx", programIdx);
     }
     
     // 특정 날짜의 프로그램 일정 목록 조회

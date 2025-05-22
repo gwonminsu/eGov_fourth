@@ -54,4 +54,12 @@ public class ScheduleController {
         List<ProgramScheduleVO> list = programScheduleService.getProgramDateScheduleList(programIdx, date);
         return list;
     }
+    
+    // 프로그램 전체 일정 조회
+    @PostMapping(value="/getProgramSchedule.do", consumes="application/json", produces="application/json")
+    public List<ProgramScheduleVO> getProgramSchedule(@RequestBody Map<String,String> req) throws Exception {
+        String programIdx = req.get("programIdx");
+        List<ProgramScheduleVO> list = programScheduleService.getProgramScheduleList(programIdx);
+        return list;
+    }
 }

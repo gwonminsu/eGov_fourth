@@ -32,6 +32,9 @@
 }
 
 /* 캘린더 관련 스타일 */
+#calendar {
+    height: 850px !important;
+}
 #calendarHeader {
 	display: flex;
 	justify-content: flex-end;
@@ -46,8 +49,12 @@
 	width: 30px;
 }
 .tui-full-calendar-month-guide-block,
-.tui-full-calendar-month-creation-guide {
+.tui-full-calendar-month-creation-guide,
+.tui-full-calendar-weekday-schedule-bullet {
     display: none !important;
+}
+.tui-full-calendar-month-week-item .tui-full-calendar-weekday-schedule {
+	margin: 0 !important;
 }
 .tui-full-calendar-weekday-grid-footer {
 	display: block;
@@ -55,10 +62,13 @@
 	padding: 0 6px 0 0;
 	box-sizing: border-box;
 }
+.tui-full-calendar-weekday-schedule.tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
+	padding: 0 4px;
+}
 .btnGoNewSchedule {
 	display: block;
 	width: 100% !important;
-	padding: 4px 0;
+	padding: 4px 10px;
 	margin-top: 4px;
 	background-color: #d8d8d8;
 	color: #fff;
@@ -68,7 +78,42 @@
 	cursor: pointer;
 }
 .btnGoNewSchedule:hover {
-	background-color: #b2b2b2;
+	background-color: #a0a0a0;
+}
+.btnGoSchedule {
+	display: block;
+	box-sizing: border-box;
+	padding: 0 2px;
+	margin: 0;
+	line-height: 1;
+	background: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: left;
+	vertical-align: top;
+}
+.btnGoSchedule .timeTag {
+	display: inline-block;
+	padding: 2px 3px;
+	border: 1px solid #ff6600;
+	border-radius: 3px;
+	font-size: 0.5rem;
+	color: #ff6600;
+	margin-right: 6px;
+	vertical-align: middle;
+}
+.btnGoSchedule .scheduleStatus {
+	display: inline-block;
+	font-size: 0.5rem;
+	color: #333;
+	vertical-align: middle;
+}
+.btnGoSchedule:hover {
+	background: #ffe8d2;
+}
+.btnGoSchedule:hover .timeTag {
+	background: #ff6600;
+	color: #fff;
 }
 
 /* 버튼 공통 스타일 */
