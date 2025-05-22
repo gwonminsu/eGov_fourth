@@ -33,8 +33,16 @@ public class ScheduleController {
     // 프로그램 일정 등록
     @PostMapping(value="/createSchedule.do", consumes="application/json", produces="application/json")
     public Map<String, String> writeSchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
-    	programScheduleService.createProgramSchedule(vo);
-        return Collections.singletonMap("status","OK");
+    	// 먼저 겹치는 일정 있는지 검증
+    	int conflict = programScheduleService.countOverlap(vo.getProgramIdx(), vo.getStartDatetime(), vo.getEndDatetime());
+        if (conflict > 0) {
+        	log.info("충돌되는 일정 존재: 일정 등록 거부");
+        	return Collections.singletonMap("error","REJECTED");
+        } else {
+        	log.info("충돌되는 일정 없음: 일정 등록 승인");
+        	programScheduleService.createProgramSchedule(vo);
+        	return Collections.singletonMap("status","OK");
+        }
     }
     
     // 특정 날짜의 프로그램 일정 조회

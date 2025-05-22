@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,18 @@ public class ProgramScheduleServiceImpl extends EgovAbstractServiceImpl implemen
 		String endTime = vo.getEndDatetime().toLocalDateTime().toLocalTime().toString();
 		log.info("INSERT {}에 프로그램 일정({}) 등록 성공[{} - {}]", date, vo.getIdx(), startTime, endTime);
 	}
-
+	
+	// 겹치는 프로그램 일정 개수 조회(검증용)
+	@Override
+	public int countOverlap(String programIdx, Timestamp startDatetime, Timestamp endDatetime) throws Exception {
+        Map<String,Object> param = new HashMap<>();
+        param.put("programIdx", programIdx);
+        param.put("startDatetime", startDatetime);
+        param.put("endDatetime", endDatetime);
+        int conflict = programScheduleDAO.countOverlap(param);
+		return conflict;
+	}
+	
 	// 프로그램의 일정 목록 조회
 	@Override
 	public List<ProgramScheduleVO> getProgramScheduleList(String programIdx) throws Exception {

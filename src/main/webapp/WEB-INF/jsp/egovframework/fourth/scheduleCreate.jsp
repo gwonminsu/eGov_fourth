@@ -84,6 +84,8 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
+		var existingSchedules = []; // 일정 충돌 체크용
+		
 		// 시간 선택 옵션 생성기
 		function generateTimeOptions(selector, open, close) {
 			var $select = $(selector);
@@ -145,6 +147,7 @@
     			data: JSON.stringify({ programIdx: idx, date: date }),
     			success: function(list){
 					console.log(JSON.stringify(list));
+					existingSchedules = list;
 					
 					var $listView = $('#scheduleListArea');
 					$listView.empty();
@@ -194,6 +197,20 @@
 	                alert('제한 인원은 1명 이상이어야 합니다.');
 	                return;
 	            }
+	            
+	            // 일정 충돌 체크
+	            var newStart = new Date(date + ' ' + startTime + ':00');
+	            var newEnd = new Date(date + ' ' + endTime + ':00');
+	         	// 입력한 시간대와 기존에 스케쥴의 시간대가 겹치는지 하나씩 확인
+				for (var i = 0; i < existingSchedules.length; i++) {
+					var item = existingSchedules[i];
+					var itemStart = new Date(item.startDatetime.replace(' ', 'T'));
+					var itemEnd = new Date(item.endDatetime.replace(' ', 'T'));
+					if (newStart < itemEnd && itemStart < newEnd) {
+						alert('선택한 시간대에 이미 등록된 일정이 있습니다.');
+						return;
+					}
+				}
 
 	            
 	            var payload = {
