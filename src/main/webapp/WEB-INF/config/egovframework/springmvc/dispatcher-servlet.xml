@@ -62,6 +62,7 @@
  				<value>/api/program/edit.do</value>
  				<value>/api/program/delete.do</value>
  				<value>/api/schedule/createSchedule.do</value>
+ 				<value>/api/schedule/updateSchedule.do</value>
  			</list>
  		</constructor-arg>
  		<constructor-arg ref="permissionInterceptor"/>

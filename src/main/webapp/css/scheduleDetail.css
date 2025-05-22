@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+h4 {
+	margin: 20px 0 10px 0;
+	color: #6e6e6e;
+}
+
+/* 테이블 공통 스타일 */
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	text-align: center;
+	padding: 8px;
+	vertical-align: middle;
+}
+table.form-table th {
+	width: 15%;
+	background: #f7f7f7;
+	white-space: nowrap;
+}
+table.form-table #programName,
+table.form-table #scheduleDate,
+table.form-table #scheduleTime,
+table.form-table #scheduleDate {
+	width: 100%;
+    white-space: nowrap;
+}
+table.form-table input[type="number"] {
+	width: 60px;
+}
+
+/* 버튼 영역 */
+.btn-area1 {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-top: 20px;
+}
+.btn-area1 button {
+	padding: 6px 12px;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+}
+.btn-area2 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20px;
+}
+.btn-area2 button {
+	padding: 6px 12px;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+/* 각 버튼 스타일 */
+#btnCancel {
+	background-color: #343a40;
+	color: white;
+	border: none;
+}
+#btnClose {
+	margin-right: 8px;
+	background-color: #e2e6ea;
+	border: none;
+}
+#btnSubmit {
+	background-color: #b48cf3;
+	color: #FFFFFF;
+	border: none;
+}
+#btnAddbooker {
+	background-color: #ff6600;
+	color: #FFFFFF;
+	border: none;
+}
+
+/* 예약자 테이블 버튼들 */
+.btn-confirm {
+	background-color: #dee2e6;
+	border: none;
+	white-space: nowrap;
+}
+.btn-delete {
+	background-color: #ff6b6b;
+	color: white;
+	border: none;
+	white-space: nowrap;
+}
+.btn-print {
+	background-color: #343a40;
+	color: white;
+	border: none;
+	white-space: nowrap;
+}
+
+/* 기타 텍스트 */
+.info-text {
+	font-size: 0.9rem;
+	color: #666;
+	margin-left: 8px;
+	white-space: nowrap;
+}

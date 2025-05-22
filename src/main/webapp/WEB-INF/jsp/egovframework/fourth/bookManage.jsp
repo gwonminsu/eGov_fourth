@@ -18,7 +18,7 @@
 	<!-- 프로그램 리스트 가져오는 api 호출 url -->
 	<c:url value="/api/program/list.do" var="programListUrl"/>
    	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
-    <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
+    <c:url value="/api/schedule/getProgramScheduleList.do" var="getProgramScheduleListApi"/>
 	<!-- 로그인 페이지 url -->
 	<c:url value="/login.do" var="loginUrl"/>
 	<!-- 로그아웃 api 호출 url -->
@@ -29,6 +29,8 @@
 	<c:url value="/booking.do" var="bookingUrl"/>
 	<!-- 예약 일정 생성 페이지 URL -->
 	<c:url value="/scheduleCreate.do" var="scheduleCreateUrl"/>
+	<!-- 일정 상세 페이지 URL -->
+	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
 
 	<!-- 세션에 담긴 사용자 이름을 JS 변수로 -->
 	<script>
@@ -93,6 +95,7 @@
     	function renderProgramButtons(programList) {
     	    var $wrapper = $('#programListWrapper');
     	    $wrapper.empty();
+    	    console.log(idx);
 
     	    programList.forEach(program => {
     	        var $btn = $('<button>').addClass('program-btn').text(program.programName)
@@ -116,7 +119,7 @@
             
             // 프로그램의 전체 일정 조회
     		$.ajax({
-    			url: '${getProgramScheduleApi}',
+    			url: '${getProgramScheduleListApi}',
     			type:'POST',
     			contentType: 'application/json',
     			dataType: 'json',
@@ -183,19 +186,21 @@
 				scheduleView: ['time'], // 시간 일정만
 				useFormPopup: false, // 기본 팝업 끄기
 				useDetailPopup: false, // 기본 디테일 팝업 끄기
-				height: '800px',
 				month: {
 					startDayOfWeek: 1, // 월요일부터 시작
 					daynames: ['일', '월', '화', '수', '목', '금', '토'],  // 요일 한글 설정
 				},
 				template: {
 					time: function(schedule) {
+						console.log(JSON.stringify(schedule));
 						var bookingCtn = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
+						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
 						var end = schedule.raw.startDatetime.substr(11,5);
 						$tag = $('<span>').addClass('timeTag').text(start);
 						$status = $('<span>').addClass('scheduleStatus').text('예약 상황(' + bookingCtn + '/' + schedule.raw.capacity + ')');
-						$btn = $('<span>').addClass('btnGoSchedule').attr('data-id', schedule.id).append($tag).append($status);
+						$btn = $('<span>').addClass('btnGoSchedule').attr('data-id', schedule.id).attr('data-date', date)
+											.append($tag).append($status);
 						return $btn.prop('outerHTML');
 					},
 					monthGridFooter: function(date) {
@@ -255,6 +260,15 @@
 				var date = $(this).data('date');
 				postTo('${scheduleCreateUrl}', { programIdx: currentProgramIdx, programName: currentProgramName, date: date });
 			});
+	        
+	        // 예약 일정 관리 페이지(상세) 이동 버튼 핸들러
+	        $('#calendar').on('click', '.btnGoSchedule', function(e){
+	        	e.stopPropagation();
+	        	var programScheduleIdx = $(this).data('id');
+	        	var date = $(this).data('date');
+	        	console.log(programScheduleIdx);
+	        	postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: currentProgramIdx, programName: currentProgramName, date: date });
+	        });
 	        
 	        /* ----------------------------------- 여기까지 캘린더 ----------------------------------- */
 	    	

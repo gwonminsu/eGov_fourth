@@ -77,9 +77,7 @@
 	<!-- 프로그램 일정 수정 -->
 	<update id="updateProgramSchedule" parameterType="programScheduleVO">
 		UPDATE program_schedule
-		SET start_datetime = #{startDatetime},
-			end_datetime = #{endDatetime},
-			capacity = #{capacity},
+		SET capacity = #{capacity},
 			updated_at = NOW()
 		WHERE idx = #{idx}
 	</update>

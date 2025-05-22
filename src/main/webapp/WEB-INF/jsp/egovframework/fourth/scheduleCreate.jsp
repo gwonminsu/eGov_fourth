@@ -14,7 +14,7 @@
 	<!-- 프로그램 일정 생성 API URL -->
     <c:url value="/api/schedule/createSchedule.do" var="createApi"/>
    	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
-    <c:url value="/api/schedule/getDateSchedule.do" var="getDateScheduleApi"/>
+    <c:url value="/api/schedule/getDateScheduleList.do" var="getDateScheduleListApi"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -140,7 +140,7 @@
 			
     		// 현재 날짜의 프로그램 일정 조회 요청
     		$.ajax({
-    			url: '${getDateScheduleApi}',
+    			url: '${getDateScheduleListApi}',
     			type:'POST',
     			contentType: 'application/json',
     			dataType: 'json',

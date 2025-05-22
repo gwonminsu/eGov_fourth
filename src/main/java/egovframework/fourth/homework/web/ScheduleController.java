@@ -45,9 +45,16 @@ public class ScheduleController {
         }
     }
     
+    // 프로그램 일정 수정
+    @PostMapping(value="/updateSchedule.do", consumes="application/json", produces="application/json")
+    public Map<String, String> modifySchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
+    	programScheduleService.modifyProgramSchedule(vo);
+    	return Collections.singletonMap("status","OK");
+    }
+    
     // 특정 날짜의 프로그램 일정 조회
-    @PostMapping(value="/getDateSchedule.do", consumes="application/json", produces="application/json")
-    public List<ProgramScheduleVO> getDateSchedule(@RequestBody Map<String,String> req) throws Exception {
+    @PostMapping(value="/getDateScheduleList.do", consumes="application/json", produces="application/json")
+    public List<ProgramScheduleVO> getDateScheduleList(@RequestBody Map<String,String> req) throws Exception {
         String programIdx = req.get("programIdx");
         String dateStr = req.get("date");
         Date date = Date.valueOf(dateStr);
@@ -56,10 +63,18 @@ public class ScheduleController {
     }
     
     // 프로그램 전체 일정 조회
-    @PostMapping(value="/getProgramSchedule.do", consumes="application/json", produces="application/json")
-    public List<ProgramScheduleVO> getProgramSchedule(@RequestBody Map<String,String> req) throws Exception {
+    @PostMapping(value="/getProgramScheduleList.do", consumes="application/json", produces="application/json")
+    public List<ProgramScheduleVO> getProgramScheduleList(@RequestBody Map<String,String> req) throws Exception {
         String programIdx = req.get("programIdx");
         List<ProgramScheduleVO> list = programScheduleService.getProgramScheduleList(programIdx);
         return list;
+    }
+    
+    // 프로그램 일정 상세 조회
+    @PostMapping(value="/getProgramSchedule.do", consumes="application/json", produces="application/json")
+    public ProgramScheduleVO getProgramSchedule(@RequestBody Map<String,String> req) throws Exception {
+        String idx = req.get("idx");
+        ProgramScheduleVO vo = programScheduleService.getProgramSchedule(idx);
+        return vo;
     }
 }

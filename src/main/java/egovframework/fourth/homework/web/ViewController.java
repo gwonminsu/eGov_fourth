@@ -72,4 +72,16 @@ public class ViewController {
 		return "scheduleCreate";
 	}
 	
+	// 예약 일정 관리(상세) 페이지
+	@RequestMapping(value = "/scheduleDetail.do")
+	public String scheduleDetailPage(HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+		return "scheduleDetail";
+	}
+	
 }
