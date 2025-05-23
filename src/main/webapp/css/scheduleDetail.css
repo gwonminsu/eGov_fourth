@@ -27,7 +27,6 @@ table.form-table #scheduleDate,
 table.form-table #scheduleTime,
 table.form-table #scheduleDate {
 	width: 100%;
-    white-space: nowrap;
 }
 table.form-table input[type="number"] {
 	width: 60px;
@@ -45,6 +44,7 @@ table.form-table input[type="number"] {
 	border: none;
 	cursor: pointer;
 	border-radius: 4px;
+	white-space: nowrap;
 }
 .btn-area2 {
 	display: flex;
@@ -57,47 +57,94 @@ table.form-table input[type="number"] {
 	border: none;
 	cursor: pointer;
 	border-radius: 4px;
+	white-space: nowrap;
 }
 
 /* 각 버튼 스타일 */
 #btnCancel {
 	background-color: #343a40;
-	color: white;
-	border: none;
+	color: #FFFFFF;
 }
 #btnClose {
 	margin-right: 8px;
 	background-color: #e2e6ea;
-	border: none;
 }
 #btnSubmit {
 	background-color: #b48cf3;
 	color: #FFFFFF;
-	border: none;
 }
 #btnAddbooker {
 	background-color: #ff6600;
 	color: #FFFFFF;
-	border: none;
 }
+
+/* 예약 일정 테이블 각 컬럼 너비 설정 */
+table.form-table.book-table th {
+	white-space: nowrap;
+}
+table.form-table.book-table td {
+	white-space: normal;
+	word-break: break-word;
+}
+table.form-table.book-table th:nth-child(1),
+table.form-table.book-table td:nth-child(1) { width: 15%; }
+table.form-table.book-table th:nth-child(2),
+table.form-table.book-table td:nth-child(2) { width: 35%; }
+table.form-table.book-table th:nth-child(3),
+table.form-table.book-table td:nth-child(3) { width: 15%; }
+table.form-table.book-table th:nth-child(4),
+table.form-table.book-table td:nth-child(4) { width: 35%; }
+
+/* 예약자 테이블 각 컬럼 별 너비 설정 */
+table.form-table.booker-table th {
+	white-space: nowrap;
+}
+table.form-table.booker-table td {
+	white-space: normal;
+	word-break: break-word;
+}
+table.form-table.booker-table th:nth-child(1),
+table.form-table.booker-table td:nth-child(1) { width: 5%; }    /* 번호 */
+table.form-table.booker-table th:nth-child(2),
+table.form-table.booker-table td:nth-child(2) { width: 20%; }   /* 체험명 */
+table.form-table.booker-table th:nth-child(3),
+table.form-table.booker-table td:nth-child(3) { width: 10%; }   /* 예약구분 */
+table.form-table.booker-table th:nth-child(4),
+table.form-table.booker-table td:nth-child(4) { width: 20%; }   /* 예약시간 */
+table.form-table.booker-table th:nth-child(5),
+table.form-table.booker-table td:nth-child(5) { width: 10%; }   /* 예약자명 */
+table.form-table.booker-table th:nth-child(6),
+table.form-table.booker-table td:nth-child(6) { width: 7%; }    /* 예약자수 */
+table.form-table.booker-table th:nth-child(7),
+table.form-table.booker-table td:nth-child(7) { width: 8%; }    /* 예약자확인 */
+table.form-table.booker-table th:nth-child(8),
+table.form-table.booker-table td:nth-child(8) { width: 10%; }   /* 삭제 */
+table.form-table.booker-table th:nth-child(9),
+table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
 
 /* 예약자 테이블 버튼들 */
 .btn-confirm {
 	background-color: #dee2e6;
 	border: none;
 	white-space: nowrap;
+	min-width: 50px;
+	padding: 6px 8px;
 }
 .btn-delete {
 	background-color: #ff6b6b;
 	color: white;
 	border: none;
 	white-space: nowrap;
+	min-width: 50px;
+	padding: 6px 8px;
 }
 .btn-print {
 	background-color: #343a40;
 	color: white;
 	border: none;
 	white-space: nowrap;
+	min-width: 50px;
+	padding: 6px 8px;
 }
 
 /* 기타 텍스트 */

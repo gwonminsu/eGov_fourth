@@ -36,7 +36,7 @@
 	
 	<h4>예약정보 확인</h4>
 	
-	<table class="form-table">
+	<table class="form-table book-table">
 		<tr>
 			<th>체험명</th>
 			<td>
@@ -53,7 +53,7 @@
 				<div id="scheduleTime"></div>
 			</td>
 			<th>제한인원수</th>
-			<td colspan="3">
+			<td>
 				<input type="number" id="capacity" name="capacity" min="1" required /> 명
 				<span class="info-text">(예약건수 : n, 예약 인원: n)</span>
 			</td>
@@ -68,7 +68,7 @@
 	<br/>
 	
 	<!-- 예약자 정보 테이블 -->
-	<table class="form-table">
+	<table class="form-table booker-table">
 		<thead>
 			<tr>
 				<th>번호</th>
@@ -85,7 +85,7 @@
 		<tbody id="bookerList">
 			<tr>
 				<td>1</td>
-				<td>?</td>
+				<td>???????????????????????????</td>
 				<td>일반</td>
 				<td>YYYY-MM-DD(hh:mm)</td>
 				<td>?</td>
