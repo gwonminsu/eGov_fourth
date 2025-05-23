@@ -19,8 +19,6 @@
 	<c:url value="/api/program/list.do" var="programListUrl"/>
    	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
     <c:url value="/api/schedule/getProgramScheduleList.do" var="getProgramScheduleListApi"/>
-    <!-- 프로그램 이미지 가져오는 api -->
-    <c:url value="/api/program/image.do" var="imageApi" />
 	<!-- 로그인 페이지 url -->
 	<c:url value="/login.do" var="loginUrl"/>
 	<!-- 로그아웃 api 호출 url -->
@@ -86,6 +84,14 @@
     	var programSchedules = [];
     	var calendar;
     	
+    	// xss 공격 방지와 동시에 줄바꿈 적용
+    	function escapeHtml(str) {
+    	    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    	}
+    	function safeHtmlWithBr(str) {
+    	    return escapeHtml(str).replace(/\n/g, "<br>");
+    	}
+    	
     	// 프로그램 버튼 렌더
     	function renderProgramButtons(programList) {
     	    var $wrapper = $('#programListWrapper');
@@ -94,7 +100,8 @@
 
     	    programList.forEach(function(program) {
     	    	var $image = $('<img>').attr('src', program.imageUrl).attr('alt', program.idx).addClass('program-img');
-    	    	var $text = $('<div>').addClass('program-title').text(program.programName).append($('<div>').addClass('program-desc').text(program.description));
+    	    	var $text = $('<div>').addClass('program-title').text(program.programName)
+    	    							.append($('<div>').addClass('program-desc').html(safeHtmlWithBr(program.description)));
     	        var $btn = $('<div>').addClass('program-card').data('idx', program.idx).data('name', program.programName).click(onProgramBtnClick)
     	        							.append($image).append($text)
     	        // 파라미터로 받아온 프로그램 idx에 해당하는 버튼 클릭
@@ -156,50 +163,20 @@
 		        dataType: 'json',
 		        data: JSON.stringify({}),
 		        success: function(data) {
-		        	// console.log(JSON.stringify(data));
-		        	
-		            var count = 0; // 처리 완료된 이미지 요청 수
-		            var total = data.length;
-
-		            if (total === 0) {
+		            if (data.length === 0) {
 		                // 프로그램이 아예 없는 경우
 		                $('#programListWrapper').append($('<span>').addClass('no-data-text').text('등록된 프로그램 없음'));
 		                return;
 		            }
-		        	
-		        	// 각 프로그램의 이미지 가져오기
+		            
 		        	data.forEach(function(program) {
-						// 이미지 정보 불러와서 이미지 미리보기
-						$.ajax({
-							url : '${imageApi}',
-							type : 'POST',
-							contentType : 'application/json',
-							data : JSON.stringify({
-								programIdx : program.idx
-							}),
-							dataType : 'json',
-							success : function(imageInfo) {
-								// console.log("이미지: " + JSON.stringify(imageInfo));
-								// 이미지 URL 구성
-								if (!imageInfo) {
-									program.imageUrl = '/uploads/images/no-img.jpg';
-								} else {
-									program.imageUrl = '/uploads/' + imageInfo.fileUuid + imageInfo.ext;
-								}
-							},
-							error : function() {
-								console.log('이미지 정보 조회 실패');
-								program.imageUrl = '/uploads/images/no-img.jpg';
-							},
-							complete: function() {
-								// 모든 프로그램 배열의 이미지조회가 끝나면 실행하는 콜백
-								count++;
-								if (count === total) {
-					                renderProgramButtons(data);
-								}
-							}
-						});
+		        		if(!program.imageUrl) {
+		        			program.imageUrl = '/uploads/images/no-img.png';
+		        		}
 		        	});
+		        	
+		        	// console.log('data: ' + JSON.stringify(data));
+		        	renderProgramButtons(data);
 
 		        },
 		        error: function() {

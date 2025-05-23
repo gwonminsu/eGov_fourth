@@ -23,15 +23,17 @@
 	<!-- 프로그램 목록 조회 -->
 	<select id="selectProgramList" resultType="programVO">
 		SELECT
-			idx,
-			create_user_idx,
-			program_name,
-			user_type,
-			description,
-			created_at AS createdAt,
-			updated_at AS updatedAt
-		FROM program
-		ORDER BY (SUBSTRING(idx FROM 9))::int ASC
+			p.idx,
+			p.create_user_idx,
+			p.program_name,
+			p.user_type,
+			p.description,
+			'/uploads/' || a.file_uuid || a.ext AS imageUrl,
+			p.created_at AS createdAt,
+			p.updated_at AS updatedAt
+		FROM program p
+		LEFT JOIN attach a ON p.idx = a.program_idx
+		ORDER BY (SUBSTRING(p.idx FROM 9))::int ASC
 	</select>
 
 	<!-- 프로그램 상세 조회 -->

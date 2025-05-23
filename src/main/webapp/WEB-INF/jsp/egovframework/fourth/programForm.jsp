@@ -136,9 +136,7 @@
 					url : '${detailApi}',
 					type : 'POST',
 					contentType : 'application/json',
-					data : JSON.stringify({
-						idx : idx
-					}),
+					data : JSON.stringify({ idx : idx }),
 					dataType : 'json',
 					success : function(item) {
 						$('#programName').val(item.programName);
@@ -163,21 +161,15 @@
 						// 이미지 URL 구성
 						var imageUrl = '/uploads/' + imageInfo.fileUuid
 								+ imageInfo.ext;
-						var $img = $('<img>').attr({
-							id : 'imagePreview',
-							src : imageUrl
-						});
+						var $img = $('<img>').attr({ id : 'imagePreview', src : imageUrl });
 
 						// 파일 이름 + 사이즈 텍스트
 						var size = formatBytes(imageInfo.fileSize);
-						var fileInfoText = imageInfo.fileName + ' [' + size
-								+ ']';
-						var $fileInfo = $('<div>').attr('id', 'fileInfoText')
-								.text(fileInfoText);
+						var fileInfoText = imageInfo.fileName + ' [' + size + ']';
+						var $fileInfo = $('<div>').attr('id', 'fileInfoText').text(fileInfoText);
 
 						// 이미지 제거 버튼
-						var $removeBtn = $('<button>').attr('id',
-								'removeImageBtn').text('이미지 제거');
+						var $removeBtn = $('<button>').attr('id', 'removeImageBtn').text('이미지 제거');
 
 						$('#attachFileWrapper').append($img, $fileInfo,
 								$removeBtn);

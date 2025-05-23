@@ -29,4 +29,6 @@ public class ProgramVO {
 
 	private Boolean fileChanged; // 첨부파일 변경 여부
 	
+	private String imageUrl; // 프로그램 이미지 url 
+	
 }
