@@ -20,6 +20,8 @@
 		var sessionUserPhone = '<c:out value="${sessionScope.loginUser.userPhone}" default="" />';
 		var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
 		
+		var fileUrl = '<c:out value="/files/예약 프로젝트 예약 신청서_기본.xlsx" />';
+		
         // 동적 POST 폼 생성 함수
         function postTo(url, params) {
             var form = $('<form>').attr({ method: 'POST', action: url });
@@ -190,10 +192,12 @@
 				$(this).closest('tr').remove();
 			});
 	
-			// 엑셀 버튼 알림 처리
+			// 엑셀 다운로드 버튼
 			$('#btnExcelDownload').on('click', function () {
-				alert('아직 구현하지 않은 기능');
+				$('<a>').attr('href', fileUrl).attr('download', '예약 프로젝트 예약 신청서_기본.xlsx')[0].click();
 			});
+			
+			// 엑셀 업로드 버튼
 			$('#btnExcelUpload').on('click', function () {
 				alert('아직 구현하지 않은 기능');
 			});

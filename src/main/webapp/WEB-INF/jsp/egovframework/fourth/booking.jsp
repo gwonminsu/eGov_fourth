@@ -34,6 +34,12 @@
 		var loginUserName = '<c:out value="${sessionScope.loginUser.userName}" default="" />';
 		var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
 		
+		// 권한 에러메시지
+		var errorMsg = "${errorMsg}";  
+		if (errorMsg) {
+			alert(decodeURIComponent(errorMsg)); 
+		}
+		
 		// GET아닌 POST로 진입하기
 		function postTo(url, params) {
 		    // 폼 요소 생성

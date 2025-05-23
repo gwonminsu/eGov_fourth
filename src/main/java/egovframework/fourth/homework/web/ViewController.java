@@ -38,7 +38,13 @@ public class ViewController {
 	
 	// 프로그램 예약하기 페이지
 	@RequestMapping(value = "/programBooking.do")
-	public String programBookingPage() throws Exception {
+	public String programBookingPage(HttpSession session, RedirectAttributes rt) throws Exception {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했으면
+        if (me == null) {
+            rt.addFlashAttribute("errorMsg", "로그인이 필요합니다.");
+            return "redirect:/booking.do";
+        }
 		return "programBooking";
 	}
 	
