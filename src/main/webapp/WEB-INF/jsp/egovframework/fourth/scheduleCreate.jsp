@@ -235,7 +235,7 @@
 							alert(res.error);
 						} else {
 							alert('프로그램 일정 등록 완료');
-							postTo('${bookManageUrl}', {});
+							postTo('${bookManageUrl}', { programIdx: idx });
 			            }
 	    			},
 					error: function(xhr){

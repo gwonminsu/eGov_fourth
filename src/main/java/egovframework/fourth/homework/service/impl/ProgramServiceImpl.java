@@ -73,7 +73,8 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 	// 프로그램 삭제
 	@Override
 	public void removeProgram(String idx) throws Exception {
-		programDAO.deleteProgram(idx);
+		attachService.removeAttachByProgramIdx(idx); // 이미지 삭제하고
+		programDAO.deleteProgram(idx); // 프로그램 삭제
 		log.info("DELETE 프로그램({}) 삭제 완료", idx);
 	}
 

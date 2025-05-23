@@ -97,7 +97,7 @@
     	    $wrapper.empty();
     	    console.log(idx);
 
-    	    programList.forEach(program => {
+    	    programList.forEach(function(program) {
     	        var $btn = $('<button>').addClass('program-btn').text(program.programName)
     	        				.data('idx', program.idx).data('name', program.programName).click(onProgramBtnClick);
     	        // 파라미터로 받아온 프로그램 idx에 해당하는 버튼 클릭
@@ -191,8 +191,14 @@
 					daynames: ['일', '월', '화', '수', '목', '금', '토'],  // 요일 한글 설정
 				},
 				template: {
+					monthGridHeader: function(date) {
+						if (date.day === 0) {
+							return parseInt(date.date.substr(8,2)) + '<br/><span style="font-size: 12px;">휴일</span></span>';
+						}
+						return parseInt(date.date.substr(8,2));
+					},
 					time: function(schedule) {
-						console.log(JSON.stringify(schedule));
+						// console.log(JSON.stringify(schedule));
 						var bookingCtn = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
 						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
@@ -294,19 +300,19 @@
 	        
 	        // 프로그램 등록 버튼 핸들러
 	        $('#btnCreateProgram').click(function() {
-	        	// 설문 등록 페이지로 이동
-				postTo('${programFormUrl}', {});
+	        	// 프로그램 등록 페이지로 이동
+				postTo('${programFormUrl}', { programIdx: currentProgramIdx });
 			});
 			
 	        // 프로그램 수정 버튼 핸들러
 	        $('#btnEditProgram').click(function() {
-	        	// 설문 수정 페이지로 이동
+	        	// 프로그램 수정 페이지로 이동
 				postTo('${programFormUrl}', { idx: currentProgramIdx });
 			});
 			
-			// 설문 목록 버튼 핸들러
+			// 예약 페이지 버튼 핸들러
 	        $('#btnGoBooking').click(function() {
-	        	// 설문 목록 페이지로 이동
+	        	// 예약 페이지로 이동
 				postTo('${bookingUrl}', {});
 			});
 			

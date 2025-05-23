@@ -8,26 +8,73 @@
     gap: 5px;
     white-space: nowrap;
 }
+#programListArea {
+    width: 100%;
+    overflow-x: auto;
+}
+#programListWrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 3px;
+}
 
-/* 기본 프로그램 선택 버튼 스타일 */
-.program-btn {
-	display: inline-block;
-	min-width: 120px;
-	max-width: 120px;
-    padding: 8px 12px;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    white-space: nowrap;
+/* 기본 프로그램 선택 카드 스타일 */
+.program-card {
+	min-width: 160px;
+	max-width: 160px;
+	height: 250px;
+	padding: 8px;
+	cursor: pointer;
+	border: none;
+	border-radius: 4px;
+	overflow: hidden;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	font-size: 0.85rem;
+	transition: all 0.2s ease;
+	display: flex;
+	flex-direction: column;
+}
+.program-card:hover {
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+.program-card.active {
+	background-color: #ff6600;
+	color: white;
+	font-weight: bold;
+}
+.program-img {
+	width: 100%;
+	height: 180px;
+	object-fit: fill;
+}
+.program-title {
+	padding: 8px;
+	white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+	font-size: 0.9rem;
+	font-weight: 500;
+	line-height: 1.2;
 }
-.program-btn.active {
-    background-color: #ff6600;
-    color: white;
-    font-weight: bold;
-    border-color: #ff6600;
+.program-desc {
+	white-space: normal;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 0.7rem;
+	font-weight: 500;
+	line-height: 1.4;
+	color: #d1d1d1;
+}
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
 }
 
 /* 캘린더 조작 UI 스타일 */
@@ -55,7 +102,7 @@
 }
 #calendarHeader {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: center;
 	gap: 8px;
 	align-items: center;
 	margin-bottom: 10px;
@@ -83,61 +130,32 @@
 .tui-full-calendar-weekday-schedule.tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
 	padding: 0 4px;
 }
-.btnGoNewSchedule {
-	display: block;
-	width: 100% !important;
-	padding: 4px 10px;
-	margin-top: 4px;
-	background-color: #d8d8d8;
-	color: #fff;
-	border: none;
-	border-radius: 3px;
-	font-size: 0.6rem;
-	cursor: pointer;
-	white-space: nowrap;
-}
-.btnGoNewSchedule:hover {
-	background-color: #a0a0a0;
-}
-.btnGoSchedule {
+.btnGoProgramBooking {
 	display: block;
 	box-sizing: border-box;
-	padding: 0 2px;
+	padding: 0 5px;
 	margin: 0;
-	line-height: 1;
-	background: #fff;
+	line-height: 1.5;
+	background: #ff944d;
 	border-radius: 4px;
 	cursor: pointer;
 	text-align: left;
 }
-.btnGoSchedule .timeTag {
-	display: inline-block;
-	padding: 2px 3px;
-	border: 1px solid #ff6600;
-	border-radius: 3px;
-	font-size: 0.7rem;
-	color: #ff6600;
-	margin-right: 6px;
-	vertical-align: middle;
-}
-.btnGoSchedule .scheduleStatus {
+.btnGoProgramBooking .scheduleStatus {
 	display: inline-block;
 	font-size: 0.7rem;
 	color: #333;
 	vertical-align: middle;
 }
-.btnGoSchedule:hover {
-	background: #ffe8d2;
-}
-.btnGoSchedule:hover .timeTag {
+.btnGoProgramBooking:hover {
 	background: #ff6600;
+	color: #fff;
+}
+.btnGoProgramBooking:hover .scheduleStatus {
 	color: #fff;
 }
 
 /* 버튼 공통 스타일 */
-#btnCreateProgram,
-#btnEditProgram,
-#btnGoBooking,
 #btnGoLogin,
 #btnLogout {
     padding: 6px 12px;
@@ -147,16 +165,25 @@
     margin-right: 8px;
 }
 
-/* 프로그램 등록/수정 버튼 */
-#btnCreateProgram,
-#btnEditProgram {
-    background-color: #f7b740;
-    color: #fff;
+/* 관리자 페이지 이동 버튼 */
+#btnGoBookManage {
+	padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 8px;
+   	background-image: repeating-linear-gradient(
+		45deg,
+		#888888 0px,
+		#888888 10px,
+		#f9c94d 10px,
+		#f9c94d 20px
+	);
+	background-size: 100% 100%;
     margin-top: 10px;
 }
-#btnCreateProgram:hover,
-#btnEditProgram:hover {
-    background-color: #f5a40c;
+#btnGoBookManage:hover {
+    filter: brightness(0.6);
 }
 
 /* 로그인/로그아웃 버튼 */
