@@ -21,6 +21,8 @@ public class UserVO {
     
     private String userName; // 사용자 이름
     
+    private String userPhone; // 사용자 전화번호
+    
     private String userId; // 아이디
     
     private String userPw; // 비밀번호

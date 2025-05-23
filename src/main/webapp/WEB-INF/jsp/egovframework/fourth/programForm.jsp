@@ -75,7 +75,7 @@
 					<option value="child">어린이(6~12세)</option>
 					<option value="youth">청소년(13~18세)</option>
 					<option value="adult">성인(19~)</option>
-					<option value="all">전연령</option>
+					<option value="all">전체 연령</option>
 			</select></td>
 		</tr>
 		<tr>

@@ -5,6 +5,7 @@
     <select id="selectUserList" resultType="userVO">
         SELECT idx,
         	user_name,
+        	user_phone,
         	user_id,
         	user_pw,
         	is_admin,
@@ -18,6 +19,7 @@
 	<select id="selectUserByUserId" parameterType="String" resultType="userVO">
 		SELECT idx,
         	user_name,
+        	user_phone,
         	user_id,
         	user_pw,
         	is_admin,
@@ -40,8 +42,8 @@
 					FOR UPDATE
 				), 1)
 		</selectKey>
-		INSERT INTO "user" (idx, user_name, user_id, user_pw, is_admin, created_at)
-		VALUES (#{idx}, #{userName}, #{userId}, #{userPw}, #{isAdmin}, NOW())
+		INSERT INTO "user" (idx, user_name, user_phone, user_id, user_pw, is_admin, created_at)
+		VALUES (#{idx}, #{userName}, #{userPhone}, #{userId}, #{userPw}, #{isAdmin}, NOW())
 	</insert>
 	
 </mapper>

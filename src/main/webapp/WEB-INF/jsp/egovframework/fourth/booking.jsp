@@ -130,7 +130,7 @@
     			data: JSON.stringify({ programIdx: currentProgramIdx }),
     			success: function(list){
 					programSchedules = list;
-					console.log(JSON.stringify(programSchedules));
+					// console.log(JSON.stringify(programSchedules));
 					
 					// Toast UI 에 맞는 스케줄 객체로 변환
 					var schedules = programSchedules.map(function(item){
@@ -221,12 +221,12 @@
 					},
 					time: function(schedule) {
 						// console.log(JSON.stringify(schedule));
-						var bookingCtn = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
-						var possible = bookingCtn < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
+						var bookingCnt = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
+						var possible = bookingCnt < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
 						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
 						var end = schedule.raw.startDatetime.substr(11,5);
-						$status = $('<span>').addClass('scheduleStatus').text(start + possible + ' (' + bookingCtn + '/' + schedule.raw.capacity + ')');
+						$status = $('<span>').addClass('scheduleStatus').text(start + possible + ' (' + bookingCnt + '/' + schedule.raw.capacity + ')');
 						$btn = $('<span>').addClass('btnGoProgramBooking').attr('data-id', schedule.id).attr('data-date', date)
 											.append($status);
 						return $btn.prop('outerHTML');
@@ -268,7 +268,7 @@
 	            }
 	        });
 	        
-	        // 예약 일정 관리 페이지(상세) 이동 버튼 핸들러
+	        // 예약자 예약 페이지 이동 버튼 핸들러
 	        $('#calendar').on('click', '.btnGoProgramBooking', function(e){
 	        	e.stopPropagation();
 	        	var programScheduleIdx = $(this).data('id');

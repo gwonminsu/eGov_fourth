@@ -30,10 +30,16 @@ public class ViewController {
 		return "register";
 	}
 	
-	// 사용자 목록(테스트 용) 페이지
+	// 예약(메인) 페이지
 	@RequestMapping(value = "/booking.do")
 	public String bookingPage() throws Exception {
 		return "booking";
+	}
+	
+	// 프로그램 예약하기 페이지
+	@RequestMapping(value = "/programBooking.do")
+	public String programBookingPage() throws Exception {
+		return "programBooking";
 	}
 	
 	// 예약 관리 페이지(관리자 페이지)

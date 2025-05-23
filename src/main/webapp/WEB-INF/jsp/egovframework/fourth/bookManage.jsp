@@ -25,7 +25,7 @@
 	<c:url value="/api/user/logout.do" var="logoutUrl" />
 	<!-- 프로그램 등록/수정 페이지 url -->
 	<c:url value="/programForm.do" var="programFormUrl"/>
-	<!-- 목록 페이지 URL -->
+	<!-- 예약자(메인) 페이지 URL -->
 	<c:url value="/booking.do" var="bookingUrl"/>
 	<!-- 예약 일정 생성 페이지 URL -->
 	<c:url value="/scheduleCreate.do" var="scheduleCreateUrl"/>

@@ -1,0 +1,118 @@
+@charset "UTF-8";
+
+h2 {
+	margin-bottom: 20px;
+}
+h3 {
+	margin-bottom: 5px;
+}
+
+p.info-desc {
+	font-size: 0.85rem;
+	color: #004085;
+	background: #e9ecef;
+	padding: 8px;
+	margin-top: 10px;
+}
+
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	padding: 8px;
+}
+table.form-table th {
+	text-align: center;
+	background: #f7f7f7;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+table.form-table input[type="text"],
+table.form-table input[type="number"] {
+	width: 100%;
+	padding: 4px;
+	box-sizing: border-box;
+}
+table.form-table select {
+	width: 100%;
+	padding: 4px;
+	box-sizing: border-box;
+	white-space: nowrap;
+}
+table.form-table td > input[type="checkbox"] {
+	transform: scale(1.2);
+}
+#bookerPhone {
+	width: 100px;
+}
+#bookingType {
+	width: 100px;
+}
+#groupName {
+	width: 260px;
+}
+
+/* 예약 일정 테이블 각 컬럼 너비 설정 */
+table.form-table.booking-table th {
+	white-space: nowrap;
+}
+table.form-table.booking-table td {
+	text-align: left;
+	white-space: normal;
+	word-break: break-word;
+}
+table.form-table.booking-table th:nth-child(1),
+table.form-table.booking-table td:nth-child(1) { width: 15%; }
+table.form-table.booking-table th:nth-child(2),
+table.form-table.booking-table td:nth-child(2) { width: 35%; }
+table.form-table.booking-table th:nth-child(3),
+table.form-table.booking-table td:nth-child(3) { width: 15%; }
+table.form-table.booking-table th:nth-child(4),
+table.form-table.booking-table td:nth-child(4) { width: 35%; }
+
+
+table.form-table.booker-table td {
+	text-align: center;
+	white-space: normal;
+	word-break: break-word;
+}
+/* 버튼 스타일 */
+.btn-area2 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20px;
+}
+.btn-area2 button {
+	padding: 6px 12px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	background-color: #e2e6ea;
+}
+#btnAddUser {
+	background-color: #f1c40f;
+}
+#btnExcelDownload,
+#btnExcelUpload {
+	background-color: #f8f9fa;
+}
+#btnCancel {
+	background-color: #6c757d;
+	color: white;
+}
+#btnSave {
+	background-color: #ff6600;
+	color: white;
+}
+.btn-delete {
+	background-color: #dc3545;
+	color: white;
+	border: none;
+	padding: 4px 10px;
+	cursor: pointer;
+	border-radius: 4px;
+}
