@@ -159,6 +159,11 @@
 		        dataType: 'json',
 		        data: JSON.stringify({}),
 		        success: function(data) {
+		            if (data.length === 0) {
+		                // 프로그램이 아예 없는 경우
+		                $('#programListWrapper').append($('<span>').addClass('no-data-text').text('등록된 프로그램 없음'));
+		                return;
+		            }
 		            renderProgramButtons(data);
 		        },
 		        error: function() {

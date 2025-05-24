@@ -104,16 +104,17 @@
 		</tbody>
 	</table>
 	
-	<div class="btn-area2">
-		<button id="btnAddUser">인원 추가하기</button>
+	<div class="btn-area">
+		<button id="btnAddUser">인원 추가하기 ➕</button>
+	</div>
+	<br/><br/><br/>
+	
+	<div class="btn-area">
+		<button id="btnExcelDownload">엑셀양식 다운로드 📥</button>
+		<button id="btnExcelUpload">엑셀업로드 📤</button>
 	</div>
 	
-	<div class="btn-area2">
-		<button id="btnExcelDownload">엑셀양식 다운로드</button>
-		<button id="btnExcelUpload">엑셀업로드</button>
-	</div>
-	
-	<div class="btn-area2">
+	<div class="btn-area">
 		<button id="btnCancel">이전</button>
 		<button id="btnSave">저장</button>
 	</div>

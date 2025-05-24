@@ -80,33 +80,44 @@ table.form-table.booker-table td {
 	word-break: break-word;
 }
 /* 버튼 스타일 */
-.btn-area2 {
+.btn-area {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	margin-top: 20px;
+	gap: 15px;
 }
-.btn-area2 button {
-	padding: 6px 12px;
-	border: none;
+.btn-area button {
+	padding: 10px 15px;
+	border: 1px solid;
 	border-radius: 4px;
 	cursor: pointer;
-	background-color: #e2e6ea;
+	background-color: #fff;
 }
 #btnAddUser {
-	background-color: #f1c40f;
+	border-color: #9caab8;
 }
 #btnExcelDownload,
 #btnExcelUpload {
-	background-color: #f8f9fa;
+	border-color: #5c91fc;
+	width: 200px;
 }
 #btnCancel {
-	background-color: #6c757d;
-	color: white;
+	border-color: #ff6600;
+	color: #ff6600;
+}
+#btnAddUser:hover,
+#btnExcelDownload:hover,
+#btnExcelUpload:hover,
+#btnCancel:hover {
+	background-color: #d2d2d2;
 }
 #btnSave {
 	background-color: #ff6600;
-	color: white;
+	color: #fff;
+}
+#btnSave:hover {
+	background-color: #d95700;
 }
 .btn-delete {
 	background-color: #dc3545;

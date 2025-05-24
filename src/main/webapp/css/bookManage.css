@@ -29,6 +29,11 @@
     font-weight: bold;
     border-color: #ff6600;
 }
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
+}
 
 /* 캘린더 조작 UI 스타일 */
 #btnPrevMonth,
