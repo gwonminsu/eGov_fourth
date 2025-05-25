@@ -1,8 +1,6 @@
 package egovframework.fourth.homework.web;
 
-import java.sql.Date;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -16,65 +14,60 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import egovframework.fourth.homework.service.ProgramScheduleService;
-import egovframework.fourth.homework.service.ProgramScheduleVO;
+import egovframework.fourth.homework.service.BookingService;
+import egovframework.fourth.homework.service.BookingVO;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/api/booking")
 public class BookingController {
 	private static final Logger log = LoggerFactory.getLogger(BookingController.class);
-	
+
 	@Resource
 	private ObjectMapper objectMapper;
 
-	@Resource(name="programScheduleService")
-	private ProgramScheduleService programScheduleService;
-	
-    // 프로그램 일정 등록
-    @PostMapping(value="/createSchedule.do", consumes="application/json", produces="application/json")
-    public Map<String, String> writeSchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
-    	// 먼저 겹치는 일정 있는지 검증
-    	int conflict = programScheduleService.countOverlap(vo.getProgramIdx(), vo.getStartDatetime(), vo.getEndDatetime());
-        if (conflict > 0) {
-        	log.info("충돌되는 일정 존재: 일정 등록 거부");
+	@Resource(name = "bookingService")
+	private BookingService bookingService;
+
+	// 프로그램 일정에 예약 등록
+	@PostMapping(value = "/createBooking.do", consumes = "application/json", produces = "application/json")
+	public Map<String, String> writeBooking(@RequestBody BookingVO vo) throws Exception {
+		// 예약에 예약인 정보가 없으면 튕굼
+		if (vo.getBookerList() == null) {
+        	log.info("예약인 정보 없음: 예약 등록 거부");
         	return Collections.singletonMap("error","REJECTED");
-        } else {
-        	log.info("충돌되는 일정 없음: 일정 등록 승인");
-        	programScheduleService.createProgramSchedule(vo);
-        	return Collections.singletonMap("status","OK");
-        }
-    }
-    
-    // 프로그램 일정 수정
-    @PostMapping(value="/updateSchedule.do", consumes="application/json", produces="application/json")
-    public Map<String, String> modifySchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
-    	programScheduleService.modifyProgramSchedule(vo);
-    	return Collections.singletonMap("status","OK");
-    }
-    
-    // 특정 날짜의 프로그램 일정 조회
-    @PostMapping(value="/getDateScheduleList.do", consumes="application/json", produces="application/json")
-    public List<ProgramScheduleVO> getDateScheduleList(@RequestBody Map<String,String> req) throws Exception {
-        String programIdx = req.get("programIdx");
-        String dateStr = req.get("date");
-        Date date = Date.valueOf(dateStr);
-        List<ProgramScheduleVO> list = programScheduleService.getProgramDateScheduleList(programIdx, date);
-        return list;
-    }
-    
-    // 프로그램 전체 일정 조회
-    @PostMapping(value="/getProgramScheduleList.do", consumes="application/json", produces="application/json")
-    public List<ProgramScheduleVO> getProgramScheduleList(@RequestBody Map<String,String> req) throws Exception {
-        String programIdx = req.get("programIdx");
-        List<ProgramScheduleVO> list = programScheduleService.getProgramScheduleList(programIdx);
-        return list;
-    }
-    
-    // 프로그램 일정 상세 조회
-    @PostMapping(value="/getProgramSchedule.do", consumes="application/json", produces="application/json")
-    public ProgramScheduleVO getProgramSchedule(@RequestBody Map<String,String> req) throws Exception {
-        String idx = req.get("idx");
-        ProgramScheduleVO vo = programScheduleService.getProgramSchedule(idx);
-        return vo;
-    }
+		} else {
+			bookingService.createBooking(vo); // 예약과 예약인 리스트 등록
+			log.info("예약인 정보 존재 확인: 예약 등록 승인");
+			return Collections.singletonMap("status", "OK");
+		}
+	}
+	
+//	{
+//	  "userIdx": "USER-1",
+//	  "programScheduleIdx": "PSCHD-1",
+//	  "phone": "010-1234-5678",
+//	  "isGroup": true,
+//	  "groupName": "친구들",
+//	  "bookerList": [
+//	    {
+//	      "bookerName": "김철수",
+//	      "sex": "man",
+//	      "userType": "청소년",
+//	      "administrationArea": "경상북도",
+//	      "city": "경산시",
+//	      "isDisabled": false,
+//	      "isForeigner": false
+//	    },
+//	    {
+//	      "bookerName": "박영희",
+//	      "sex": "woman",
+//	      "userType": "성인",
+//	      "administrationArea": "경상북도",
+//	      "city": "경산시",
+//	      "isDisabled": false,
+//	      "isForeigner": false
+//	    }
+//	  ]
+//	}
+
 }

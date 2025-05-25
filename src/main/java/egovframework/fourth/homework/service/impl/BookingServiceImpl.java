@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import egovframework.fourth.homework.service.BookerService;
+import egovframework.fourth.homework.service.BookerVO;
 import egovframework.fourth.homework.service.BookingService;
 import egovframework.fourth.homework.service.BookingVO;
 
@@ -19,11 +21,21 @@ public class BookingServiceImpl extends EgovAbstractServiceImpl implements Booki
 	
 	@Resource(name = "bookingDAO")
 	private BookingDAO bookingDAO;
+	
+	@Resource(name = "bookerService")
+	private BookerService bookerService;
 
 	// 프로그램 일정에 대한 예약 등록
 	@Override
 	public void createBooking(BookingVO vo) throws Exception {
-		bookingDAO.insertBooking(vo);
+		bookingDAO.insertBooking(vo); // 예약 정보 저장하고
+		
+		// 예약에 대한 예약인들 등록
+        for (BookerVO booker : vo.getBookerList()) {
+            booker.setBookingIdx(vo.getIdx()); // 예약인 vo에 예약 idx 세팅
+            bookerService.createBooker(booker); // 개별 에약인 등록
+        }
+
 		log.info("INSERT 프로그램 일정({})에 예약({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());
 	}
 	
