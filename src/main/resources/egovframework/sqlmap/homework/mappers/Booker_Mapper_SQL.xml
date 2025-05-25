@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bookerDAO">
+	<!-- 예약인 등록 -->
+	<insert id="insertBooker" parameterType="bookerVO">
+		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
+			SELECT 'BOOKER-' || COALESCE(
+				(
+					SELECT (SUBSTRING(idx FROM 8))::int + 1
+					FROM booker
+					ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				), 1)
+		</selectKey>
+		INSERT INTO booker
+			(idx, booking_idx, booker_name, sex, user_type, administration_area, city, is_disabled, is_foreigner, created_at)
+		VALUES
+			(#{idx}, #{bookingIdx}, #{bookerName}, #{sex}, #{userType}, #{administrationArea}, #{city}, #{isDisabled}, #{isForeigner}, NOW())
+	</insert>
+	
+	
+	<!-- 예약인 목록 조회 -->
+	<select id="selectBookerListByBookingIdx" parameterType="String" resultType="bookerVO">
+		SELECT
+			idx,
+			booking_idx,
+			booker_name,
+			sex,
+			user_type,
+			administration_area,
+			city,
+			is_disabled,
+			is_foreigner,
+			created_at AS createdAt,
+		FROM booker
+		WHERE booking_idx = #{bookingIdx}
+		ORDER BY (SUBSTRING(idx FROM 8))::int ASC
+	</select>
+
+	<!-- 예약인 상세 조회 -->
+	<select id="selectBooker" parameterType="String" resultType="bookerVO">
+		SELECT
+			idx,
+			booking_idx,
+			booker_name,
+			sex,
+			user_type,
+			administration_area,
+			city,
+			is_disabled,
+			is_foreigner,
+			created_at AS createdAt,
+		FROM booker
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 예약 삭제 -->
+	<delete id="deleteBooker" parameterType="String">
+		DELETE FROM booker WHERE idx = #{idx}
+	</delete>
+	
+</mapper>

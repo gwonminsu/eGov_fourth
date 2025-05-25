@@ -1,0 +1,33 @@
+package egovframework.fourth.homework.service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class BookingVO {
+
+    private String idx;
+    
+    private String userIdx; // 예약자 idx
+    
+    private String programScheduleIdx; // 프로그램 일정 이름
+    
+    private String phone; // 예약자 대표 전화번호
+    
+    private Boolean isGroup = false; // 그룹 여부
+    
+    private String groupName; // 그룹 명
+    
+    private Timestamp createdAt; // 등록일
+    
+    private List<BookerVO> bookerList; // 예약인 목록
+	
+}

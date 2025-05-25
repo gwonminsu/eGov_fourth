@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bookingDAO">
+	<!-- 예약 등록 -->
+	<insert id="insertBooking" parameterType="bookingVO">
+		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
+			SELECT 'BOOKING-' || COALESCE(
+				(
+					SELECT (SUBSTRING(idx FROM 9))::int + 1
+					FROM booking
+					ORDER BY (SUBSTRING(idx FROM 9))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				), 1)
+		</selectKey>
+		INSERT INTO booking
+			(idx, user_idx, program_schedule_idx, phone, is_group, group_name, created_at)
+		VALUES
+			(#{idx}, #{userIdx}, #{programScheduleIdx}, #{phone}, #{isGroup}, #{groupName}, NOW())
+	</insert>
+	
+	
+	<!-- 예약 목록 조회 -->
+	<select id="selectBookingListByProgramScheduleIdx" parameterType="String" resultType="bookingVO">
+		SELECT
+			idx,
+			user_idx,
+			program_schedule_idx,
+			phone,
+			is_group,
+			group_name,
+			created_at AS createdAt,
+		FROM booking
+		WHERE program_schedule_idx = #{programScheduleIdx}
+		ORDER BY (SUBSTRING(idx FROM 9))::int ASC
+	</select>
+
+	<!-- 예약 상세 조회 -->
+	<select id="selectBooking" parameterType="String" resultType="bookingVO">
+		SELECT
+			idx,
+			user_idx,
+			program_schedule_idx,
+			phone,
+			is_group,
+			group_name,
+			created_at AS createdAt,
+		FROM booking
+		WHERE idx = #{idx}
+	</select>
+
+	<!-- 예약 삭제 -->
+	<delete id="deleteBooking" parameterType="String">
+		DELETE FROM booking WHERE idx = #{idx}
+	</delete>
+	
+</mapper>
