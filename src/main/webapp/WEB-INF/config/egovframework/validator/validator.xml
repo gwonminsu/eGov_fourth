@@ -38,6 +38,15 @@
 				<arg0 key="title.program.description" />
 			</field>
 		</form>
+
+		<form name="bookingVO">
+			<field property="userPhone" depends="required">
+				<arg0 key="title.booking.phone" />
+			</field>
+			<field property="userType" depends="required">
+				<arg0 key="title.booking.userType" />
+			</field>
+		</form>
 		
 		<!-- 검증 경고 메시지 방지 폼 -->
 		<form name="linkedHashMap">
