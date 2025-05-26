@@ -23,16 +23,18 @@
 	<!-- 예약 목록 조회 -->
 	<select id="selectBookingListByProgramScheduleIdx" parameterType="String" resultType="bookingVO">
 		SELECT
-			idx,
-			user_idx,
-			program_schedule_idx,
-			phone,
-			is_group,
-			group_name,
-			created_at AS createdAt,
-		FROM booking
+			bi.idx,
+			bi.user_idx,
+			u.user_name,
+			bi.program_schedule_idx,
+			bi.phone,
+			bi.is_group,
+			bi.group_name,
+			bi.created_at AS createdAt
+		FROM booking bi
+		JOIN "user" u ON bi.user_idx = u.idx
 		WHERE program_schedule_idx = #{programScheduleIdx}
-		ORDER BY (SUBSTRING(idx FROM 9))::int ASC
+		ORDER BY bi.created_at::timestamp ASC
 	</select>
 
 	<!-- 예약 상세 조회 -->
@@ -44,7 +46,7 @@
 			phone,
 			is_group,
 			group_name,
-			created_at AS createdAt,
+			created_at AS createdAt
 		FROM booking
 		WHERE idx = #{idx}
 	</select>

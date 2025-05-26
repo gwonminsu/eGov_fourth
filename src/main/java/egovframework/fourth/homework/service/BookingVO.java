@@ -18,6 +18,8 @@ public class BookingVO {
     
     private String userIdx; // 예약자 idx
     
+    private String userName; // 예약자 이름
+    
     private String programScheduleIdx; // 프로그램 일정 이름
     
     private String phone; // 예약자 대표 전화번호

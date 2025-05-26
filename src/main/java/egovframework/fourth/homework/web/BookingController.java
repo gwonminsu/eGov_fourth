@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.web;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -54,32 +55,12 @@ public class BookingController {
 		return Collections.singletonMap("status", "OK");
 	}
 	
-//	{
-//	  "userIdx": "USER-1",
-//	  "programScheduleIdx": "PSCHD-1",
-//	  "phone": "010-1234-5678",
-//	  "isGroup": true,
-//	  "groupName": "친구들",
-//	  "bookerList": [
-//	    {
-//	      "bookerName": "김철수",
-//	      "sex": "man",
-//	      "userType": "청소년",
-//	      "administrationArea": "경상북도",
-//	      "city": "경산시",
-//	      "isDisabled": false,
-//	      "isForeigner": false
-//	    },
-//	    {
-//	      "bookerName": "박영희",
-//	      "sex": "woman",
-//	      "userType": "성인",
-//	      "administrationArea": "경상북도",
-//	      "city": "경산시",
-//	      "isDisabled": false,
-//	      "isForeigner": false
-//	    }
-//	  ]
-//	}
+    // 프로그램 일정의 전체 예약 정보 조회
+    @PostMapping(value="/getBookingList.do", consumes="application/json", produces="application/json")
+    public List<BookingVO> getBookingList(@RequestBody Map<String,String> req) throws Exception {
+        String programScheduleIdx = req.get("programScheduleIdx");
+        List<BookingVO> list = bookingService.getProgramScheduleBookingList(programScheduleIdx);
+        return list;
+    }
 
 }

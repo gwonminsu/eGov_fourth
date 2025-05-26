@@ -142,7 +142,7 @@
 		        '전체 연령': 'all'
 		    };
 		    return map[text] || '';
-		}
+		};
 		
 		// 체험 인원 로우 추가 함수
 		function addUserRow(callback) {
@@ -209,7 +209,7 @@
 				$('#userList').append($tr);
 				if (callback) callback($tr);
 			});
-		}
+		};
 		
 		$(function(){
 			$('#programName').text(programName);

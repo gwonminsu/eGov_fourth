@@ -32,7 +32,7 @@
 			city,
 			is_disabled,
 			is_foreigner,
-			created_at AS createdAt,
+			created_at AS createdAt
 		FROM booker
 		WHERE booking_idx = #{bookingIdx}
 		ORDER BY (SUBSTRING(idx FROM 8))::int ASC
@@ -50,7 +50,7 @@
 			city,
 			is_disabled,
 			is_foreigner,
-			created_at AS createdAt,
+			created_at AS createdAt
 		FROM booker
 		WHERE idx = #{idx}
 	</select>

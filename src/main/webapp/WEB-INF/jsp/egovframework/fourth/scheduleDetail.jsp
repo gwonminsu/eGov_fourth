@@ -13,8 +13,10 @@
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
 	<!-- 프로그램 일정 수정 API URL -->
     <c:url value="/api/schedule/updateSchedule.do" var="updateApi"/>
-   	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
+   	<!-- 현재 프로그램 일정 조회 API URL -->
     <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
+	<!-- 현재 프로그램 일정의 예약 조회 API URL -->
+    <c:url value="/api/booking/getBookingList.do" var="getBookingListApi"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -75,7 +77,7 @@
 				<th>체험명</th>
 				<th>예약구분</th>
 				<th>예약시간</th>
-				<th>예약자명</th>
+				<th>예약자명(단체)</th>
 				<th>예약자수</th>
 				<th>예약자확인</th>
 				<th>삭제</th>
@@ -83,17 +85,6 @@
 			</tr>
 		</thead>
 		<tbody id="bookerList">
-			<tr>
-				<td>1</td>
-				<td>???????????????????????????</td>
-				<td>일반</td>
-				<td>YYYY-MM-DD(hh:mm)</td>
-				<td>?</td>
-				<td>n</td>
-				<td><button class="btn-confirm">확인</button></td>
-				<td><button class="btn-delete">삭제</button></td>
-				<td><button class="btn-print">출력</button></td>
-			</tr>
 		</tbody>
 	</table>
 	
@@ -108,13 +99,41 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
+		// 체험 인원 로우 추가 함수
+		function addBookingRow(booking) {
+			var index = $('#bookerList tr').length + 1;
+			var programNameText = $('#programName').text();
+			var bookingType = booking.isGroup ? '단체' : '개인';
+			var bookingTime = booking.createdAt.substr(0,10) + '(' + booking.createdAt.substr(11,5) + ')'
+			var bookerName = booking.isGroup ? booking.userName + '(' + booking.groupName + ')' : booking.userName;
+			var bookerCnt = booking.bookerList.length;
+
+			var $tr = $('<tr>');
+			$tr.append($('<td>').text(index)); // 번호
+			$tr.append($('<td>').text(programNameText)); // 체험명
+			$tr.append($('<td>').text(bookingType)); // 예약구분
+			$tr.append($('<td>').text(bookingTime)); // 예약시간
+			$tr.append($('<td>').text(bookerName)); // 예약자명
+			$tr.append($('<td>').text(bookerCnt)); // 예약자수
+
+			// 버튼들
+			var $btnConfirm = $('<button>').addClass('btn-confirm').text('확인');
+			var $btnDelete = $('<button>').addClass('btn-delete').text('삭제');
+			var $btnPrint = $('<button>').addClass('btn-print').text('출력');
+
+			$tr.append($('<td>').append($btnConfirm)); // 예약자확인
+			$tr.append($('<td>').append($btnDelete)); // 삭제
+			$tr.append($('<td>').append($btnPrint)); // 수료증
+
+			$('#bookerList').append($tr);
+		}
 		
-		$(document).ready(function () {
+		$(function () {
 			$('#programName').text(programName);
 			$('#scheduleDate').text(date);
 			console.log(programIdx);
 			
-    		// 이 프로그램 일정 조회 요청
+			// 이 프로그램 일정 조회 요청
     		$.ajax({
     			url: '${getProgramScheduleApi}',
     			type:'POST',
@@ -128,10 +147,27 @@
 					$('#scheduleTime').text(start + ' - ' + end);
 					$('#capacity').val(parseInt(schedule.capacity));
 					$('#info-text').text('(예약건수 : ' + schedule.bookingCount + ', 예약 인원: ' + schedule.bookerCount + ')');
-					
     			},
 				error: function(){
 					alert('현재 프로그램 일정 조회 중 에러 발생');
+				}
+    		});
+    		
+    		// 프로그램 일정의 예약 목록 조회 요청
+    		$.ajax({
+    			url: '${getBookingListApi}',
+    			type:'POST',
+    			contentType: 'application/json',
+    			dataType: 'json',
+    			data: JSON.stringify({ programScheduleIdx: idx }),
+    			success: function(list){
+					// console.log(JSON.stringify(list));
+					list.forEach(function(booking) {
+						addBookingRow(booking);
+					});
+    			},
+				error: function(){
+					alert('현재 프로그램 일정의 예약 목록 조회 중 에러 발생');
 				}
     		});
 		
@@ -203,7 +239,7 @@
 			});
 			$('#bookerList').on('click', '.btn-delete', function () {
 				if (confirm('정말 삭제하시겠습니까?')) {
-					alert('삭제 처리 예정');
+					$(this).closest('tr').remove();
 				}
 			});
 			$('#bookerList').on('click', '.btn-print', function () {
