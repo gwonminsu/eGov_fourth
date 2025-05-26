@@ -68,13 +68,21 @@
 		</div>
    	</div>
    	
-   	<div id="calendarHeader">
+   	<div id="calendarUI">
 		<input type="number" id="yearInput" min="2000" max="2100" />
 		<span>년</span>
 		<input type="number" id="monthInput" min="1" max="12" />
 		<span>월</span>
 		<button id="btnPrevMonth">◀</button>
 		<button id="btnNextMonth">▶</button>
+	</div>
+	
+	<div id="calendarHeader">
+		<div id="calendarInfo">
+			<div style="font-weight: bold">예약 일정 관리</div>
+			<div id="cDate"></div>
+		</div>
+		<button id="btnGoNewMonthSchedule">프로그램일정 일괄 생성</button>
 	</div>
 
    	<!-- 캘린더 -->
@@ -236,12 +244,14 @@
 	        var today = calendar.getDate();
 	        $('#yearInput').val(today.getFullYear());
 	        $('#monthInput').val(today.getMonth() + 1);
+	        $('#cDate').text(today.getFullYear() + '년 ' + (today.getMonth() + 1) + '일');
 
 	        // 현재 캘린더 기준으로 input 갱신
 	        function updateDateInputs() {
 	            var currentDate = calendar.getDate();
 	            $('#yearInput').val(currentDate.getFullYear());
 	            $('#monthInput').val(currentDate.getMonth() + 1);
+	            $('#cDate').text(currentDate.getFullYear() + '년 ' + (currentDate.getMonth() + 1) + '일');
 	        }
 	        
 	        // 이전 달 이동 버튼 핸들러

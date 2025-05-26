@@ -36,6 +36,19 @@
 }
 
 /* 캘린더 조작 UI 스타일 */
+#calendarUI {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+#yearInput {
+	width: 50px;
+}
+#monthInput {
+	width: 30px;
+}
 #btnPrevMonth,
 #btnNextMonth {
 	padding: 6px 10px;
@@ -60,16 +73,17 @@
 }
 #calendarHeader {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
+	border: 1px solid;
+	border-color: #d3d3d3;
 	gap: 8px;
 	align-items: center;
-	margin-bottom: 10px;
+	padding: 10px;
+	margin-bottom: 0;
 }
-#yearInput {
-	width: 50px;
-}
-#monthInput {
-	width: 30px;
+#cDate {
+	font-size: 0.8em;
+	color: #636363;
 }
 .tui-full-calendar-month-guide-block,
 .tui-full-calendar-month-creation-guide,
@@ -140,6 +154,7 @@
 }
 
 /* 버튼 공통 스타일 */
+#btnGoNewMonthSchedule,
 #btnCreateProgram,
 #btnEditProgram,
 #btnGoBooking,
@@ -174,6 +189,15 @@
 #btnGoLogin:hover,
 #btnLogout:hover {
     background-color: #CED4DA;
+}
+
+/* 일정 일괄 등록 버튼 */
+#btnGoNewMonthSchedule {
+	background-color: #454545;
+	color: #fff;
+}
+#btnGoNewMonthSchedule:hover {
+	background-color: #2b2b2b;
 }
 
 /* 사용자 정보 영역 */

@@ -343,9 +343,10 @@
 				}
 				
 				// 단체명 검증
-				if ($('#bookingType').val() === '단체' || !$('#groupName').val().trim()) {
+				if ($('#bookingType').val() === '단체' && !$('#groupName').val().trim()) {
 					alert('단체일 경우 단체명을 입력해 주세요.');
 					$('#groupName').focus();
+					return;
 				}
 				
 				var bookerList = [];
