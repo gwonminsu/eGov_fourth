@@ -93,11 +93,26 @@
 		<button id="btnAddBooker" style="background-color: #ff6e00; color: white;">예약자 추가</button>
 	</div>
 	
+	<div class="black-bg">
+		<!-- 모달 창 영역 -->
+		<div class="white-bg">
+			<div id="modal-header">
+				<h3><span id="m-idx"></span>예약자 확인</h3>
+				<button id="btnModalClose">X</button>
+			</div>
+			<div id="modal-body">
+			</div>
+			
+		</div>
+	</div>
+	
 	<script>
 		var idx = '${param.idx}'; // 프로그램 일정 idx
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
+		
+		var bookingList = [];
 		
 		// 체험 인원 로우 추가 함수
 		function addBookingRow(booking) {
@@ -162,6 +177,7 @@
     			data: JSON.stringify({ programScheduleIdx: idx }),
     			success: function(list){
 					// console.log(JSON.stringify(list));
+					bookingList = list;
 					list.forEach(function(booking) {
 						addBookingRow(booking);
 					});
@@ -235,7 +251,45 @@
 		
 			// 예약자 테이블 내부 버튼
 			$('#bookerList').on('click', '.btn-confirm', function () {
-				alert('예약자 확인 처리 예정');
+				var index = $(this).closest('tr').index(); // 몇 번째 tr인지 찾기
+				var booking = bookingList[index]; // 해당 booking 객체 가져오기
+
+				var bookerList = booking.bookerList;
+
+				// 모달 바디 초기화
+				$('#modal-body').empty();
+				
+				$('#m-idx').text('[' + (index + 1) + '] ');
+				$('#modal-body').prepend($('<h4>').text('총 ' + bookerList.length + '명')).append($('<div>').attr('id', 'modal-content'));
+
+				// 예약자 정보 렌더링
+				bookerList.forEach(function(booker, i) {
+					var sexText = booker.sex === 'man' ? '♂️' : '♀️';
+					var typeMap = {
+						baby: '미취학 아동',
+						child: '어린이',
+						youth: '청소년',
+						adult: '성인'
+					};
+					var userTypeText = typeMap[booker.userType] || booker.userType;
+					
+					var $title = $('<div>').append($('<strong>').text((i + 1) + '.' + booker.bookerName + sexText + ' (' + userTypeText + ')'));
+					var $live = $('<div>').text('거주지: ' + booker.administrationArea + ' ' + (booker.city ? booker.city : ''));
+					var $ps = $('<div>').text('장애인: ' + (booker.isDisabled ? 'O' : 'X') + ', 외국인: ' + (booker.isForeigner ? 'O' : 'X'));
+					var $item = $('<div>').addClass('modal-item').append($title).append($live).append($ps);
+
+					var item = `
+						<div class="modal-item">
+							<strong>\${i + 1}. \${booker.bookerName}</strong> (\${sexText}, \${userTypeText})
+							<br/>거주지: \${booker.administrationArea}${booker.city ? ' ' + booker.city : ''}
+							<br/>장애인: \${booker.isDisabled ? 'O' : 'X'} / 외국인: \${booker.isForeigner ? 'O' : 'X'}
+						</div>
+					`;
+					$('#modal-content').append($item);
+				});
+
+				// 모달창 열기
+				$('.black-bg').addClass('show-modal');
 			});
 			$('#bookerList').on('click', '.btn-delete', function () {
 				if (confirm('정말 삭제하시겠습니까?')) {
@@ -244,6 +298,18 @@
 			});
 			$('#bookerList').on('click', '.btn-print', function () {
 				alert('수료증 출력 기능 구현 예정');
+			});
+			
+			// 모달 창 닫기 버튼
+			$('#btnModalClose').on('click', function () {
+				$('.black-bg').removeClass('show-modal');
+			});
+			
+			// 배경 눌러도 닫힘
+			$('.black-bg').click(function(e) {
+				if (e.target === this) {
+					$(this).removeClass('show-modal');
+				}
 			});
 		});
 	</script>
