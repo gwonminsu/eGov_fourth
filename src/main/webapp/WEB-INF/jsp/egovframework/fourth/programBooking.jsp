@@ -145,11 +145,11 @@
     			data: JSON.stringify({ idx: idx }),
     			success: function(schedule){
 					console.log(JSON.stringify(schedule));
-					var bookingCnt = 0; // 임시값
+					var bookerCnt = schedule.bookerCount; // 임시값
 					var start = schedule.startDatetime.substr(11,5);
 					var end = schedule.endDatetime.substr(11,5);
 					$('#programTime').text('[' + date + '] ' + start + ' - ' + end);
-					$('#capacityView').text('(' + bookingCnt + '/' + schedule.capacity + ')');
+					$('#capacityView').text('(' + bookerCnt + '/' + schedule.capacity + ')');
     			},
 				error: function(){
 					alert('현재 프로그램 일정 조회 중 에러 발생');

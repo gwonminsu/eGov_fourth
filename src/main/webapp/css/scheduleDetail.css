@@ -148,7 +148,7 @@ table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
 }
 
 /* 기타 텍스트 */
-.info-text {
+#info-text {
 	font-size: 0.9rem;
 	color: #666;
 	margin-left: 8px;

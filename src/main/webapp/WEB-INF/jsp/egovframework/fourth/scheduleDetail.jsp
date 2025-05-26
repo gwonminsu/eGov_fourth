@@ -55,7 +55,7 @@
 			<th>제한인원수</th>
 			<td>
 				<input type="number" id="capacity" name="capacity" min="1" required /> 명
-				<span class="info-text">(예약건수 : n, 예약 인원: n)</span>
+				<span id="info-text"></span>
 			</td>
 		</tr>
 	</table>
@@ -127,6 +127,8 @@
 					var end = schedule.endDatetime.substr(11,5);
 					$('#scheduleTime').text(start + ' - ' + end);
 					$('#capacity').val(parseInt(schedule.capacity));
+					$('#info-text').text('(예약건수 : ' + schedule.bookingCount + ', 예약 인원: ' + schedule.bookerCount + ')');
+					
     			},
 				error: function(){
 					alert('현재 프로그램 일정 조회 중 에러 발생');

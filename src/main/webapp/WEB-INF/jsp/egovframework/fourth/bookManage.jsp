@@ -204,12 +204,12 @@
 					},
 					time: function(schedule) {
 						// console.log(JSON.stringify(schedule));
-						var bookingCtn = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
+						var bookerCnt = schedule.raw.bookerCount; // 예약인 수
 						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
 						var end = schedule.raw.startDatetime.substr(11,5);
 						$tag = $('<span>').addClass('timeTag').text(start);
-						$status = $('<span>').addClass('scheduleStatus').text('예약 상황(' + bookingCtn + '/' + schedule.raw.capacity + ')');
+						$status = $('<span>').addClass('scheduleStatus').text('예약 상황(' + bookerCnt + '/' + schedule.raw.capacity + ')');
 						$btn = $('<span>').addClass('btnGoSchedule').attr('data-id', schedule.id).attr('data-date', date)
 											.append($tag).append($status);
 						return $btn.prop('outerHTML');

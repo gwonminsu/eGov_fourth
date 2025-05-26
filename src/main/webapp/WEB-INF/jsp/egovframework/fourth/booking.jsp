@@ -227,14 +227,17 @@
 					},
 					time: function(schedule) {
 						// console.log(JSON.stringify(schedule));
-						var bookingCnt = 0; // 임시(추후에 일정에 예약한 사람수 칼럼 추가 예정)
-						var possible = bookingCnt < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
+						var bookerCnt = schedule.raw.bookerCount; // 예약인 수
+						var possible = bookerCnt < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
 						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
 						var end = schedule.raw.startDatetime.substr(11,5);
-						$status = $('<span>').addClass('scheduleStatus').text(start + possible + ' (' + bookingCnt + '/' + schedule.raw.capacity + ')');
+						$status = $('<span>').addClass('scheduleStatus').text(start + possible + ' (' + bookerCnt + '/' + schedule.raw.capacity + ')');
 						$btn = $('<span>').addClass('btnGoProgramBooking').attr('data-id', schedule.id).attr('data-date', date)
 											.append($status);
+						if (possible === ' 예약 불가') {
+							$btn.addClass('disabled');
+						}
 						return $btn.prop('outerHTML');
 					}
 				}
@@ -277,10 +280,14 @@
 	        // 예약자 예약 페이지 이동 버튼 핸들러
 	        $('#calendar').on('click', '.btnGoProgramBooking', function(e){
 	        	e.stopPropagation();
-	        	var programScheduleIdx = $(this).data('id');
-	        	var date = $(this).data('date');
-	        	console.log(programScheduleIdx);
-	        	postTo('${programBookingUrl}', { idx: programScheduleIdx, programIdx: currentProgramIdx, programName: currentProgramName, date: date });
+	        	if ($(this).hasClass('disabled')) {
+	        		alert('해당일정엔 더 이상 예약할 수 없습니다.');
+	        	} else {
+		        	var programScheduleIdx = $(this).data('id');
+		        	var date = $(this).data('date');
+		        	console.log(programScheduleIdx);
+		        	postTo('${programBookingUrl}', { idx: programScheduleIdx, programIdx: currentProgramIdx, programName: currentProgramName, date: date });
+	        	}
 	        });
 	        
 	        /* ----------------------------------- 여기까지 캘린더 ----------------------------------- */

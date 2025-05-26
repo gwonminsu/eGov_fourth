@@ -26,6 +26,10 @@ public class ProgramScheduleVO {
     
     private int capacity; // 예약자 제한 인원 
     
+    private Integer bookingCount; // 일정에 예약된 총 예약 수
+    
+    private Integer bookerCount; // 일정에 예약된 총 예약인 수
+    
     private Timestamp createdAt; // 등록일
     
     private Timestamp updatedAt; // 수정일

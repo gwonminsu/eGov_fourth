@@ -156,6 +156,13 @@
 .btnGoProgramBooking:hover .scheduleStatus {
 	color: #fff;
 }
+.btnGoProgramBooking.disabled {
+	background: #ccc;
+	color: #999;
+}
+.btnGoProgramBooking.disabled .scheduleStatus {
+	color: #999;
+}
 
 /* 버튼 공통 스타일 */
 #btnGoLogin,
