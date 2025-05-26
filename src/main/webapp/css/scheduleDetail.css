@@ -31,6 +31,11 @@ table.form-table #scheduleDate {
 table.form-table input[type="number"] {
 	width: 60px;
 }
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
+}
 
 /* 버튼 영역 */
 .btn-area1 {

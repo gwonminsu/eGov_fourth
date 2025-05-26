@@ -178,6 +178,9 @@
     			success: function(list){
 					// console.log(JSON.stringify(list));
 					bookingList = list;
+					if (list.length === 0) {
+						$('#bookerList').append($('<tr>').append($('<td>').attr('colspan', '9').append($('<div>').addClass('no-data-text').text('아직 등록된 예약이 없습니다.'))));
+					}
 					list.forEach(function(booking) {
 						addBookingRow(booking);
 					});
@@ -278,13 +281,6 @@
 					var $ps = $('<div>').text('장애인: ' + (booker.isDisabled ? 'O' : 'X') + ', 외국인: ' + (booker.isForeigner ? 'O' : 'X'));
 					var $item = $('<div>').addClass('modal-item').append($title).append($live).append($ps);
 
-					var item = `
-						<div class="modal-item">
-							<strong>\${i + 1}. \${booker.bookerName}</strong> (\${sexText}, \${userTypeText})
-							<br/>거주지: \${booker.administrationArea}${booker.city ? ' ' + booker.city : ''}
-							<br/>장애인: \${booker.isDisabled ? 'O' : 'X'} / 외국인: \${booker.isForeigner ? 'O' : 'X'}
-						</div>
-					`;
 					$('#modal-content').append($item);
 				});
 
