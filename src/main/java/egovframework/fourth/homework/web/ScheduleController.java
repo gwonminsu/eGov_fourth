@@ -1,7 +1,9 @@
 package egovframework.fourth.homework.web;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,19 +32,26 @@ public class ScheduleController {
 	@Resource(name="programScheduleService")
 	private ProgramScheduleService programScheduleService;
 	
-    // 프로그램 일정 등록
+    // 프로그램 일정 등록(일괄 등록)
     @PostMapping(value="/createSchedule.do", consumes="application/json", produces="application/json")
-    public Map<String, String> writeSchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
-    	// 먼저 겹치는 일정 있는지 검증
-    	int conflict = programScheduleService.countOverlap(vo.getProgramIdx(), vo.getStartDatetime(), vo.getEndDatetime());
-        if (conflict > 0) {
-        	log.info("충돌되는 일정 존재: 일정 등록 거부");
-        	return Collections.singletonMap("error","REJECTED");
-        } else {
-        	log.info("충돌되는 일정 없음: 일정 등록 승인");
-        	programScheduleService.createProgramSchedule(vo);
-        	return Collections.singletonMap("status","OK");
-        }
+    public Map<String, Object> writeSchedule(@RequestBody List<ProgramScheduleVO> scheduleList) throws Exception {
+    	List<String> skipped = new ArrayList<>(); // 스킵된 일정 알림용
+    	for (ProgramScheduleVO vo : scheduleList) {
+        	// 먼저 겹치는 일정 있는지 검증
+        	int conflict = programScheduleService.countOverlap(vo.getProgramIdx(), vo.getStartDatetime(), vo.getEndDatetime());
+            if (conflict > 0) {
+            	log.info("일정 등록 거부: 충돌되는 일정({}) 존재", vo.getIdx());
+            	skipped.add(vo.getStartDatetime().toString() + " ~ " + vo.getEndDatetime().toString());
+            	continue;
+            }
+            programScheduleService.createProgramSchedule(vo); // 일정 등록
+    	}
+    	
+        Map<String, Object> result = new HashMap<>();
+        result.put("status", "OK");
+        result.put("skipped", skipped); // 프론트에 충돌 건 알려주기
+        	
+    	return result;
     }
     
     // 프로그램 일정 수정
@@ -59,6 +68,15 @@ public class ScheduleController {
         String dateStr = req.get("date");
         Date date = Date.valueOf(dateStr);
         List<ProgramScheduleVO> list = programScheduleService.getProgramDateScheduleList(programIdx, date);
+        return list;
+    }
+    
+    // 특정 달의 프로그램 일정 조회
+    @PostMapping(value="/getMonthScheduleList.do", consumes="application/json", produces="application/json")
+    public List<ProgramScheduleVO> getMonthScheduleList(@RequestBody Map<String,String> req) throws Exception {
+        String programIdx = req.get("programIdx");
+        String month = req.get("month");
+        List<ProgramScheduleVO> list = programScheduleService.getProgramMonthScheduleList(programIdx, month);
         return list;
     }
     

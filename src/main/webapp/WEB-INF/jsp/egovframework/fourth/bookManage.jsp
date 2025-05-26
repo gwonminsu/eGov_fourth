@@ -313,6 +313,20 @@
 				});
 	        });
 	        
+	        // 프로그램 일정 일괄 등록 버튼 핸들러
+	        $('#btnGoNewMonthSchedule').click(function() {
+	        	if (!currentProgramIdx) {
+	        		alert('먼저 프로그램을 선택하세요');
+	        		return;
+	        	}
+	        	var year = calendar.getDate().getFullYear();
+	        	var month = calendar.getDate().getMonth() + 1;
+	        	var monthDate = year + '-' + String(month).padStart(2, "0")
+	        	console.log(monthDate);
+	        	// 프로그램 등록 페이지로 이동
+	        	postTo('${scheduleCreateUrl}', { programIdx: currentProgramIdx, programName: currentProgramName, monthDate: monthDate });
+			});
+	        
 	        // 프로그램 등록 버튼 핸들러
 	        $('#btnCreateProgram').click(function() {
 	        	// 프로그램 등록 페이지로 이동

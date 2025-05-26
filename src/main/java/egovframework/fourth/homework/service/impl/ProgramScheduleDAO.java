@@ -36,6 +36,10 @@ public class ProgramScheduleDAO {
         return sqlSession.selectList("programScheduleDAO.selectProgramScheduleListByProgramIdxAndDate", param);
     }
     
+    // 특정 달의 프로그램 일정 목록 조회
+    public List<ProgramScheduleVO> selectProgramScheduleListByProgramIdxAndMonth(Map<String,Object> param) throws Exception {
+        return sqlSession.selectList("programScheduleDAO.selectProgramScheduleListByProgramIdxAndMonth", param);
+    }
     
     // 프로그램 일정 상세 조회
     public ProgramScheduleVO selectProgramSchedule(String idx) throws Exception {

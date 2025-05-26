@@ -64,6 +64,23 @@
 			AND DATE(start_datetime) = #{date}
 		ORDER BY start_datetime;
 	</select>
+	
+	<!-- 특정 달의 프로그램 일정 목록 조회 -->
+	<select id="selectProgramScheduleListByProgramIdxAndMonth" parameterType="map" resultType="programScheduleVO">
+		SELECT
+			idx,
+			create_user_idx,
+			program_idx,
+			start_datetime,
+			end_datetime,
+			capacity,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM program_schedule
+		WHERE program_idx = #{programIdx}
+			AND TO_CHAR(start_datetime, 'YYYY-MM') = #{month}
+		ORDER BY start_datetime;
+	</select>
 
 	<!-- 프로그램 일정 상세 조회 -->
 	<select id="selectProgramSchedule" parameterType="String" resultType="programScheduleVO">

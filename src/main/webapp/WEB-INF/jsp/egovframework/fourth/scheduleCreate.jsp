@@ -15,6 +15,9 @@
     <c:url value="/api/schedule/createSchedule.do" var="createApi"/>
    	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
     <c:url value="/api/schedule/getDateScheduleList.do" var="getDateScheduleListApi"/>
+    <!-- 현재 날짜의 프로그램 일정 조회 API URL -->
+    <c:url value="/api/schedule/getMonthScheduleList.do" var="getMonthScheduleListApi"/>
+    
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -81,8 +84,11 @@
 
 	<script>
 		var idx = '${param.programIdx}'; // 프로그램 idx
-		var date = '${param.date}'; // 선택된 날짜
+		var date = '${param.date}'; // 선택된 날짜(2025-05-15)
+		var monthDate = '${param.monthDate}'; // 일괄 등록용 달 날짜(2025-05)
 		var programName = '${param.programName}'; // 프로그램 이름
+		
+		var mode = monthDate ? 'bulk' : 'single';
 		
 		var existingSchedules = []; // 일정 충돌 체크용
 		
@@ -134,17 +140,24 @@
 		
 		$(function(){
 			$('#programName').text(programName);
-			$('#scheduleDate').text(date);
+			if (mode === 'bulk') {
+				$('#scheduleDate').text(monthDate);
+				$('#btnSubmit').text('일괄 저장');
+			} else {
+				$('#scheduleDate').text(date);
+			}
 			generateTimeOptions('#scheduleStartTime', 9, 18);
 			generateTimeOptions('#scheduleEndTime', 9, 18);
 			
+			var req = mode === 'bulk' ? { programIdx: idx, month: monthDate } : { programIdx: idx, date: date };
+			
     		// 현재 날짜의 프로그램 일정 조회 요청
     		$.ajax({
-    			url: '${getDateScheduleListApi}',
+    			url: mode === 'bulk' ? '${getMonthScheduleListApi}' : '${getDateScheduleListApi}',
     			type:'POST',
     			contentType: 'application/json',
     			dataType: 'json',
-    			data: JSON.stringify({ programIdx: idx, date: date }),
+    			data: JSON.stringify(req),
     			success: function(list){
 					console.log(JSON.stringify(list));
 					existingSchedules = list;
@@ -175,6 +188,7 @@
 			});
 	    	
 	        $('#btnSubmit').click(function(e){
+	        	if (mode === 'bulk') confirm('일괄 저장 시 겹치는 일정은 제외하고 저장됩니다.');
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 	            var startTime = $('#scheduleStartTime').val();
 	            var endTime = $('#scheduleEndTime').val();
@@ -198,33 +212,76 @@
 	                return;
 	            }
 	            
-	            // 일정 충돌 체크
-	            var newStart = new Date(date + ' ' + startTime + ':00');
-	            var newEnd = new Date(date + ' ' + endTime + ':00');
-	         	// 입력한 시간대와 기존에 스케쥴의 시간대가 겹치는지 하나씩 확인
-				for (var i = 0; i < existingSchedules.length; i++) {
-					var item = existingSchedules[i];
-					var itemStart = new Date(item.startDatetime.replace(' ', 'T'));
-					var itemEnd = new Date(item.endDatetime.replace(' ', 'T'));
-					if (newStart < itemEnd && itemStart < newEnd) {
-						alert('선택한 시간대에 이미 등록된 일정이 있습니다.');
-						return;
+				var payload = [];
+				
+		        if (mode === 'bulk') {
+		        	var year = monthDate.split('-')[0];
+		        	var month = monthDate.split('-')[1];
+		        	var lastDay = new Date(year, month, 0).getDate();
+		        
+		        	// 달의 첫번째 날 마지막 날까지 반복
+		        	for (var d = 1; d <= lastDay; d++) {
+		        		var dayStr = String(d).padStart(2, '0');
+		        		var fullDate = year + '-' + month + '-' + dayStr;
+		        		var dayOfWeek = new Date(fullDate).getDay();
+		        		if (dayOfWeek === 0) continue; // 일요일(휴일이면 payload 배열 추가 패스)
+		        
+		        		var newStart = new Date(fullDate + 'T' + startTime + ':00');
+		        		var newEnd = new Date(fullDate + 'T' + endTime + ':00');
+		        
+		        		var conflict = false;
+		        		for (var i = 0; i < existingSchedules.length; i++) {
+		        			var item = existingSchedules[i];
+		        			var itemStart = new Date(item.startDatetime.replace(' ', 'T'));
+		        			var itemEnd = new Date(item.endDatetime.replace(' ', 'T'));
+		        			if (newStart < itemEnd && itemStart < newEnd) {
+		        				conflict = true;
+		        				break;
+		        			}
+		        		}
+		        		if (conflict) continue; // 충돌되는 날도 패스
+		        
+		        		payload.push({
+		        			createUserIdx: sessionUserIdx,
+		        			programIdx: idx,
+		        			startDatetime: fullDate + ' ' + startTime + ':00',
+		        			endDatetime: fullDate + ' ' + endTime + ':00',
+		        			capacity: capacity
+		        		});
+		        	}
+		        
+		        	if (payload.length === 0) {
+		        		alert('등록 가능한 일정이 없습니다.');
+		        		return;
+		        	}
+		        } else {
+		            // 일정 충돌 체크
+		            var newStart = new Date(date + ' ' + startTime + ':00');
+		            var newEnd = new Date(date + ' ' + endTime + ':00');
+		         	// 입력한 시간대와 기존에 스케쥴의 시간대가 겹치는지 하나씩 확인
+					for (var i = 0; i < existingSchedules.length; i++) {
+						var item = existingSchedules[i];
+						var itemStart = new Date(item.startDatetime.replace(' ', 'T'));
+						var itemEnd = new Date(item.endDatetime.replace(' ', 'T'));
+						if (newStart < itemEnd && itemStart < newEnd) {
+							alert('선택한 시간대에 이미 등록된 일정이 있습니다.');
+							return;
+						}
 					}
-				}
-
-	            
-	            var payload = {
-	            		createUserIdx: sessionUserIdx,
-	            		programIdx: idx,
-	            		startDatetime: date + ' ' + startTime + ':00',
-	            		endDatetime: date + ' ' + endTime + ':00',
-	            		capacity: capacity
-	            };
+		         	
+		            payload.push({
+		            	createUserIdx: sessionUserIdx,
+		            	programIdx: idx,
+		            	startDatetime: date + ' ' + startTime + ':00',
+		            	endDatetime: date + ' ' + endTime + ':00',
+		            	capacity: capacity
+		            });
+		        }
 
 	            console.log("제출할 데이터:", payload);
 	            
 	    		// 프로그램 일정 등록 요청
-	    		$.ajax({
+ 	    		$.ajax({
 	    			url: '${createApi}',
 	    			type:'POST',
 	    			contentType: 'application/json',
@@ -233,10 +290,12 @@
 	    			success: function(res){
 						if (res.error) {
 							alert(res.error);
+						} else if(res.skipped && res.skipped.length > 0) {
+							console.log('일부 일정은 충돌되어 등록되지 않았습니다.\n' + res.skipped.join('\n'));
 						} else {
 							alert('프로그램 일정 등록 완료');
-							postTo('${bookManageUrl}', { programIdx: idx });
 			            }
+						postTo('${bookManageUrl}', { programIdx: idx });
 	    			},
 					error: function(xhr){
 						var errMsg = xhr.responseJSON && xhr.responseJSON.error; // 인터셉터에서 에러메시지 받아옴

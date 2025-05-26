@@ -63,6 +63,17 @@ public class ProgramScheduleServiceImpl extends EgovAbstractServiceImpl implemen
 		log.info("SELECT {}에 있는 프로그램의 일정 목록 조회 완료", date.toString());
 		return list;
 	}
+	
+	// 특정 날짜의 프로그램 일정 목록 조회
+	@Override
+	public List<ProgramScheduleVO> getProgramMonthScheduleList(String programIdx, String month) throws Exception {
+		Map<String,Object> param = new HashMap<>();
+		param.put("programIdx", programIdx);
+		param.put("month", month); // YYYY-MM 형식
+		List<ProgramScheduleVO> list = programScheduleDAO.selectProgramScheduleListByProgramIdxAndMonth(param);
+		log.info("SELECT {}에 있는 프로그램의 일정 목록 조회 완료", month);
+		return list;
+	}
 
 	// 프로그램 일정 상세 조회
 	@Override
