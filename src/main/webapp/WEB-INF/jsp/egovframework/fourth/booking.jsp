@@ -281,7 +281,7 @@
 	        $('#calendar').on('click', '.btnGoProgramBooking', function(e){
 	        	e.stopPropagation();
 	        	if ($(this).hasClass('disabled')) {
-	        		alert('해당일정엔 더 이상 예약할 수 없습니다.');
+	        		alert('해당 일정엔 더 이상 예약할 수 없습니다. 전화로 문의바랍니다.');
 	        	} else {
 		        	var programScheduleIdx = $(this).data('id');
 		        	var date = $(this).data('date');

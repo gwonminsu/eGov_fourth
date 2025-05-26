@@ -8,6 +8,7 @@
 
 	<link rel="stylesheet" href="<c:url value='/css/programBooking.css'/>" />
 	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
+	<script src="<c:url value='/js/xlsx.full.min.js'/>"></script>
 	
 	<!-- 예약자(메인) 페이지 URL -->
 	<c:url value="/booking.do" var="bookingUrl"/>
@@ -115,6 +116,7 @@
 	<div class="btn-area">
 		<button id="btnExcelDownload">엑셀양식 다운로드 📥</button>
 		<button id="btnExcelUpload">엑셀업로드 📤</button>
+		<input type="file" id="excelFileInput" accept=".xlsx" style="display: none;" />
 	</div>
 	
 	<div class="btn-area">
@@ -129,6 +131,85 @@
 		var programName = '${param.programName}'; // 프로그램 이름
 		
 		var optionsData = {}; // 예약인 드롭다운 데이터
+		
+		// 엑셀의 구분 텍스트를 키로 변환하는 함수
+		function getUserTypeKey(text) {
+		    var map = {
+		        '미취학 아동(0~5세)': 'baby',
+		        '어린이(6~12세)': 'child',
+		        '청소년(13~18세)': 'youth',
+		        '성인(19~)': 'adult',
+		        '전체 연령': 'all'
+		    };
+		    return map[text] || '';
+		}
+		
+		// 체험 인원 로우 추가 함수
+		function addUserRow(callback) {
+			// 드롭다운 옵션 json 파일 가져와서 예약인 로우 추가
+			$.getJSON(jsonUrl, function(data) {
+				optionsData = data;
+				// console.log(JSON.stringify(data));
+				// 번호
+				var index = $('#userList tr').length;
+				var $tr = $('<tr>');
+				$tr.append($('<td>').text(index + 1));
+				
+				// 성명
+				$tr.append($('<td>').append($('<input type="text">').addClass('booker-name').attr('placeholder', '성함')));
+
+				// 성별
+				var $genderTd = $('<td>');
+				$genderTd.append($('<label>').append($('<input type="radio">')
+							.attr({type: 'radio', name: 'sex' + index, value: 'man', checked: true}), ' 남자'));
+				$genderTd.append($('<label>').css('margin-left', '8px').append($('<input type="radio">')
+							.attr({type: 'radio', name: 'sex' + index, value: 'woman'}), ' 여자'));
+				$tr.append($genderTd);
+				
+				// 대상 구분
+				var $userType = $('<select>').addClass('user-type').append($('<option>').val('').text('대상구분'));
+				optionsData.userTypeList.forEach(function(obj) {
+					var key = Object.keys(obj)[0];
+					var value = obj[key];
+					$userType.append($('<option>').val(key).text(value));
+				});
+				$tr.append($('<td>').append($userType));
+				
+				// 행정구역(거주지)
+				var $region = $('<select>').addClass('administration-area').append($('<option>').val('').text('거주지'));
+				Object.keys(optionsData.cityMap).forEach(function(area) {
+					$region.append($('<option>').val(area).text(area));
+				})
+				$tr.append($('<td>').append($region));
+				
+				// 상세주소
+				var $city = $('<select>').addClass('city').append($('<option>').val('').text('시·군'));
+				// 행정구역 변경 시 해당 상세주소 필터링
+				$region.on('change', function () {
+					var selected = $(this).val();
+					var cities = optionsData.cityMap[selected] || [];
+					$city.empty().append('<option value="">시·군</option>');
+					cities.forEach(function(city) {
+						if (city) $city.append($('<option>').val(city).text(city));
+					});
+					
+					// 엑셀 업로드 시 city 값을 지정해주는 로직
+					var selectedCity = $(this).data('selected-city');
+					if (selectedCity) {
+						$city.val(selectedCity);
+						$(this).removeData('selected-city'); // 다 썼으면 초기화
+					}
+				});
+				$tr.append($('<td>').append($city));
+				
+				$tr.append($('<td>').append($('<input type="checkbox">').addClass('disabled'))); // 장애여부
+				$tr.append($('<td>').append($('<input type="checkbox">').addClass('foreigner'))); // 외국인 여부
+				$tr.append($('<td>').append($('<button>').addClass('btn-delete').text('삭제'))); // 삭제 버튼
+
+				$('#userList').append($tr);
+				if (callback) callback($tr);
+			});
+		}
 		
 		$(function(){
 			$('#programName').text(programName);
@@ -169,61 +250,7 @@
 			
 			// 인원 추가 버튼
 			$('#btnAddUser').on('click', function () {
-				// 드롭다운 옵션 json 파일 가져와서 예약인 로우 추가
-				$.getJSON(jsonUrl, function(data) {
-					optionsData = data;
-					// console.log(JSON.stringify(data));
-					// 번호
-					var index = $('#userList tr').length;
-					var $tr = $('<tr>');
-					$tr.append($('<td>').text(index + 1));
-					
-					// 성명
-					$tr.append($('<td>').append($('<input type="text">').addClass('booker-name').attr('placeholder', '성함')));
-
-					// 성별
-					var $genderTd = $('<td>');
-					$genderTd.append($('<label>').append($('<input type="radio">')
-								.attr({type: 'radio', name: 'sex' + index, value: 'man', checked: true}), ' 남자'));
-					$genderTd.append($('<label>').css('margin-left', '8px').append($('<input type="radio">')
-								.attr({type: 'radio', name: 'sex' + index, value: 'woman'}), ' 여자'));
-					$tr.append($genderTd);
-					
-					// 대상 구분
-					var $userType = $('<select>').addClass('user-type').append($('<option>').val('').text('대상구분'));
-					optionsData.userTypeList.forEach(function(obj) {
-						var key = Object.keys(obj)[0];
-						var value = obj[key];
-						$userType.append($('<option>').val(key).text(value));
-					});
-					$tr.append($('<td>').append($userType));
-					
-					// 행정구역(거주지)
-					var $region = $('<select>').addClass('administration-area').append($('<option>').val('').text('거주지'));
-					Object.keys(optionsData.cityMap).forEach(function(area) {
-						$region.append($('<option>').val(area).text(area));
-					})
-					$tr.append($('<td>').append($region));
-					
-					// 상세주소
-					var $city = $('<select>').addClass('city').append($('<option>').val('').text('시·군'));
-					// 행정구역 변경 시 해당 상세주소 필터링
-					$region.on('change', function () {
-						var selected = $(this).val();
-						var cities = optionsData.cityMap[selected] || [];
-						$city.empty().append('<option value="">시·군</option>');
-						cities.forEach(function(city) {
-							if (city) $city.append($('<option>').val(city).text(city));
-						});
-					});
-					$tr.append($('<td>').append($city));
-					
-					$tr.append($('<td>').append($('<input type="checkbox">').addClass('disabled'))); // 장애여부
-					$tr.append($('<td>').append($('<input type="checkbox">').addClass('foreigner'))); // 외국인 여부
-					$tr.append($('<td>').append($('<button>').addClass('btn-delete').text('삭제'))); // 삭제 버튼
-
-					$('#userList').append($tr);
-				});
+				addUserRow();
 			});
 			$('#btnAddUser').trigger('click'); // 페이지 진입 시 초기 상태 반영
 	
@@ -239,24 +266,124 @@
 			
 			// 엑셀 업로드 버튼
 			$('#btnExcelUpload').on('click', function () {
-				alert('아직 구현하지 않은 기능');
+				$('#excelFileInput').trigger('click'); // 숨겨진 파일 인풋의 파일 선택 클릭
+			});
+			
+			// 파일 선택되면 파싱
+			$('#excelFileInput').on('change', function (e) {
+			    var file = e.target.files[0];
+			    if (!file) return;
+			    if (!file.name.endsWith('.xlsx')) {
+			        alert('엑셀 파일만 업로드 가능합니다.');
+			        return;
+			    }
+
+			    var reader = new FileReader();
+			    reader.onload = function (e) {
+			    	$('#userList').empty(); // 기존 예약인 row 삭제
+			        var data = e.target.result;
+			        var workbook = XLSX.read(data, { type: 'binary' });
+			        var sheetName = workbook.SheetNames[0]; // 시트 이름
+			        console.log(sheetName);
+			        var rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]); // 시트에서 데이터 가져옴
+			     	// 데이터 가공해서 jsonData에 넣어줌
+			        jsonData = [];
+			        rawData.forEach(function(row) {
+						var data = {
+							'성명': row['성명'],
+							'성별': row['성별'],
+							'구분': row['구분'],
+							'거주지': row['거주지'],
+							'시/군(경상북도)': row['시/군(경상북도)'],
+							'장애인': row['장애인'],
+							'외국인': row['외국인']
+						};
+						
+						// 값이 하나라도 있는 로우는 추가
+						var hasVal = false;
+						for (var key in data) {
+							if (data[key] != null && data[key].toString().trim() !== "") { // 공백까지 거르기
+								hasVal = true;
+								break;
+							}
+						}
+						if (hasVal) {
+							jsonData.push(data);
+						}
+					});
+			        
+			        console.log(JSON.stringify(jsonData));
+
+			        jsonData.forEach(function(row) {
+			        	addUserRow(function($newRow) {
+				            $newRow.find('.booker-name').val(row['성명']);
+				            $newRow.find('input[type=radio][value="' + (row['성별'] === '여' ? 'woman' : 'man') + '"]').prop('checked', true);
+				            $newRow.find('.user-type').val(getUserTypeKey(row['구분']));
+				            $newRow.find('.administration-area').data('selected-city', row['시/군(경상북도)']).val(row['거주지']).trigger('change');
+				            $newRow.find('.disabled').prop('checked', row['장애인'] === 'Y');
+				            $newRow.find('.foreigner').prop('checked', row['외국인'] === 'Y');
+			        	});
+			        });
+			    };
+			    reader.readAsBinaryString(file);
+			    $(this).val(''); // 같은 이름 파일 재업로드 가능하게 하기 위해 파일 데이터 삭제
 			});
 	
 			// 저장 버튼 (API 미연결, 데이터 콘솔 확인용)
 			$('#btnSave').on('click', function () {
-				var bookerList = []; // 예약인 리스트 배열 준비
-				$('#userList tr').each(function () {
+				var isValid = true;
+				
+				// 전화번호 검증
+				var phoneNumber = $('#bookerPhone').val();
+				var phoneRegex = /^010\d{8}$/; // 정규식
+				if (!phoneRegex.test(phoneNumber)) {
+					alert('전화번호는 010으로 시작하는 11자리 숫자여야 합니다.');
+					$('#bookerPhone').focus();
+					return;
+				}
+				
+				// 단체명 검증
+				if ($('#bookingType').val() === '단체' || !$('#groupName').val().trim()) {
+					alert('단체일 경우 단체명을 입력해 주세요.');
+					$('#groupName').focus();
+				}
+				
+				var bookerList = [];
+				$('#userList tr').each(function (i) {
 					var $tr = $(this);
+					var name = $tr.find('.booker-name').val().trim();
+					var sex = $tr.find('input[type=radio]:checked').val();
+					var userType = $tr.find('.user-type').val();
+					var area = $tr.find('.administration-area').val();
+					var city = $tr.find('.city').val();
+
+					// 필수값 검증
+					if (!name || !sex || !userType || !area) {
+						alert((i + 1) + '번 인원의 성명, 성별, 구분, 거주지는 필수입니다.');
+						isValid = false;
+						return false;
+					}
+
+					// 경상북도일 때만 시군 입력 필요
+					if (area === '경상북도' && !city) {
+						alert((i + 1) + '번 인원의 상세주소(시·군)를 선택해주세요.');
+						isValid = false;
+						return false;
+					}
+					
+					// 예약인 리스트 배열 준비 완료
 					bookerList.push({
-						bookerName: $tr.find('.booker-name').val(),
-						sex: $tr.find('input[type=radio]:checked').val(),
-						userType: $tr.find('.user-type').val(),
-						administrationArea: $tr.find('.administration-area').val(),
-						city: $tr.find('.city').val(),
+						bookerName: name,
+						sex: sex,
+						userType: userType,
+						administrationArea: area,
+						city: city,
 						isDisabled: $tr.find('.disabled').is(':checked'),
 						isForeigner: $tr.find('.foreigner').is(':checked'),
 					});
 				});
+				
+				if (!isValid) return;
 
 				// 예약 데이터 준비
 				var payload = {
@@ -268,7 +395,7 @@
 						bookerList: bookerList
 				}
 				
-				console.log("최종 전송 데이터:", payload);
+				console.log("최종 전송 데이터:", JSON.stringify(payload));
 
 	    		// 예약 등록 요청
 	    		$.ajax({
