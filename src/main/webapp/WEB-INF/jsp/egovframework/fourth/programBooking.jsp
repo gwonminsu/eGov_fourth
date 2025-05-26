@@ -11,8 +11,10 @@
 	
 	<!-- 예약자(메인) 페이지 URL -->
 	<c:url value="/booking.do" var="bookingUrl"/>
-   	<!-- 현재 날짜의 프로그램 일정 조회 API URL -->
+   	<!-- 현재 날짜의 프로그램 일정 조회 API -->
     <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
+    <!-- 프로그램 일정에 예약 등록 요청 API -->
+    <c:url value="/api/booking/createBooking.do" var="crateBookingApi"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -21,6 +23,7 @@
 		var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
 		
 		var fileUrl = '<c:out value="/files/예약 프로젝트 예약 신청서_기본.xlsx" />';
+		var jsonUrl = '<c:out value="/files/bookingDropdownData.json" />'
 		
         // 동적 POST 폼 생성 함수
         function postTo(url, params) {
@@ -125,12 +128,13 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
-		$(document).ready(function () {
+		var optionsData = {}; // 예약인 드롭다운 데이터
+		
+		$(function(){
 			$('#programName').text(programName);
 			$('#programTime').text(date);
 			$('#bookerName').text(sessionUserName);
 			$('#bookerPhone').val(sessionUserPhone);
-			
 			
     		// 이 프로그램 일정 조회 요청
     		$.ajax({
@@ -165,26 +169,61 @@
 			
 			// 인원 추가 버튼
 			$('#btnAddUser').on('click', function () {
-				var index = $('#userList tr').length;
-				var $tr = $('<tr>');
-				$tr.append($('<td>').text(index + 1));
-				$tr.append($('<td>').append($('<input type="text">').addClass('username').attr('placeholder', '성함')));
+				// 드롭다운 옵션 json 파일 가져와서 예약인 로우 추가
+				$.getJSON(jsonUrl, function(data) {
+					optionsData = data;
+					// console.log(JSON.stringify(data));
+					// 번호
+					var index = $('#userList tr').length;
+					var $tr = $('<tr>');
+					$tr.append($('<td>').text(index + 1));
+					
+					// 성명
+					$tr.append($('<td>').append($('<input type="text">').addClass('booker-name').attr('placeholder', '성함')));
 
-				var $genderTd = $('<td>');
-				$genderTd.append($('<label>').append($('<input type="radio">')
-							.attr({type: 'radio', name: 'gender' + index, value: 'man', checked: true}), ' 남자'));
-				$genderTd.append($('<label>').css('margin-left', '8px').append($('<input type="radio">')
-							.attr({type: 'radio', name: 'gender' + index, value: 'woman'}), ' 여자'));
-				$tr.append($genderTd);
+					// 성별
+					var $genderTd = $('<td>');
+					$genderTd.append($('<label>').append($('<input type="radio">')
+								.attr({type: 'radio', name: 'sex' + index, value: 'man', checked: true}), ' 남자'));
+					$genderTd.append($('<label>').css('margin-left', '8px').append($('<input type="radio">')
+								.attr({type: 'radio', name: 'sex' + index, value: 'woman'}), ' 여자'));
+					$tr.append($genderTd);
+					
+					// 대상 구분
+					var $userType = $('<select>').addClass('user-type').append($('<option>').val('').text('대상구분'));
+					optionsData.userTypeList.forEach(function(obj) {
+						var key = Object.keys(obj)[0];
+						var value = obj[key];
+						$userType.append($('<option>').val(key).text(value));
+					});
+					$tr.append($('<td>').append($userType));
+					
+					// 행정구역(거주지)
+					var $region = $('<select>').addClass('administration-area').append($('<option>').val('').text('거주지'));
+					Object.keys(optionsData.cityMap).forEach(function(area) {
+						$region.append($('<option>').val(area).text(area));
+					})
+					$tr.append($('<td>').append($region));
+					
+					// 상세주소
+					var $city = $('<select>').addClass('city').append($('<option>').val('').text('시·군'));
+					// 행정구역 변경 시 해당 상세주소 필터링
+					$region.on('change', function () {
+						var selected = $(this).val();
+						var cities = optionsData.cityMap[selected] || [];
+						$city.empty().append('<option value="">시·군</option>');
+						cities.forEach(function(city) {
+							if (city) $city.append($('<option>').val(city).text(city));
+						});
+					});
+					$tr.append($('<td>').append($city));
+					
+					$tr.append($('<td>').append($('<input type="checkbox">').addClass('disabled'))); // 장애여부
+					$tr.append($('<td>').append($('<input type="checkbox">').addClass('foreigner'))); // 외국인 여부
+					$tr.append($('<td>').append($('<button>').addClass('btn-delete').text('삭제'))); // 삭제 버튼
 
-				$tr.append($('<td>').append($('<select>').addClass('user-type').append($('<option>').val('대상구분').text('대상구분'))));
-				$tr.append($('<td>').append($('<select>').addClass('region').append($('<option>').val('거주지').text('거주지'))));
-				$tr.append($('<td>').append($('<input type="text">').addClass('address').attr('placeholder', '시·군')));
-				$tr.append($('<td>').append($('<input type="checkbox">').addClass('disabled')));
-				$tr.append($('<td>').append($('<input type="checkbox">').addClass('foreigner')));
-				$tr.append($('<td>').append($('<button>').addClass('btn-delete').text('삭제')));
-
-				$('#userList').append($tr);
+					$('#userList').append($tr);
+				});
 			});
 			$('#btnAddUser').trigger('click'); // 페이지 진입 시 초기 상태 반영
 	
@@ -205,21 +244,59 @@
 	
 			// 저장 버튼 (API 미연결, 데이터 콘솔 확인용)
 			$('#btnSave').on('click', function () {
-				var data = [];
+				var bookerList = []; // 예약인 리스트 배열 준비
 				$('#userList tr').each(function () {
 					var $tr = $(this);
-					data.push({
-						name: $tr.find('.username').val(),
-						gender: $tr.find('input[type=radio]:checked').val(),
+					bookerList.push({
+						bookerName: $tr.find('.booker-name').val(),
+						sex: $tr.find('input[type=radio]:checked').val(),
 						userType: $tr.find('.user-type').val(),
-						region: $tr.find('.region').val(),
-						address: $tr.find('.address').val(),
-						disabled: $tr.find('.disabled').is(':checked'),
-						foreigner: $tr.find('.foreigner').is(':checked'),
+						administrationArea: $tr.find('.administration-area').val(),
+						city: $tr.find('.city').val(),
+						isDisabled: $tr.find('.disabled').is(':checked'),
+						isForeigner: $tr.find('.foreigner').is(':checked'),
 					});
 				});
-				console.log("예약 인원 데이터:", data);
-				alert('API 아직 미구현');
+
+				// 예약 데이터 준비
+				var payload = {
+						userIdx: sessionUserIdx,
+						programScheduleIdx: idx,
+						phone: $('#bookerPhone').val(),
+						isGroup: $('#bookingType').val() === '단체',
+						groupName: $('#groupName').val(),
+						bookerList: bookerList
+				}
+				
+				console.log("최종 전송 데이터:", payload);
+
+	    		// 예약 등록 요청
+	    		$.ajax({
+	    			url: '${crateBookingApi}',
+	    			type:'POST',
+	    			contentType: 'application/json',
+	    			dataType: 'json',
+	    			data: JSON.stringify(payload),
+	    			success: function(res){
+						if (res.error) {
+							alert(res.error);
+						} else {
+							alert('예약 등록 완료');
+							postTo('${bookingUrl}', { programIdx: programIdx });
+			            }
+	    			},
+					error: function(xhr){
+						var errMsg = xhr.responseJSON && xhr.responseJSON.error; // 인터셉터에서 에러메시지 받아옴
+						if (!errMsg) {
+							try {
+								errMsg = JSON.parse(xhr.responseText).error;
+							} catch (e) {
+								errMsg = '예약 등록 중 에러 발생';
+							}
+						}
+						alert(errMsg);
+					}
+	    		});
 			});
 	
 			// 돌아가기 버튼
