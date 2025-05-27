@@ -72,7 +72,6 @@ public class ProgramController {
 		return programService.getProgramList();
 	}
 
-
     // 프로그램 삭제
     @PostMapping(value="/delete.do", consumes="application/json", produces="application/json")
     public Map<String,String> delete(@RequestBody Map<String,String> param) throws Exception {

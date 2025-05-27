@@ -11,14 +11,17 @@
 	
 	<!-- 목록 페이지 URL -->
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
+   	<!-- 예약 인원 직접 추가 페이지 URL -->
+	<c:url value="/addBooker.do" var="addBookerUrl"/>
 	<!-- 프로그램 일정 수정 API URL -->
     <c:url value="/api/schedule/updateSchedule.do" var="updateApi"/>
    	<!-- 현재 프로그램 일정 조회 API URL -->
     <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
 	<!-- 현재 프로그램 일정의 예약 조회 API URL -->
     <c:url value="/api/booking/getBookingList.do" var="getBookingListApi"/>
-   	<!-- 예약 인원 직접 추가 페이지 URL -->
-	<c:url value="/addBooker.do" var="addBookerUrl"/>
+   	<!-- 현재 프로그램 일정의 특정 예약 삭제 API URL -->
+    <c:url value="/api/booking/delete.do" var="deleteBookingApi"/>
+
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -124,7 +127,7 @@
 			var bookerName = booking.groupName !== '' ? booking.userName + '(' + booking.groupName + ')' : booking.userName;
 			var bookerCnt = booking.bookerList.length;
 
-			var $tr = $('<tr>');
+			var $tr = $('<tr>').attr('data-booking-idx', booking.idx);
 			$tr.append($('<td>').text(index)); // 번호
 			$tr.append($('<td>').text(programNameText)); // 체험명
 			$tr.append($('<td>').text(bookingType)); // 예약구분
@@ -142,6 +145,32 @@
 			$tr.append($('<td>').append($btnPrint)); // 수료증
 
 			$('#bookerList').append($tr);
+		};
+		
+		// 테이블 재 렌더링을 위한 프로그램 일정의 예약 목록 조회 요청 함수
+		function loadBookingList() {
+			$('#bookerList').empty();
+    		$.ajax({
+    			url: '${getBookingListApi}',
+    			type:'POST',
+    			contentType: 'application/json',
+    			dataType: 'json',
+    			data: JSON.stringify({ programScheduleIdx: idx }),
+    			success: function(list){
+					// console.log(JSON.stringify(list));
+					bookingList = list;
+					if (list.length === 0) {
+						$('#bookerList').append($('<tr>').append($('<td>').attr('colspan', '9').append($('<div>').addClass('no-data-text').text('아직 등록된 예약이 없습니다.'))));
+					}
+					list.forEach(function(booking) {
+						addBookingRow(booking);
+					});
+    			},
+				error: function(){
+					alert('현재 프로그램 일정의 예약 목록 조회 중 에러 발생');
+				}
+    		});
+			
 		}
 		
 		$(function () {
@@ -170,26 +199,7 @@
     		});
     		
     		// 프로그램 일정의 예약 목록 조회 요청
-    		$.ajax({
-    			url: '${getBookingListApi}',
-    			type:'POST',
-    			contentType: 'application/json',
-    			dataType: 'json',
-    			data: JSON.stringify({ programScheduleIdx: idx }),
-    			success: function(list){
-					// console.log(JSON.stringify(list));
-					bookingList = list;
-					if (list.length === 0) {
-						$('#bookerList').append($('<tr>').append($('<td>').attr('colspan', '9').append($('<div>').addClass('no-data-text').text('아직 등록된 예약이 없습니다.'))));
-					}
-					list.forEach(function(booking) {
-						addBookingRow(booking);
-					});
-    			},
-				error: function(){
-					alert('현재 프로그램 일정의 예약 목록 조회 중 에러 발생');
-				}
-    		});
+			loadBookingList();
 		
 			// 돌아가기
 			$('#btnCancel').on('click', function () {
@@ -289,9 +299,35 @@
 				$('.black-bg').addClass('show-modal');
 			});
 			$('#bookerList').on('click', '.btn-delete', function () {
-				if (confirm('정말 삭제하시겠습니까?')) {
-					$(this).closest('tr').remove();
-				}
+				if (!confirm('정말 삭제하시겠습니까?')) return;
+				var $tr = $(this).closest('tr');
+				var bookingIdx = $tr.data('booking-idx');
+				console.log(bookingIdx);
+				$.ajax({
+					url : '${deleteBookingApi}',
+					type : 'POST',
+					contentType : 'application/json',
+					data : JSON.stringify({ idx : bookingIdx }),
+					success : function(res) {
+						if (res.error) {
+							alert(res.error);
+						} else {
+							alert('예약 삭제가 완료되었습니다');
+							loadBookingList();
+						}
+					},
+					error: function(xhr){
+						var errMsg = xhr.responseJSON && xhr.responseJSON.error;
+						if (!errMsg) {
+							try {
+								errMsg = JSON.parse(xhr.responseText).error;
+							} catch (e) {
+								errMsg = '예약 삭제 중 에러 발생';
+							}
+						}
+						alert(errMsg);
+					}
+				});
 			});
 			$('#bookerList').on('click', '.btn-print', function () {
 				alert('수료증 출력 기능 구현 예정');

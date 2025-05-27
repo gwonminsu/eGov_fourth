@@ -345,9 +345,7 @@
 					url : '${deleteApi}',
 					type : 'POST',
 					contentType : 'application/json',
-					data : JSON.stringify({
-						idx : idx
-					}),
+					data : JSON.stringify({ idx : idx }),
 					success : function(res) {
 						if (res.error) {
 							alert(res.error);
@@ -356,9 +354,8 @@
 							postTo('${bookManageUrl}', { programIdx: programIdx });
 						}
 					}
-				})
-
-			})
+				});
+			});
 
 			$('#btnCancel').click(function() {
 				// 예약 관리자 페이지 이동
