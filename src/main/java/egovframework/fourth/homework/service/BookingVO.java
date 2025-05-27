@@ -31,5 +31,7 @@ public class BookingVO {
     private Timestamp createdAt; // 등록일
     
     private List<BookerVO> bookerList; // 예약인 목록
+    
+    private Boolean willCheck = true; // 검증할지 여부
 	
 }

@@ -96,4 +96,16 @@ public class ViewController {
 		return "scheduleDetail";
 	}
 	
+	// 예약 인원 직접 추가 페이지
+	@RequestMapping(value = "/addBooker.do")
+	public String addBookerPage(HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+		return "addBooker";
+	}
+	
 }

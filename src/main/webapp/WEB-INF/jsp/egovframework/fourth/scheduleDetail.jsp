@@ -17,6 +17,8 @@
     <c:url value="/api/schedule/getProgramSchedule.do" var="getProgramScheduleApi"/>
 	<!-- 현재 프로그램 일정의 예약 조회 API URL -->
     <c:url value="/api/booking/getBookingList.do" var="getBookingListApi"/>
+   	<!-- 예약 인원 직접 추가 페이지 URL -->
+	<c:url value="/addBooker.do" var="addBookerUrl"/>
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -102,7 +104,6 @@
 			</div>
 			<div id="modal-body">
 			</div>
-			
 		</div>
 	</div>
 	
@@ -120,7 +121,7 @@
 			var programNameText = $('#programName').text();
 			var bookingType = booking.isGroup ? '단체' : '개인';
 			var bookingTime = booking.createdAt.substr(0,10) + '(' + booking.createdAt.substr(11,5) + ')'
-			var bookerName = booking.isGroup ? booking.userName + '(' + booking.groupName + ')' : booking.userName;
+			var bookerName = booking.groupName !== '' ? booking.userName + '(' + booking.groupName + ')' : booking.userName;
 			var bookerCnt = booking.bookerList.length;
 
 			var $tr = $('<tr>');
@@ -249,7 +250,7 @@
 		
 			// 예약자 추가
 			$('#btnAddBooker').on('click', function () {
-				alert('예약자 추가 기능 구현 예정 ');
+				postTo('${addBookerUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date });
 			});
 		
 			// 예약자 테이블 내부 버튼

@@ -45,7 +45,7 @@ public class BookingController {
 		
 		ProgramScheduleVO schedule = programScheduleService.getProgramSchedule(vo.getProgramScheduleIdx());
 		// 일정의 capacity보다 기존 예약인 수 + 등록하는 예약인 수가 많으면 튕굼
-		if (schedule.getBookerCount() + vo.getBookerList().size() > schedule.getCapacity()) {
+		if (schedule.getBookerCount() + vo.getBookerList().size() > schedule.getCapacity() && vo.getWillCheck() == true) {
 			log.info("예약 등록 거부: 제한 인원 수 초과");
 			return Collections.singletonMap("error","예약하려는 인원 수가 현재 일정의 제한 인원 수를 초과했습니다. 전화로 예약 인원 추가 문의 바랍니다.");
 		}
