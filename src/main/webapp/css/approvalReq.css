@@ -125,3 +125,223 @@ table.form-table textarea {
 	background-color: #094055;
 }
 
+/* 모달 창 영역 */
+.black-bg {
+	width: 100%;
+	height: 100%;
+	position:fixed;
+	top: 0;
+	left: 0;
+	visibility : hidden;
+	background: rgba(0,0,0,0.6);
+	z-index: 5;
+	padding: 30px;
+	opacity: 0;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.white-bg {
+	background: #fff;
+	border-radius: 10px;
+	padding: 0 15px 30px 30px;
+	width: 800px;
+	max-width: 90%;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.show-modal {
+	visibility: visible;
+	opacity: 1;
+}
+#modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	white-space: nowrap;
+}
+#btnModalClose {
+	min-width: 50px;
+	padding: 5px 6px;
+	margin: 0 4px;
+	background-color: #0B5773;
+	color: #FFFFFF;
+	border: none;
+}
+#btnModalClose:hover {
+	background-color: #094055;
+}
+/* 모달 바디 전체 */
+#modal-body {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 20px;
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.modal-section {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+/* 결재라인 테이블 */
+.line-list-wrap {
+	overflow-x: auto;
+}
+.approval-line-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+.approval-line-table th,
+.approval-line-table td {
+	border: 1px solid #ccc;
+	padding: 6px 10px;
+	text-align: center;
+}
+.approval-line-table th {
+	background-color: #eaf4fd;
+	font-weight: bold;
+}
+
+/* 중단 가로 배치 */
+.user-select-wrap {
+	display: flex;
+	gap: 16px;
+}
+
+/* 사용자 검색 + 리스트 */
+.user-search-list {
+	flex: 1.5;
+}
+.filter-wrap {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+	font-size: 13px;
+}
+.filter-wrap input {
+	padding: 4px 6px;
+	width: 90px;
+}
+.filter-wrap button {
+	background-color: #0B5773;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+.filter-wrap button:hover {
+	background-color: #094055;
+}
+
+.user-list-wrap {
+	max-height: 240px;
+	overflow-y: auto;
+}
+.user-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+.user-table th,
+.user-table td {
+	border: 1px solid #ccc;
+	padding: 6px;
+	text-align: center;
+}
+.user-table th {
+	background-color: #f2f9ff;
+}
+#userList tr.active {
+	background-color: #e0f7ff;
+	font-weight: bold;
+}
+
+/* 이동 버튼 */
+.btn-set {
+	text-align: center;
+}
+.btn-set button {
+	background-color: #ccc;
+	border: none;
+	padding: 4px 8px;
+	cursor: pointer;
+}
+.btn-set button:hover {
+	background-color: #bbb;
+}
+
+/* 결재라인 편집 영역 */
+.line-editor-wrap {
+	flex: 1.5;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.line-section {
+	border: 1px solid #ddd;
+	background-color: #fafafa;
+	padding: 8px;
+}
+.line-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	border: 1px solid #ccc;
+	background-color: white;
+	min-height: 60px;
+}
+.line-list li {
+	padding: 6px 10px;
+	border-bottom: 1px solid #eee;
+	cursor: pointer;
+}
+.line-list li.active {
+	background-color: #e0f7ff;
+	font-weight: bold;
+}
+.line-controls {
+	display: flex;
+	gap: 4px;
+	margin-top: 6px;
+}
+.line-controls button {
+	background-color: #ddd;
+	border: none;
+	padding: 4px 6px;
+	font-size: 12px;
+	cursor: pointer;
+}
+.line-controls button:hover {
+	background-color: #ccc;
+}
+
+/* 등록/선택 버튼 */
+.line-save-wrap {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-top: 6px;
+}
+#lineName {
+	flex: 1;
+	padding: 6px 8px;
+}
+.line-save-wrap button {
+	background-color: #0F725D;
+	color: white;
+	border: none;
+	padding: 6px 12px;
+	cursor: pointer;
+}
+.line-save-wrap button:hover {
+	background-color: #0B5344;
+}
