@@ -70,17 +70,29 @@ table.form-table input[type="number"] {
 	background-color: #343a40;
 	color: #FFFFFF;
 }
+#btnCancel:hover {
+	background-color: #1f2225;
+}
 #btnClose {
 	margin-right: 8px;
 	background-color: #e2e6ea;
+}
+#btnClose:hover {
+	background-color: #c0c8cf;
 }
 #btnSubmit {
 	background-color: #b48cf3;
 	color: #FFFFFF;
 }
-#btnAddbooker {
+#btnSubmit:hover {
+	background-color: #8d4fec;
+}
+#btnAddBooker {
 	background-color: #ff6600;
 	color: #FFFFFF;
+}
+#btnAddBooker:hover {
+	background-color: #f26100;
 }
 
 /* 예약 일정 테이블 각 컬럼 너비 설정 */
@@ -128,12 +140,15 @@ table.form-table.booker-table th:nth-child(9),
 table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
 
 /* 예약자 테이블 버튼들 */
-.btn-confirm {
+.btn-show {
 	background-color: #dee2e6;
 	border: none;
 	white-space: nowrap;
 	min-width: 50px;
 	padding: 6px 8px;
+}
+.btn-show:hover {
+	background-color: #c0c8cf;
 }
 .btn-delete {
 	background-color: #ff6b6b;
@@ -143,6 +158,9 @@ table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
 	min-width: 50px;
 	padding: 6px 8px;
 }
+.btn-delete:hover {
+	background-color: #ff4040;
+}
 .btn-print {
 	background-color: #343a40;
 	color: white;
@@ -150,6 +168,9 @@ table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
 	white-space: nowrap;
 	min-width: 50px;
 	padding: 6px 8px;
+}
+.btn-print:hover {
+	background-color: #1f2225;
 }
 
 /* 기타 텍스트 */

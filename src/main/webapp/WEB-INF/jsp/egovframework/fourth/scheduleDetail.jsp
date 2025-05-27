@@ -64,7 +64,7 @@
 	
 	<div class="btn-area1">
 			<button id="btnClose">예약마감</button>
-			<button id="btnSubmit" style="background-color: #b48cf3; color: white;">저장</button>
+			<button id="btnSubmit">저장</button>
 	</div>
 	
 	<br/>
@@ -90,7 +90,7 @@
 	
 	<div class="btn-area2">
 		<button id="btnCancel">돌아가기</button>
-		<button id="btnAddBooker" style="background-color: #ff6e00; color: white;">예약자 추가</button>
+		<button id="btnAddBooker">예약자 추가</button>
 	</div>
 	
 	<div class="black-bg">
@@ -132,11 +132,11 @@
 			$tr.append($('<td>').text(bookerCnt)); // 예약자수
 
 			// 버튼들
-			var $btnConfirm = $('<button>').addClass('btn-confirm').text('확인');
+			var $btnShow = $('<button>').addClass('btn-show').text('확인');
 			var $btnDelete = $('<button>').addClass('btn-delete').text('삭제');
 			var $btnPrint = $('<button>').addClass('btn-print').text('출력');
 
-			$tr.append($('<td>').append($btnConfirm)); // 예약자확인
+			$tr.append($('<td>').append($btnShow)); // 예약자확인
 			$tr.append($('<td>').append($btnDelete)); // 삭제
 			$tr.append($('<td>').append($btnPrint)); // 수료증
 
@@ -253,7 +253,7 @@
 			});
 		
 			// 예약자 테이블 내부 버튼
-			$('#bookerList').on('click', '.btn-confirm', function () {
+			$('#bookerList').on('click', '.btn-show', function () {
 				var index = $(this).closest('tr').index(); // 몇 번째 tr인지 찾기
 				var booking = bookingList[index]; // 해당 booking 객체 가져오기
 

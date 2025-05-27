@@ -126,4 +126,5 @@ table.form-table.booker-table td {
 	padding: 4px 10px;
 	cursor: pointer;
 	border-radius: 4px;
+	white-space: nowrap;
 }

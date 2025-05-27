@@ -142,6 +142,10 @@
 						$('#programName').val(item.programName);
 						$('#description').val(item.description);
 						$('#userType').val(item.userType);
+						
+						// textArea 높이 조절
+						$('#description')[0].style.height = 'auto';
+						$('#description')[0].style.height = $('#description')[0].scrollHeight + 'px';
 					},
 					error : function() {
 						console.log('프로그램 메타 정보 조회 실패');
