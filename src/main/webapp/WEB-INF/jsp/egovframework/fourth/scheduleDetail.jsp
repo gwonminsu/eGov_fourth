@@ -13,6 +13,8 @@
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
    	<!-- 예약 인원 직접 추가 페이지 URL -->
 	<c:url value="/addBooker.do" var="addBookerUrl"/>
+   	<!-- 예약 마감 기안문 작성 페이지 URL -->
+	<c:url value="/approvalReq.do" var="approvalReqUrl"/>
 	<!-- 프로그램 일정 수정 API URL -->
     <c:url value="/api/schedule/updateSchedule.do" var="updateApi"/>
    	<!-- 현재 프로그램 일정 조회 API URL -->
@@ -123,7 +125,6 @@
 			var index = $('#bookerList tr').length + 1;
 			var programNameText = $('#programName').text();
 			var bookingType = booking.isGroup ? '단체' : '개인';
-			var bookingTime = booking.createdAt.substr(0,10) + '(' + booking.createdAt.substr(11,5) + ')'
 			var bookerName = booking.groupName !== '' ? booking.userName + '(' + booking.groupName + ')' : booking.userName;
 			var bookerCnt = booking.bookerList.length;
 
@@ -131,7 +132,9 @@
 			$tr.append($('<td>').text(index)); // 번호
 			$tr.append($('<td>').text(programNameText)); // 체험명
 			$tr.append($('<td>').text(bookingType)); // 예약구분
-			$tr.append($('<td>').text(bookingTime)); // 예약시간
+			var $dateTag = $('<div>').addClass('date-tag').text(booking.createdAt.substr(0,10));
+			var $bookingTime = $('<div>').addClass('booking-time-box').append($dateTag).append($('<span>').text(booking.createdAt.substr(11,5)));
+			$tr.append($('<td>').append($bookingTime)); // 예약시간
 			$tr.append($('<td>').text(bookerName)); // 예약자명
 			$tr.append($('<td>').text(bookerCnt)); // 예약자수
 
@@ -255,7 +258,7 @@
 		
 			// 예약마감 버튼(기안문 작성 예정)
 			$('#btnClose').on('click', function () {
-				alert('예약마감 처리 예정');
+				postTo('${approvalReqUrl}', { programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
 			});
 		
 			// 예약자 추가

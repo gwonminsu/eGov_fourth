@@ -23,21 +23,14 @@
 	var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
 	var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
 
-	// 동적 POST 폼 생성 함수
-	function postTo(url, params) {
-		var form = $('<form>').attr({
-			method : 'POST',
-			action : url
-		});
-		$.each(params, function(name, value) {
-			$('<input>').attr({
-				type : 'hidden',
-				name : name,
-				value : value
-			}).appendTo(form);
-		});
-		form.appendTo('body').submit();
-	}
+    // 동적 POST 폼 생성 함수
+    function postTo(url, params) {
+        var form = $('<form>').attr({ method: 'POST', action: url });
+        $.each(params, function(name, value){
+            $('<input>').attr({ type: 'hidden', name: name, value: value }).appendTo(form);
+        });
+        form.appendTo('body').submit();
+    }
 
 	// 바이트 수를 읽기 편한 문자열로 변환
 	function formatBytes(bytes) {

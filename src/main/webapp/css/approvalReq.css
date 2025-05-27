@@ -1,0 +1,127 @@
+@charset "UTF-8";
+
+/* form-table(프로그램 등록 폼) 스타일 */
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	vertical-align: middle;
+}
+table.form-table th {
+	width: 15%;
+	background: #f2f9ff;
+	text-align: center;
+	white-space: nowrap;
+}
+table.form-table #docId {
+	width: 98%
+}
+table.form-table #draftDate {
+	width: 98%
+}
+table.form-table #userName {
+	width: 98%
+}
+table.form-table #departmentAndPosition {
+	width: 98%
+}
+table.form-table #reqTitle {
+	width: 99%
+}
+table.form-table textarea {
+	width: 100%;
+	box-sizing: border-box;
+	resize: none;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.input-center {
+	display: block;
+	margin: 0 auto;
+}
+
+/* 첨부파일 영역 스타일 */
+#attachFileWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	box-sizing: border-box;
+	white-space: nowrap;
+}
+#fileList {
+	width: 100%;
+	margin-top: 10px;
+}
+.file-item {
+	margin-bottom: 6px;
+	font-size: 14px;
+	color: #333;
+}
+.file-item button.btn-remove {
+	background-color: #e0e0e0;
+	color: #333;
+	border: 1px solid #ccc;
+	padding: 4px 10px;
+	margin-left: 5px;
+	border-radius: 999px;
+	cursor: pointer;
+	font-size: 13px;
+	transition: background-color 0.2s ease;
+}
+.file-item button.btn-remove:hover {
+	background-color: #d5d5d5;
+}
+
+#dropZone {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1em;
+	margin-top: 15px;
+	border: 2px dashed #ccc;
+	text-align: center;
+	color: #888;
+	margin-bottom: 1em;
+}
+#dropZone.dragover {
+	border-color: #66afe9;
+	background: #f0f8ff;
+	color: #333;
+}
+
+/* 버튼 스타일 */
+.btn-area {
+	text-align: right;
+	margin-top: 16px;
+	display: flex;
+	justify-content: space-between;
+	align-content: center;
+}
+.btn-area button {
+	min-width: 80px;
+	padding: 6px 12px;
+	margin: 0 4px;
+}
+#btnSelectApprovalLine,
+#btnSubmit {
+	background-color: #0F725D;
+	color: #FFFFFF;
+	border: none;
+}
+#btnSelectApprovalLine:hover,
+#btnSubmit:hover {
+	background-color: #0B5344;
+}
+#btnCancel {
+	background-color: #0B5773;
+	color: #FFFFFF;
+	border: none;
+}
+#btnCancel:hover {
+	background-color: #094055;
+}
+

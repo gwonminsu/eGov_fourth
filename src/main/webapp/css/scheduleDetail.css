@@ -138,6 +138,22 @@ table.form-table.booker-table th:nth-child(8),
 table.form-table.booker-table td:nth-child(8) { width: 10%; }   /* 삭제 */
 table.form-table.booker-table th:nth-child(9),
 table.form-table.booker-table td:nth-child(9) { width: 10%; }   /* 수료증 */
+.booking-time-box {
+	display: flex;
+	justify-content: center;
+	white-space: nowrap;
+}
+.date-tag {
+	background-color: #808080;
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	font-size: 0.7em;
+	width: 60px;
+	height: 18px;
+	padding: 3px 4px;
+	margin-right: 5px;
+}
 
 /* 예약자 테이블 버튼들 */
 .btn-show {
