@@ -13,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import egovframework.fourth.homework.service.BookerService;
+import egovframework.fourth.homework.service.BookerVO;
+import egovframework.fourth.homework.service.BookingService;
+import egovframework.fourth.homework.service.BookingVO;
 import egovframework.fourth.homework.service.ProgramScheduleService;
 import egovframework.fourth.homework.service.ProgramScheduleVO;
 
@@ -23,6 +27,12 @@ public class ProgramScheduleServiceImpl extends EgovAbstractServiceImpl implemen
 	
 	@Resource(name = "programScheduleDAO")
 	private ProgramScheduleDAO programScheduleDAO;
+    
+    @Resource(name="bookingService")
+    private BookingService bookingeService;
+    
+    @Resource(name="bookerService")
+    private BookerService bookerService;
 
 	// 프로그램 일정 등록
 	@Override
@@ -93,7 +103,11 @@ public class ProgramScheduleServiceImpl extends EgovAbstractServiceImpl implemen
 	// 프로그램 일정 삭제
 	@Override
 	public void removeProgramSchedule(String idx) throws Exception {
-		programScheduleDAO.deleteProgramSchedule(idx);
+		List<BookingVO> bookingList = bookingeService.getProgramScheduleBookingList(idx);
+		for (BookingVO booking : bookingList) {
+			bookingeService.removeBooking(booking.getIdx()); // 프로그램 일정의 예약들 삭제하고
+		}
+		programScheduleDAO.deleteProgramSchedule(idx); // 프로그램 일정 삭제
 		log.info("DELETE 프로그램 일정({}) 삭제 완료", idx);
 	}
 

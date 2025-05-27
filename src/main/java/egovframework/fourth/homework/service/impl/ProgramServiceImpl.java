@@ -11,6 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.fourth.homework.service.AttachService;
+import egovframework.fourth.homework.service.BookerService;
+import egovframework.fourth.homework.service.BookerVO;
+import egovframework.fourth.homework.service.BookingService;
+import egovframework.fourth.homework.service.BookingVO;
+import egovframework.fourth.homework.service.ProgramScheduleService;
+import egovframework.fourth.homework.service.ProgramScheduleVO;
 import egovframework.fourth.homework.service.ProgramService;
 import egovframework.fourth.homework.service.ProgramVO;
 
@@ -24,6 +30,15 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 	
     @Resource(name="attachService")
     private AttachService attachService;
+    
+    @Resource(name="programScheduleService")
+    private ProgramScheduleService programScheduleService;
+    
+    @Resource(name="bookingService")
+    private BookingService bookingeService;
+    
+    @Resource(name="bookerService")
+    private BookerService bookerService;
 
 	// 프로그램 등록
 	@Override
@@ -73,9 +88,12 @@ public class ProgramServiceImpl extends EgovAbstractServiceImpl implements Progr
 	// 프로그램 삭제
 	@Override
 	public void removeProgram(String idx) throws Exception {
+		List<ProgramScheduleVO> programScheduleList = programScheduleService.getProgramScheduleList(idx);
+		for (ProgramScheduleVO programSchedule : programScheduleList) {
+			programScheduleService.removeProgramSchedule(programSchedule.getIdx()); // 프로그램의 일정들 삭제
+		}
 		attachService.removeAttachByProgramIdx(idx); // 이미지 삭제하고
 		programDAO.deleteProgram(idx); // 프로그램 삭제
 		log.info("DELETE 프로그램({}) 삭제 완료", idx);
 	}
-
 }

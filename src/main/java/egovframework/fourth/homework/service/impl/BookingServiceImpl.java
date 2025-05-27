@@ -63,7 +63,11 @@ public class BookingServiceImpl extends EgovAbstractServiceImpl implements Booki
 	// 예약 삭제
 	@Override
 	public void removeBooking(String idx) throws Exception {
-		bookingDAO.deleteBooking(idx);
+		List<BookerVO> bookerList = bookerService.getBookingBookerList(idx);
+		for (BookerVO booker : bookerList) {
+			bookerService.removeBooker(booker.getIdx()); // 예약의 예약 인원들 삭제하고
+		}
+		bookingDAO.deleteBooking(idx); // 예약 삭제
 		log.info("DELETE 예약({}) 삭제 완료", idx);
 	}
 
