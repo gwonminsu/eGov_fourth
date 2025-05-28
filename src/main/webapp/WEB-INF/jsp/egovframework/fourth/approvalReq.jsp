@@ -95,97 +95,90 @@
 		</div>
 	</div>
 	
-	<div class="black-bg">
-		<!-- 모달 창 영역 -->
-		<div class="white-bg">
-			<div id="modal-header">
-				<h3>결재 라인 선택</h3>
-				<button id="btnModalClose">닫기</button>
-			</div>
-			<div id="modal-body">
-				<!-- 모달 내부 영역 세팅: 결재라인 선택 -->
-				<div class="modal-section">
-					
-					<!-- 상단: 결재라인 목록 -->
-					<div class="line-list-wrap">
-						<table class="approval-line-table">
-							<thead>
-								<tr>
-									<th>결재라인명</th>
-									<th>수정일자</th>
-								</tr>
-							</thead>
-							<tbody id="approvalLineList">
-								<!-- 결재라인 목록 삽입 -->
-							</tbody>
-						</table>
-					</div>
-				
-					<!-- 사용자 검색 + 리스트 + 라인 편집 (가로 배치) -->
-					<div class="user-select-wrap">
-						
-						<!-- 검색 영역 + 사용자 테이블 -->
-						<div class="user-search-list">
-							<div class="filter-wrap">
-								<label>부서</label><input type="text" id="searchDept" placeholder="전체" />
-								<label>이름</label><input type="text" id="searchName" placeholder="이름" />
-								<label>직급</label><input type="text" id="searchPosition" placeholder="전체" />
-								<button id="btnSearchUser">검색</button>
-							</div>
-							<div class="user-list-wrap">
-								<table class="user-table">
-									<thead><tr><th>부서</th><th>이름</th></tr></thead>
-									<tbody id="userList"></tbody>
-								</table>
-							</div>
-						</div>
-				
-						<!-- 결재라인 편집 -->
-						<div class="line-editor-wrap">
-							<div>
-								<label>결재라인명: </label><input type="text" id="approvalLineName" placeholder="결재라인명을 입력하세요" />
-							</div>
-				
-							<div class="line-section">
-								<label>결재자</label>
-								<ul id="approverList" class="line-list"></ul>
-								<div class="line-controls">
-									<button id="btnAddApprover">추가</button>
-									<button class="btn-up">▲</button>
-									<button class="btn-down">▼</button>
-									<button class="btn-remove">삭제</button>
-								</div>
-							</div>
-							<div class="line-section">
-								<label>협조자</label>
-								<ul id="cooperatorList" class="line-list"></ul>
-								<div class="line-controls">
-									<button id="btnAddCooperator">추가</button>
-									<button class="btn-up">▲</button>
-									<button class="btn-down">▼</button>
-									<button class="btn-remove">삭제</button>
-								</div>
-							</div>
-							<div class="line-section">
-								<label>참조자</label>
-								<ul id="referenceList" class="line-list"></ul>
-								<div class="line-controls">
-									<button id="btnAddReference">추가</button>
-									<button class="btn-up">▲</button>
-									<button class="btn-down">▼</button>
-									<button class="btn-remove">삭제</button>
-								</div>
-							</div>
-							<div class="line-save-wrap">
-								<button id="btnSaveLine">등록</button>
-								<button id="btnSelectLine">선택</button>
-							</div>
-						</div>
-					</div>
+<!-- 모달 창 영역 -->
+<div class="black-bg">
+	<div class="white-bg">
+		<div id="modal-header">
+			<h3>결재 라인 선택</h3>
+			<button id="btnModalClose">닫기</button>
+		</div>
+		<div id="modal-body">
+			<div class="modal-section">
+				<!-- 결재 라인 목록 -->
+				<div class="line-list-wrap">
+					<table class="approval-line-table">
+						<thead>
+							<tr><th>결재라인명</th><th>수정일자</th></tr>
+						</thead>
+						<tbody id="approvalLineList">
+							<!-- 동적 삽입 -->
+						</tbody>
+					</table>
 				</div>
+
+				<!-- 사용자 검색 + 선택 + 라인 편집 -->
+				<div class="user-select-wrap">
+					<!-- 검색 + 사용자 리스트 -->
+					<div class="user-search-list">
+						<div class="filter-wrap">
+							<label>부서</label><input type="text" id="searchDept" placeholder="전체" />
+							<label>이름</label><input type="text" id="searchName" placeholder="이름" />
+							<label>직급</label><input type="text" id="searchPosition" placeholder="전체" />
+							<button id="btnSearchUser">검색</button>
+						</div>
+						<div class="user-list-wrap">
+							<table class="user-table">
+								<thead><tr><th>부서</th><th>이름</th></tr></thead>
+								<tbody id="userList"></tbody>
+							</table>
+						</div>
+					</div>
+
+					<!-- 결재 라인 편집기 -->
+					<div class="line-editor-wrap">
+						<div><label>결재라인명: </label><input type="text" id="approvalLineName" placeholder="결재라인명을 입력하세요" /></div>
+						
+						<div class="line-section">
+							<label>결재자</label>
+							<ul id="approverList" class="line-list"></ul>
+							<div class="line-controls">
+								<button id="btnAddApprover">추가</button>
+								<button class="btn-up">▲</button>
+								<button class="btn-down">▼</button>
+								<button class="btn-remove">삭제</button>
+							</div>
+						</div>
+						<div class="line-section">
+							<label>협조자</label>
+							<ul id="cooperatorList" class="line-list"></ul>
+							<div class="line-controls">
+								<button id="btnAddCooperator">추가</button>
+								<button class="btn-up">▲</button>
+								<button class="btn-down">▼</button>
+								<button class="btn-remove">삭제</button>
+							</div>
+						</div>
+						<div class="line-section">
+							<label>참조자</label>
+							<ul id="referenceList" class="line-list"></ul>
+							<div class="line-controls">
+								<button id="btnAddReference">추가</button>
+								<button class="btn-up">▲</button>
+								<button class="btn-down">▼</button>
+								<button class="btn-remove">삭제</button>
+							</div>
+						</div>
+						<div class="line-save-wrap">
+							<button id="btnSaveLine">등록</button>
+							<button id="btnSelectLine">선택</button>
+						</div>
+					</div>
+				</div> <!-- user-select-wrap -->
 			</div>
 		</div>
 	</div>
+</div>
+
 
 	<script>
 		var programScheduleIdx = '${param.programScheduleIdx}'; // 프로그램 일정 idx
@@ -195,6 +188,7 @@
 		
 		var currentLine = null;
 		var selectedUser = null;
+		var editingLineIdx = null; // ✅ 수정됨: 수정 중인 결재라인 ID 저장
 
 		var fileList = [];
 		
@@ -238,14 +232,9 @@
 			/* ------------------ 결재 라인 선택 모달 관련 스크립트 시작 ------------------  */
 			
 			// 모달 창 닫기 버튼
-			$('#btnModalClose').on('click', function () {
-				$('.black-bg').removeClass('show-modal');
-			});
-			
-			// 배경 눌러도 닫힘
-			$('.black-bg').click(function(e) {
-				if (e.target === this) {
-					$(this).removeClass('show-modal');
+			$('#btnModalClose, .black-bg').on('click', function (e) {
+				if (e.target === this || $(e.target).is('#btnModalClose')) {
+					$('.black-bg').removeClass('show-modal');
 				}
 			});
 			
@@ -259,17 +248,17 @@
 			// 결재자/협조자/참조자 추가 버튼 클릭
 			$('#btnAddApprover').click(function() {
 				if (!selectedUser) return;
-				$('#approverList').append('<li data-user="' + selectedUser.id + '">' + selectedUser.name + '</li>');
+				$('#approverList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
 			});
 			
 			$('#btnAddCooperator').click(function() {
 				if (!selectedUser) return;
-				$('#cooperatorList').append('<li data-user="' + selectedUser.id + '">' + selectedUser.name + '</li>');
+				$('#cooperatorList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
 			});
 			
 			$('#btnAddReference').click(function() {
 				if (!selectedUser) return;
-				$('#referenceList').append('<li data-user="' + selectedUser.id + '">' + selectedUser.name + '</li>');
+				$('#referenceList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
 			});
 			
 			// 항목 클릭 시 active 표시
@@ -278,39 +267,113 @@
 				$(this).addClass('active');
 			});
 			
-			// 삭제/위아래 이동 버튼은 이후 구현 예정
+			// 결재라인 목록 클릭 시 내용 세팅
+			$('#approvalLineList').on('click', 'tr', function () {
+				$('#approvalLineList tr').removeClass('active');
+				$(this).addClass('active');
+				
+				var line = $(this).data('line');
+				editingLineIdx = line.idx;
+				$('#approvalLineName').val(line.lineName);
+				$('#btnSaveLine').text('수정');
+				
+				$('#approverList, #cooperatorList, #referenceList').empty();
+				line.lineUsers.forEach(function(user) {
+					var li = `<li data-user="\${user.idx}" data-idx="\${user.idx}">\${user.name}</li>`;
+					if (user.type === 'approv') $('#approverList').append(li);
+					else if (user.type === 'coop') $('#cooperatorList').append(li);
+					else if (user.type === 'ref') $('#referenceList').append(li);
+				});
+				
+				currentLine = line.idx;
+			});
 			
-			// 등록 버튼 클릭 시 ajax 전송 (틀만)
+			// 삭제/위아래 이동 버튼은 이후 구현 예정
+			$('.line-controls').on('click', 'button', function () {
+				var $ul = $(this).closest('.line-section').find('ul');
+				var $selected = $ul.find('li.active');
+				if ($selected.length === 0) return;
+				
+				if ($(this).hasClass('btn-up')) {
+					var $prev = $selected.prev();
+					if ($prev.length) $selected.insertBefore($prev);
+				} else if ($(this).hasClass('btn-down')) {
+					var $next = $selected.next();
+					if ($next.length) $selected.insertAfter($next);
+				} else if ($(this).hasClass('btn-remove')) {
+					$selected.remove();
+				}
+			});
+			
+			// 등록/수정 버튼 클릭 시 ajax 전송
 			$('#btnSaveLine').click(function() {
 				var lineName = $('#approvalLineName').val();
 				if (!lineName) return alert('결재라인명을 입력하세요');
-				var approvers = [], cooperators = [], references = [];
-				$('#approverList li').each(function() { approvers.push($(this).data('user')); });
-				$('#cooperatorList li').each(function() { cooperators.push($(this).data('user')); });
-				$('#referenceList li').each(function() { references.push($(this).data('user')); });
+				
+				var gatherUsers = function(selector, type) {
+					var list = [];
+					$(selector).each(function(i, el) {
+						list.push({
+							idx: $(el).data('user'),
+							type: type,
+							seq: i + 1
+						});
+					});
+					return list;
+				};
+				
+			    var approvers = gatherUsers('#approverList li', 'approv');
+			    var cooperators = gatherUsers('#cooperatorList li', 'coop');
+			    var references = gatherUsers('#referenceList li', 'ref');
+			    var lineUsers = [...approvers, ...cooperators, ...references];
 				
 				var payload = {
-						name: lineName,
-						approvers: approvers,
-						cooperators: cooperators,
-						references: references
+					      idx: editingLineIdx, // 수정모드이면 추가하도록 할 예정
+					      createUserIdx: sessionUserIdx,
+					      lineName: lineName,
+					      lineUsers: lineUsers
 				};
 				
 				console.log('등록할 결재라인:', payload);
 				
-				// ajax 전송 틀
-				/*
-				$.ajax({
-					url: '/api/approval-line/create.do',
-					type: 'POST',
-					contentType: 'application/json',
-					data: JSON.stringify(payload),
-					success: function(res) {
-						alert('결재라인 등록 완료');
-						// 목록 다시 불러오기 등 처리
-					}
-				});
-				*/
+			    if ($(this).text() === '등록') {
+					// 수정 요청 ajax
+					// ajax 전송 틀
+					/*
+					$.ajax({
+						url: '/api/approval-line/create.do',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(payload),
+						success: function(res) {
+							alert('결재라인 등록 완료');
+							// 목록 다시 불러오기 등 처리
+						}
+					});
+					*/
+			    	$(this).text('수정'); // 임시 처리
+			    	// 싹 초기화
+			    	$('#approverList').empty();
+			    	$('#cooperatorList').empty();
+			    	$('#referenceList').empty();
+			    	selectedUser = null;
+			    	currentLine = null;
+			    	editingLineIdx = null;
+			    	$('#approvalLineName').val('');
+			    	
+				} else {
+					$(this).text('등록');
+			    	// 싹 초기화
+			    	$('#approverList').empty();
+			    	$('#cooperatorList').empty();
+			    	$('#referenceList').empty();
+			    	selectedUser = null;
+			    	currentLine = null;
+			    	editingLineIdx = null;
+			    	$('#approvalLineName').val('');
+				}
+				
+
 			});
 			
 			// 선택 버튼 클릭 시 선택된 라인 currentLine에 저장
@@ -410,6 +473,49 @@
 			
 			// 결재 라인 지정 모달 창 표시 예정
 			$('#btnSelectApprovalLine').click(function() {
+				// 사용자의 결재 라인 목록 조회 요청
+/* 	    		$.ajax({
+	    			url: '${getApprovalLinesApi}',
+	    			type:'POST',
+	    			contentType: 'application/json',
+	    			dataType: 'json',
+	    			data: JSON.stringify({ createUserIdx: sessionUserIdx }),
+	    			success: function(lineList){
+	    				// 여기에 approvalLineList에 로우 추가 예정
+	    			},
+					error: function(){
+						alert('사용자 결재 라인 조회 중 에러 발생');
+					}
+	    		}); */
+				// 더미 데이터 삽입
+				$('#approvalLineList').html(`
+					<tr class="approval-line-row" data-line='{
+						"idx": "LINE001",
+						"lineName": "기본 결재라인",
+						"lineUsers": [
+							{ "idx": "U001", "name": "홍길동", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "type": "coop" },
+							{ "idx": "U004", "name": "이철수", "type": "ref" }
+						]
+					}'><td>기본 결재라인</td><td>2024-01-01</td></tr>
+					<tr class="approval-line-row" data-line='{
+						"idx": "LINE002",
+						"lineName": "두번째 결재라인",
+						"lineUsers": [
+							{ "idx": "U004", "name": "이철수", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "type": "coop" },
+							{ "idx": "U001", "name": "홍길동", "type": "coop" },
+							{ "idx": "U005", "name": "머스크", "type": "ref" }
+						]
+					}'><td>기본 결재라인</td><td>2024-01-01</td></tr>
+				`);
+
+				$('#userList').html(`
+					<tr data-user='{"idx":"U001","name":"홍길동"}'><td>총무부</td><td>홍길동</td></tr>
+					<tr data-user='{"idx":"U002","name":"김영희"}'><td>개발팀</td><td>김영희</td></tr>
+				`);
 				// 모달 바디 초기화
 				// $('#modal-body').empty();
 				// 결재 라인 지정 모달 창 열기

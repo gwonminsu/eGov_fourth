@@ -129,11 +129,11 @@ table.form-table textarea {
 .black-bg {
 	width: 100%;
 	height: 100%;
-	position:fixed;
+	position: fixed;
 	top: 0;
 	left: 0;
-	visibility : hidden;
-	background: rgba(0,0,0,0.6);
+	visibility: hidden;
+	background: rgba(0, 0, 0, 0.6);
 	z-index: 5;
 	padding: 30px;
 	opacity: 0;
@@ -148,7 +148,7 @@ table.form-table textarea {
 	padding: 0 15px 30px 30px;
 	width: 800px;
 	max-width: 90%;
-	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 .show-modal {
 	visibility: visible;
@@ -171,6 +171,7 @@ table.form-table textarea {
 #btnModalClose:hover {
 	background-color: #094055;
 }
+
 /* 모달 바디 전체 */
 #modal-body {
 	display: flex;
@@ -208,6 +209,9 @@ table.form-table textarea {
 	background-color: #eaf4fd;
 	font-weight: bold;
 }
+.approval-line-table tr.active {
+	background-color: #e3f2fd; /* ✅ 결재라인 선택 강조 */
+}
 
 /* 중단 가로 배치 */
 .user-select-wrap {
@@ -241,7 +245,6 @@ table.form-table textarea {
 .filter-wrap button:hover {
 	background-color: #094055;
 }
-
 .user-list-wrap {
 	max-height: 240px;
 	overflow-y: auto;
@@ -265,21 +268,7 @@ table.form-table textarea {
 	font-weight: bold;
 }
 
-/* 이동 버튼 */
-.btn-set {
-	text-align: center;
-}
-.btn-set button {
-	background-color: #ccc;
-	border: none;
-	padding: 4px 8px;
-	cursor: pointer;
-}
-.btn-set button:hover {
-	background-color: #bbb;
-}
-
-/* 결재라인 편집 영역 */
+/* 결재라인 편집기 */
 .line-editor-wrap {
 	flex: 1.5;
 	display: flex;
@@ -331,7 +320,7 @@ table.form-table textarea {
 	align-items: center;
 	margin-top: 6px;
 }
-#lineName {
+#approvalLineName {
 	flex: 1;
 	padding: 6px 8px;
 }
