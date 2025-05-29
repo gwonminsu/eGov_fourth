@@ -16,6 +16,7 @@
 <c:url value="/api/approval/getLineList.do" var="getLineListApi" />
 <c:url value="/api/approval/createLine.do" var="createLineApi" />
 <c:url value="/api/approval/editLine.do" var="editLineApi" />
+<c:url value="/api/approval/deleteLine.do" var="deleteLineApi" />
 <c:url value="/api/user/searchUser.do" var="searchUserApi" />
 
 <script>
@@ -279,6 +280,11 @@
 						$('#approvalLineList').append($tr);
 					});
 					
+					// tr 있는지 검사하여 없으면 데이터 없음 로우 추가
+					if ($('#approvalLineList tr').length < 1) {
+						$('#approvalLineList').append($('<tr>').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
+					}
+					
 				},
 				error: function(){
 					alert('사용자 결재 라인 조회 중 에러 발생');
@@ -434,12 +440,21 @@
 				}
 
 				console.log('삭제 요청된 결재 라인 idx:', lineData.idx);
-
-				// $tr.remove();
-				// tr 있는지 검사하여 없으면 데이터 없음 로우 추가
-				if ($('#approvalLineList tr').length < 1) {
-					$('#approvalLineList').append($('<tr>').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
-				}
+				
+				// 사용자의 결재 라인 삭제 요청
+				$.ajax({
+					url: '${deleteLineApi}',
+					type:'POST',
+					contentType: 'application/json',
+					dataType: 'json',
+					data: JSON.stringify({ idx: lineData.idx }),
+					success: function(){
+						renderLineList(); // 테이블 재렌더링
+					},
+					error: function(){
+						alert('사용자 결재 라인 삭제 중 에러 발생');
+					}
+				});
 			});
 			
 			// 삭제/위아래 이동 버튼은 이후 구현 예정
