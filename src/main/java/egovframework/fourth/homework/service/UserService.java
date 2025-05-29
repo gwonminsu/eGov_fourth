@@ -5,8 +5,8 @@ import java.util.List;
 //Service 인터페이스
 public interface UserService {
 
-	// 사용자 데이터 목록 조회
-	List<UserVO> getUserList() throws Exception;
+	// 검색된 사용자 데이터 목록 조회
+	List<UserVO> getUserList(String department, String userName, String position) throws Exception;
 	
 	// 회원가입
 	void registerUser(UserVO user) throws Exception;

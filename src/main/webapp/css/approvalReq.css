@@ -226,7 +226,9 @@ table.form-table textarea {
 .filter-wrap {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
 	gap: 8px;
 	margin-bottom: 8px;
 	font-size: 13px;
@@ -246,7 +248,7 @@ table.form-table textarea {
 	background-color: #094055;
 }
 .user-list-wrap {
-	max-height: 240px;
+	max-height: 600px;
 	overflow-y: auto;
 }
 .user-table {
@@ -266,6 +268,11 @@ table.form-table textarea {
 #userList tr.active {
 	background-color: #e0f7ff;
 	font-weight: bold;
+}
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
 }
 
 /* 결재라인 편집기 */

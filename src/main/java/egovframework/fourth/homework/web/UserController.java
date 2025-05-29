@@ -37,10 +37,17 @@ public class UserController {
     @Resource(name = "beanValidator")
     protected DefaultBeanValidator beanValidator;
 	
-	// AJAX 호출로 사용자 리스트 가져오기(테스트 용)
-	@GetMapping(value = "/userList.do", produces = "application/json; charset=UTF-8")
-	public List<UserVO> getUserList() throws Exception {
-	    List<UserVO> list = userService.getUserList();
+	/*
+	 * department: dept, name: name, position: position
+	 */
+	// 검색된 사용자 리스트 가져오기
+	@PostMapping(value = "/searchUser.do", consumes="application/json", produces = "application/json")
+	public List<UserVO> getUserList(@RequestBody Map<String,Object> req) throws Exception {
+		String department = (String)req.get("department");
+		String userName = (String)req.get("name");
+		log.info(userName);
+		String position = (String)req.get("position");
+	    List<UserVO> list = userService.getUserList(department, userName, position);
 	    log.info("AJAX 데이터: {}", list);
 	    return list;
 	}

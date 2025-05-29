@@ -1,6 +1,8 @@
 package egovframework.fourth.homework.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -27,25 +29,29 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 	 @Resource(name="passwordEncoder")
 	 private PasswordEncoder passwordEncoder;
 	
-	 // 데이터 리스트 조회
+	 // 검색된 사용자 리스트 조회
 	 @Override
-	 public List<UserVO> getUserList() throws Exception {
-	     return userDAO.selectUserList();
+	 public List<UserVO> getUserList(String department, String userName, String position) throws Exception {
+	 	Map<String,Object> param = new HashMap<>();
+		param.put("department", department);
+		param.put("userName", userName);
+		param.put("position", position);
+		return userDAO.selectUserList(param);
 	 }
 
 	 // 회원가입
 	 @Override
 	 public void registerUser(UserVO user) throws Exception {
-         // 중복 검사(사용자 id가 있는지 검사)
-         if (userDAO.selectByUserId(user.getUserId()) != null) {
-        	 log.info("회원가입 실패: " + user.getUserId() + "는 이미 존재하는 아이디입니다");
-        	 throw new RuntimeException("이미 존재하는 아이디입니다");
-         }
-         // 비밀번호 암호화 텍스트로 변환
-         String raw = user.getUserPw(); // 평문
-         String enc = passwordEncoder.encode(raw); // 비밀번호 해시 생성
-         user.setUserPw(enc); // 생성한 해시를 비밀번호로 교체
-         userDAO.insertUser(user);
+		 // 중복 검사(사용자 id가 있는지 검사)
+		 if (userDAO.selectByUserId(user.getUserId()) != null) {
+			 log.info("회원가입 실패: " + user.getUserId() + "는 이미 존재하는 아이디입니다");
+			 throw new RuntimeException("이미 존재하는 아이디입니다");
+		 }
+		 // 비밀번호 암호화 텍스트로 변환
+		 String raw = user.getUserPw(); // 평문
+		 String enc = passwordEncoder.encode(raw); // 비밀번호 해시 생성
+		 user.setUserPw(enc); // 생성한 해시를 비밀번호로 교체
+		 userDAO.insertUser(user);
 	 }
 
 	 // 로그인(입력 비밀번호와 DB 해시가 일치하는지 검사)

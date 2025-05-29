@@ -14,6 +14,7 @@
 <c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
 <!-- API URL -->
 <c:url value="/api/approval/create.do" var="createApi" />
+<c:url value="/api/user/searchUser.do" var="searchUserApi" />
 
 <script>
 	var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -121,10 +122,14 @@
 					<!-- 검색 + 사용자 리스트 -->
 					<div class="user-search-list">
 						<div class="filter-wrap">
-							<label>부서</label><input type="text" id="searchDept" placeholder="전체" />
-							<label>이름</label><input type="text" id="searchName" placeholder="이름" />
-							<label>직급</label><input type="text" id="searchPosition" placeholder="전체" />
-							<button id="btnSearchUser">검색</button>
+							<div>
+								<label>부서: </label><input type="text" id="searchDept" placeholder="부서" />
+								<label style="margin-left: 10px;">직급: </label><input type="text" id="searchPosition" placeholder="직급" />
+							</div>
+							<div>
+								<label>이름: </label><input type="text" id="searchName" placeholder="이름" />
+								<button id="btnSearchUser">검색</button>
+							</div>
 						</div>
 						<div class="user-list-wrap">
 							<table class="user-table">
@@ -232,6 +237,26 @@
 	    	$('#approvalLineName').val('');
 		}
 		
+		// 결재 라인 선택 모달 초기화
+		function initApprovalModal() {
+			// 선택된 정보들 초기화
+			lineClear(); // 결재자/협조자/참조자 등 리스트 초기화
+			lineMode = 'create';
+			$('#btnSaveLine').text('등록');
+
+			// 결재라인 목록 초기화
+			$('#approvalLineList').empty();
+
+			// 사용자 검색 필터 초기화
+			$('#searchDept').val('');
+			$('#searchPosition').val('');
+			$('#searchName').val('');
+
+			// 사용자 리스트 초기화
+			$('#userList').empty().append($('<tr>').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('결재 라인에 등록할 사용자를 검색해 주세요'))));
+
+		}
+		
 		$(function() {
 			$('#docId').val('자동 부여');
 			$('#draftDate').val(getToday());
@@ -243,6 +268,7 @@
 			
 			// 결재 라인 지정 모달 창 열기 버튼
 			$('#btnSelectApprovalLine').click(function() {
+				initApprovalModal(); // 모달창 초기화
 				// 사용자의 결재 라인 목록 조회 요청
 /* 	    		$.ajax({
 	    			url: '${getApprovalLinesApi}',
@@ -282,10 +308,7 @@
 					}'><td>두번째 결재라인</td><td>2025-05-28</td></tr>
 				`);
 
-				$('#userList').html(`
-					<tr data-user='{"idx":"U001","name":"홍길동"}'><td>총무부</td><td>홍길동</td></tr>
-					<tr data-user='{"idx":"U002","name":"김영희"}'><td>개발팀</td><td>김영희</td></tr>
-				`);
+
 				// 모달 바디 초기화
 				// $('#modal-body').empty();
 				// 결재 라인 지정 모달 창 열기
@@ -299,6 +322,46 @@
 				}
 			});
 			
+			// 검색 버튼 핸들러
+			$('#btnSearchUser').click(function () {
+				var dept = $('#searchDept').val();
+				var name = $('#searchName').val();
+				var position = $('#searchPosition').val();
+
+ 				$.ajax({
+					url: '${searchUserApi}',
+					type: 'POST',
+					contentType: 'application/json',
+					dataType: 'json',
+					data: JSON.stringify({
+						department: dept,
+						name: name,
+						position: position
+					}),
+					success: function (userList) {
+						console.log(JSON.stringify(userList));
+						$('#userList').empty();
+
+						if (!userList || userList.length === 0) {
+							$('#userList').append($('<tr>').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('검색된 사용자 없음'))));
+							return;
+						}
+
+						userList.forEach(function (user) {
+							var userData = JSON.stringify({ idx: user.idx, name: user.userName });
+							var $row = $('<tr>').attr('data-user', userData)
+											.append($('<td>').text(user.department || '(부서 없음)'))
+											.append($('<td>').text(user.userName + '(' + (user.position || '직급 없음') + ')'));
+							$('#userList').append($row);
+						});
+					},
+					error: function () {
+						alert('사용자 검색 중 오류 발생');
+					}
+				});
+				
+			});
+			
 			// 유저 리스트 클릭 시 활성화 표시
 			$('#userList').on('click', 'tr', function() {
 				$('#userList tr').removeClass('active');
@@ -310,6 +373,10 @@
 			// 결재자/협조자/참조자 추가 버튼 클릭
 			$('#btnAddApprover').click(function() {
 				if (!selectedUser) return;
+				if (selectedUser.idx === sessionUserIdx) {
+					alert('본인은 추가 불가능합니다.');
+					return;
+				}
 				$('#approverList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
 			});
 			
@@ -331,6 +398,7 @@
 			
 			// 결재라인 목록 클릭 시 내용 세팅
 			$('#approvalLineList').on('click', 'tr', function () {
+				if(!confirm('결재 라인 선택 시 수정 중인 작업 내용을 잃어버리게 됩니다.')) return;
 				lineClear();
 				$('#approvalLineList tr').removeClass('active');
 				$(this).addClass('active');

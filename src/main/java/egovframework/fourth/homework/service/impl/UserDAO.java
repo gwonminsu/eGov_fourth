@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,9 +16,9 @@ public class UserDAO {
     @Resource(name = "sqlSession")
     protected SqlSessionTemplate sqlSession;
 
-    // 전체 사용자 목록 조회
-    public List<UserVO> selectUserList() throws Exception {
-        return sqlSession.selectList("userDAO.selectUserList");
+    // 검색된 사용자 목록 조회
+    public List<UserVO> selectUserList(Map<String,Object> param) throws Exception {
+        return sqlSession.selectList("userDAO.selectUserList", param);
     }
     
     // id로 사용자 조회

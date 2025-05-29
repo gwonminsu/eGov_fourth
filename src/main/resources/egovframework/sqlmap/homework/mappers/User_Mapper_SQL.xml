@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="userDAO">
-	<!-- 사용자 리스트 가져오기 -->
-    <select id="selectUserList" resultType="userVO">
+	<!-- 검색된 사용자 리스트 가져오기 -->
+    <select id="selectUserList" parameterType="map" resultType="userVO">
         SELECT idx,
         	user_name,
         	user_phone,
@@ -13,6 +13,19 @@
         	position,
         	created_at
         FROM "user"
+		<where>
+			is_admin = true
+			<if test="department != null and department != ''">
+				AND department ILIKE CONCAT('%', #{department}, '%')
+			</if>
+			<if test="userName != null and userName != ''">
+				AND user_name ILIKE CONCAT('%', #{userName}, '%')
+			</if>
+			<if test="position != null and position != ''">
+				AND position ILIKE CONCAT('%', #{position}, '%')
+			</if>
+		</where>
+		ORDER BY created_at DESC
     </select>
     
 	<!-- 아이디로 사용자 조회 -->
