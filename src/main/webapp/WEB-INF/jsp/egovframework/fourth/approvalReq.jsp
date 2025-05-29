@@ -186,9 +186,10 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
-		var currentLine = null;
-		var selectedUser = null;
-		var editingLineIdx = null; // ✅ 수정됨: 수정 중인 결재라인 ID 저장
+		var currentLine = null; // 선택된 결재 라인
+		var selectedUser = null; // 선택된 사용자
+		var editingLineIdx = null; // 수정 중인 결재라인 idx 저장
+		var lineMode = 'create'; // 결재 라인 모드
 
 		var fileList = [];
 		
@@ -221,7 +222,16 @@
 			var day = String(today.getDate()).padStart(2, '0');
 			return year + '-' + month + '-' + day;
 		}
-
+		
+		// 결재 라인 내용 초기화
+		function lineClear() {
+			$('#approverList, #cooperatorList, #referenceList').empty();
+	    	selectedUser = null;
+	    	currentLine = null;
+	    	editingLineIdx = null;
+	    	$('#approvalLineName').val('');
+		}
+		
 		$(function() {
 			$('#docId').val('자동 부여');
 			$('#draftDate').val(getToday());
@@ -230,6 +240,57 @@
 			$('#reqTitle').val(date.substr(0, 4) + '년 ' + date.substr(5,2) + '월 ' + date.substr(8,2) + '일 예약 마감 결재건');
 			
 			/* ------------------ 결재 라인 선택 모달 관련 스크립트 시작 ------------------  */
+			
+			// 결재 라인 지정 모달 창 열기 버튼
+			$('#btnSelectApprovalLine').click(function() {
+				// 사용자의 결재 라인 목록 조회 요청
+/* 	    		$.ajax({
+	    			url: '${getApprovalLinesApi}',
+	    			type:'POST',
+	    			contentType: 'application/json',
+	    			dataType: 'json',
+	    			data: JSON.stringify({ createUserIdx: sessionUserIdx }),
+	    			success: function(lineList){
+	    				// 여기에 approvalLineList에 로우 추가 예정
+	    			},
+					error: function(){
+						alert('사용자 결재 라인 조회 중 에러 발생');
+					}
+	    		}); */
+				// 더미 데이터 삽입
+				$('#approvalLineList').html(`
+					<tr class="approval-line-row" data-line='{
+						"idx": "LINE001",
+						"lineName": "기본 결재라인",
+						"lineUsers": [
+							{ "idx": "U001", "name": "홍길동", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "type": "coop" },
+							{ "idx": "U004", "name": "이철수", "type": "ref" }
+						]
+					}'><td>기본 결재라인</td><td>2025-05-20</td></tr>
+					<tr class="approval-line-row" data-line='{
+						"idx": "LINE002",
+						"lineName": "두번째 결재라인",
+						"lineUsers": [
+							{ "idx": "U004", "name": "이철수", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "type": "coop" },
+							{ "idx": "U001", "name": "홍길동", "type": "coop" },
+							{ "idx": "U005", "name": "머스크", "type": "ref" }
+						]
+					}'><td>두번째 결재라인</td><td>2025-05-28</td></tr>
+				`);
+
+				$('#userList').html(`
+					<tr data-user='{"idx":"U001","name":"홍길동"}'><td>총무부</td><td>홍길동</td></tr>
+					<tr data-user='{"idx":"U002","name":"김영희"}'><td>개발팀</td><td>김영희</td></tr>
+				`);
+				// 모달 바디 초기화
+				// $('#modal-body').empty();
+				// 결재 라인 지정 모달 창 열기
+				$('.black-bg').addClass('show-modal');
+			});
 			
 			// 모달 창 닫기 버튼
 			$('#btnModalClose, .black-bg').on('click', function (e) {
@@ -243,22 +304,23 @@
 				$('#userList tr').removeClass('active');
 				$(this).addClass('active');
 				selectedUser = $(this).data('user');
+				console.log(selectedUser);
 			});
 			
 			// 결재자/협조자/참조자 추가 버튼 클릭
 			$('#btnAddApprover').click(function() {
 				if (!selectedUser) return;
-				$('#approverList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
+				$('#approverList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
 			});
 			
 			$('#btnAddCooperator').click(function() {
 				if (!selectedUser) return;
-				$('#cooperatorList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
+				$('#cooperatorList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
 			});
 			
 			$('#btnAddReference').click(function() {
 				if (!selectedUser) return;
-				$('#referenceList').append('<li data-user="' + selectedUser.idx + '">' + selectedUser.name + '</li>');
+				$('#referenceList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
 			});
 			
 			// 항목 클릭 시 active 표시
@@ -269,17 +331,18 @@
 			
 			// 결재라인 목록 클릭 시 내용 세팅
 			$('#approvalLineList').on('click', 'tr', function () {
+				lineClear();
 				$('#approvalLineList tr').removeClass('active');
 				$(this).addClass('active');
 				
 				var line = $(this).data('line');
 				editingLineIdx = line.idx;
 				$('#approvalLineName').val(line.lineName);
+				lineMode = 'edit';
 				$('#btnSaveLine').text('수정');
 				
-				$('#approverList, #cooperatorList, #referenceList').empty();
 				line.lineUsers.forEach(function(user) {
-					var li = `<li data-user="\${user.idx}" data-idx="\${user.idx}">\${user.name}</li>`;
+					var li = $('<li>').attr('data-user', user.idx).text(user.name);
 					if (user.type === 'approv') $('#approverList').append(li);
 					else if (user.type === 'coop') $('#cooperatorList').append(li);
 					else if (user.type === 'ref') $('#referenceList').append(li);
@@ -324,55 +387,49 @@
 				
 			    var approvers = gatherUsers('#approverList li', 'approv');
 			    var cooperators = gatherUsers('#cooperatorList li', 'coop');
+			    if (approvers.length < 1 || cooperators.length < 1) {
+			    	alert('협조자와 결재자는 필수로 등록 하셔야 합니다.');
+			    }
 			    var references = gatherUsers('#referenceList li', 'ref');
 			    var lineUsers = [...approvers, ...cooperators, ...references];
 				
 				var payload = {
-					      idx: editingLineIdx, // 수정모드이면 추가하도록 할 예정
 					      createUserIdx: sessionUserIdx,
 					      lineName: lineName,
 					      lineUsers: lineUsers
 				};
+				if (lineMode === 'edit') payload.idx = editingLineIdx;
 				
 				console.log('등록할 결재라인:', payload);
-				
-			    if ($(this).text() === '등록') {
-					// 수정 요청 ajax
-					// ajax 전송 틀
-					/*
-					$.ajax({
-						url: '/api/approval-line/create.do',
-						type: 'POST',
-						contentType: 'application/json',
-						data: JSON.stringify(payload),
-						success: function(res) {
-							alert('결재라인 등록 완료');
-							// 목록 다시 불러오기 등 처리
+			    
+				/*
+				$.ajax({
+					url: lineMode === 'create' ? '/api/approval/create.do' : '/api/approval/update.do',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(payload),
+					success: function(res) {
+						alert('결재라인 등록 완료');
+						// 목록 다시 불러오기 등 처리
+						lineClear();
+						if(lineMode === 'edit') {
+							lineMode = 'create';
+							$(this).text('등록');
 						}
-					});
-					*/
-			    	$(this).text('수정'); // 임시 처리
-			    	// 싹 초기화
-			    	$('#approverList').empty();
-			    	$('#cooperatorList').empty();
-			    	$('#referenceList').empty();
-			    	selectedUser = null;
-			    	currentLine = null;
-			    	editingLineIdx = null;
-			    	$('#approvalLineName').val('');
-			    	
-				} else {
-					$(this).text('등록');
-			    	// 싹 초기화
-			    	$('#approverList').empty();
-			    	$('#cooperatorList').empty();
-			    	$('#referenceList').empty();
-			    	selectedUser = null;
-			    	currentLine = null;
-			    	editingLineIdx = null;
-			    	$('#approvalLineName').val('');
-				}
-				
+					},
+					error : function(xhr) {
+						var errMsg = xhr.responseJSON && xhr.responseJSON.error; // 인터셉터에서 에러메시지 받아옴
+						if (!errMsg) {
+							try {
+								errMsg = JSON.parse(xhr.responseText).error;
+							} catch (e) {
+								errMsg = '결재 라인 ' + (lineMode === 'create' ? '등록' : '수정') + ' 요청 중 에러 발생';
+							}
+						}
+						alert(errMsg);
+					}
+				});
+				*/
 
 			});
 			
@@ -469,57 +526,6 @@
 						alert(errMsg);
 					}
 				}); */
-			});
-			
-			// 결재 라인 지정 모달 창 표시 예정
-			$('#btnSelectApprovalLine').click(function() {
-				// 사용자의 결재 라인 목록 조회 요청
-/* 	    		$.ajax({
-	    			url: '${getApprovalLinesApi}',
-	    			type:'POST',
-	    			contentType: 'application/json',
-	    			dataType: 'json',
-	    			data: JSON.stringify({ createUserIdx: sessionUserIdx }),
-	    			success: function(lineList){
-	    				// 여기에 approvalLineList에 로우 추가 예정
-	    			},
-					error: function(){
-						alert('사용자 결재 라인 조회 중 에러 발생');
-					}
-	    		}); */
-				// 더미 데이터 삽입
-				$('#approvalLineList').html(`
-					<tr class="approval-line-row" data-line='{
-						"idx": "LINE001",
-						"lineName": "기본 결재라인",
-						"lineUsers": [
-							{ "idx": "U001", "name": "홍길동", "type": "approv" },
-							{ "idx": "U002", "name": "트럼프", "type": "approv" },
-							{ "idx": "U003", "name": "김영희", "type": "coop" },
-							{ "idx": "U004", "name": "이철수", "type": "ref" }
-						]
-					}'><td>기본 결재라인</td><td>2024-01-01</td></tr>
-					<tr class="approval-line-row" data-line='{
-						"idx": "LINE002",
-						"lineName": "두번째 결재라인",
-						"lineUsers": [
-							{ "idx": "U004", "name": "이철수", "type": "approv" },
-							{ "idx": "U002", "name": "트럼프", "type": "approv" },
-							{ "idx": "U003", "name": "김영희", "type": "coop" },
-							{ "idx": "U001", "name": "홍길동", "type": "coop" },
-							{ "idx": "U005", "name": "머스크", "type": "ref" }
-						]
-					}'><td>기본 결재라인</td><td>2024-01-01</td></tr>
-				`);
-
-				$('#userList').html(`
-					<tr data-user='{"idx":"U001","name":"홍길동"}'><td>총무부</td><td>홍길동</td></tr>
-					<tr data-user='{"idx":"U002","name":"김영희"}'><td>개발팀</td><td>김영희</td></tr>
-				`);
-				// 모달 바디 초기화
-				// $('#modal-body').empty();
-				// 결재 라인 지정 모달 창 열기
-				$('.black-bg').addClass('show-modal');
 			});
 
 			// 취소 버튼 핸들러
