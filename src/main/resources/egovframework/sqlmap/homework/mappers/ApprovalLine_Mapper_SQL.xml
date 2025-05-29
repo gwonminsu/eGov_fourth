@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="approvalLineDAO">
+	<!-- 결재 라인 등록 -->
+	<insert id="insertApprovalLine" parameterType="approvalLineVO">
+		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
+			SELECT 'APLINE-' || COALESCE(
+				(
+					SELECT (SUBSTRING(idx FROM 8))::int + 1
+					FROM approval_line
+					ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				), 1)
+		</selectKey>
+		INSERT INTO approval_line
+			(idx, create_user_idx, line_name, created_at, updated_at)
+		VALUES
+			(#{idx}, #{createUserIdx}, #{lineName}, NOW(), NOW())
+	</insert>
+	
+	
+	<!-- 관리자의 결재 라인 목록 조회 -->
+	<select id="selectApprovalLineListByCreateUserIdx" parameterType="String" resultType="approvalLineVO">
+		SELECT
+			idx,
+			create_user_idx,
+			line_name,
+			created_at,
+			updated_at
+		FROM approval_line
+		WHERE create_user_idx = #{createUserIdx}
+		ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+	</select>
+
+	<!-- 결재 라인 하나 조회 -->
+	<select id="selectApprovalLine" parameterType="String" resultType="approvalLineVO">
+		SELECT
+			idx,
+			create_user_idx,
+			line_name,
+			created_at,
+			updated_at
+		FROM approval_line
+		WHERE idx = #{idx}
+	</select>
+	
+	<!-- 결재 라인 업데이트 -->
+	<update id="updateApprovalLine" parameterType="approvalLineVO">
+		UPDATE approval_line
+		SET line_name = #{lineName},
+			updated_at = NOW()
+		WHERE idx = #{idx}
+	</update>
+
+	<!-- 결재 라인 삭제 -->
+	<delete id="deleteApprovalLine" parameterType="String">
+		DELETE FROM approval_line WHERE idx = #{idx}
+	</delete>
+	
+</mapper>

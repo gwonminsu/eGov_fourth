@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lineUserDAO">
+	<!-- 결재 라인의 결재할 사용자 등록 -->
+	<insert id="insertLineUser" parameterType="lineUserVO">
+		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
+			SELECT 'LNUSER-' || COALESCE(
+				(
+					SELECT (SUBSTRING(idx FROM 8))::int + 1
+					FROM line_user
+					ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+					LIMIT 1
+					FOR UPDATE
+				), 1)
+		</selectKey>
+		INSERT INTO line_user
+			(idx, line_idx, approval_user_idx, type, seq, created_at)
+		VALUES
+			(#{idx}, #{lineIdx}, #{approvalUserIdx}, #{type}, #{seq}, NOW())
+	</insert>
+	
+	
+	<!-- 결재 라인의 결재할 사용자 목록 조회 -->
+	<select id="selectLineUserListByLineIdx" parameterType="String" resultType="lineUserVO">
+		SELECT
+			idx,
+			line_idx,
+			approval_user_idx,
+			type,
+			seq,
+			created_at
+		FROM line_user
+		WHERE line_idx = #{lineIdx}
+		ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+	</select>
+
+	<!-- 결재 라인의 결재할 사용자 조회 -->
+	<select id="selectLineUser" parameterType="String" resultType="lineUserVO">
+		SELECT
+			idx,
+			line_idx,
+			approval_user_idx,
+			type,
+			seq,
+			created_at
+		FROM line_user
+		WHERE idx = #{idx}
+	</select>
+	
+	<!-- 결재 라인의 결재할 사용자 하나 삭제 -->
+	<delete id="deleteLineUser" parameterType="String">
+		DELETE FROM line_user WHERE idx = #{idx}
+	</delete>
+	
+	<!-- 결재 라인의 결재할 사용자들 삭제 -->
+	<delete id="deleteLineUserByLineIdx" parameterType="String">
+		DELETE FROM line_user WHERE line_idx = #{lineIdx}
+	</delete>
+	
+</mapper>

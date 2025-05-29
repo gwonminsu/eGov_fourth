@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import egovframework.fourth.homework.service.BookerService;
 import egovframework.fourth.homework.service.BookerVO;
-import egovframework.fourth.homework.service.BookingService;
-import egovframework.fourth.homework.service.BookingVO;
 
 @Service("bookerService")
 public class BookerServiceImpl extends EgovAbstractServiceImpl implements BookerService {
