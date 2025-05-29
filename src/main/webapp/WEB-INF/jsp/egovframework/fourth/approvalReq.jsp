@@ -254,7 +254,6 @@
 
 			// 사용자 리스트 초기화
 			$('#userList').empty().append($('<tr>').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('결재 라인에 등록할 사용자를 검색해 주세요'))));
-
 		}
 		
 		$(function() {
@@ -289,21 +288,21 @@
 						"idx": "LINE001",
 						"lineName": "기본 결재라인",
 						"lineUsers": [
-							{ "idx": "U001", "name": "홍길동", "type": "approv" },
-							{ "idx": "U002", "name": "트럼프", "type": "approv" },
-							{ "idx": "U003", "name": "김영희", "type": "coop" },
-							{ "idx": "U004", "name": "이철수", "type": "ref" }
+							{ "idx": "U001", "name": "홍길동", "position": "대리", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "position": "사원", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "position": "과장", "type": "coop" },
+							{ "idx": "U004", "name": "이철수", "position": "부장", "type": "ref" }
 						]
 					}'><td>기본 결재라인</td><td>2025-05-20</td></tr>
 					<tr class="approval-line-row" data-line='{
 						"idx": "LINE002",
 						"lineName": "두번째 결재라인",
 						"lineUsers": [
-							{ "idx": "U004", "name": "이철수", "type": "approv" },
-							{ "idx": "U002", "name": "트럼프", "type": "approv" },
-							{ "idx": "U003", "name": "김영희", "type": "coop" },
-							{ "idx": "U001", "name": "홍길동", "type": "coop" },
-							{ "idx": "U005", "name": "머스크", "type": "ref" }
+							{ "idx": "U004", "name": "이철수", "position": "부장", "type": "approv" },
+							{ "idx": "U002", "name": "트럼프", "position": "사장", "type": "approv" },
+							{ "idx": "U003", "name": "김영희", "position": "과장", "type": "coop" },
+							{ "idx": "U001", "name": "홍길동", "position": "대리", "type": "coop" },
+							{ "idx": "U005", "name": "머스크", "position": "이사", "type": "ref" }
 						]
 					}'><td>두번째 결재라인</td><td>2025-05-28</td></tr>
 				`);
@@ -348,7 +347,7 @@
 						}
 
 						userList.forEach(function (user) {
-							var userData = JSON.stringify({ idx: user.idx, name: user.userName });
+							var userData = JSON.stringify({ idx: user.idx, name: user.userName, position: user.position });
 							var $row = $('<tr>').attr('data-user', userData)
 											.append($('<td>').text(user.department || '(부서 없음)'))
 											.append($('<td>').text(user.userName + '(' + (user.position || '직급 없음') + ')'));
@@ -371,23 +370,32 @@
 			});
 			
 			// 결재자/협조자/참조자 추가 버튼 클릭
-			$('#btnAddApprover').click(function() {
+			$('#btnAddApprover, #btnAddCooperator, #btnAddReference').click(function () {
+				var listSelector = '';
+				if (this.id === 'btnAddApprover') {
+					listSelector = '#approverList';
+				} else if (this.id === 'btnAddCooperator') {
+					listSelector = '#cooperatorList';
+				} else if (this.id === 'btnAddReference') {
+					listSelector = '#referenceList';
+				}
+
 				if (!selectedUser) return;
 				if (selectedUser.idx === sessionUserIdx) {
 					alert('본인은 추가 불가능합니다.');
 					return;
 				}
-				$('#approverList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
-			});
-			
-			$('#btnAddCooperator').click(function() {
-				if (!selectedUser) return;
-				$('#cooperatorList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
-			});
-			
-			$('#btnAddReference').click(function() {
-				if (!selectedUser) return;
-				$('#referenceList').append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name));
+				
+				// 사용자가 이미 리스트에 있는지 검사
+				var existUser = $(listSelector + ' li').filter(function () {
+					return $(this).data('user') === selectedUser.idx;
+				});
+				if (existUser.length > 0) {
+					alert('이미 추가된 사용자입니다.');
+					return;
+				}
+
+				$(listSelector).append($('<li>').attr('data-user', selectedUser.idx).text(selectedUser.name + '(' + (selectedUser.position || '직급 없음') + ')'));
 			});
 			
 			// 항목 클릭 시 active 표시
@@ -410,7 +418,7 @@
 				$('#btnSaveLine').text('수정');
 				
 				line.lineUsers.forEach(function(user) {
-					var li = $('<li>').attr('data-user', user.idx).text(user.name);
+					var li = $('<li>').attr('data-user', user.idx).text(user.name + '(' + user.position + ')');
 					if (user.type === 'approv') $('#approverList').append(li);
 					else if (user.type === 'coop') $('#cooperatorList').append(li);
 					else if (user.type === 'ref') $('#referenceList').append(li);
