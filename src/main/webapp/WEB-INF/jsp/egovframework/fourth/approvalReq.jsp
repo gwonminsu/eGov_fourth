@@ -255,8 +255,8 @@
 			$('#searchName').val('');
 
 			// 사용자 리스트 초기화
-			$('#userList').empty().append($('<tr>').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('결재 라인에 등록할 사용자를 검색해 주세요'))));
-			$('#approvalLineList').empty().append($('<tr>').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
+			$('#userList').empty().append($('<tr>').addClass('no-data-row').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('결재 라인에 등록할 사용자를 검색해 주세요'))));
+			$('#approvalLineList').empty().append($('<tr>').addClass('no-data-row').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
 		}
 		
 		// 결재 라인 목록 렌더링
@@ -282,7 +282,7 @@
 					
 					// tr 있는지 검사하여 없으면 데이터 없음 로우 추가
 					if ($('#approvalLineList tr').length < 1) {
-						$('#approvalLineList').append($('<tr>').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
+						$('#approvalLineList').append($('<tr>').addClass('no-data-row').append($('<td>').attr('colspan', '3').append($('<div>').addClass('no-data-text').text('결재 라인이 없습니다'))));
 					}
 					
 				},
@@ -341,7 +341,7 @@
 						$('#userList').empty();
 
 						if (!userList || userList.length === 0) {
-							$('#userList').append($('<tr>').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('검색된 사용자 없음'))));
+							$('#userList').append($('<tr>').addClass('no-data-row').append($('<td>').attr('colspan', '2').append($('<div>').addClass('no-data-text').text('검색된 사용자 없음'))));
 							return;
 						}
 
@@ -362,6 +362,7 @@
 			
 			// 유저 리스트 클릭 시 활성화 표시
 			$('#userList').on('click', 'tr', function() {
+				if ($(this).hasClass('no-data-row')) return; // 노데이터 로우 무시
 				$('#userList tr').removeClass('active');
 				$(this).addClass('active');
 				selectedUser = $(this).data('user');
@@ -405,6 +406,7 @@
 			
 			// 결재라인 목록 클릭 시 내용 세팅
 			$('#approvalLineList').on('click', 'tr', function () {
+				if ($(this).hasClass('no-data-row')) return; // 노데이터 로우는 무시
 				if(!confirm('결재 라인 선택 시 수정 중인 작업 내용을 잃어버리게 됩니다.')) return;
 				lineUserClear();
 				$('#approvalLineList tr').removeClass('active');
