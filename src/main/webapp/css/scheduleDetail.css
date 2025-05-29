@@ -73,10 +73,12 @@ table.form-table input[type="number"] {
 #btnCancel:hover {
 	background-color: #1f2225;
 }
+#btnGoApprovalReq,
 #btnClose {
 	margin-right: 8px;
 	background-color: #e2e6ea;
 }
+#btnGoApprovalReq:hover,
 #btnClose:hover {
 	background-color: #c0c8cf;
 }
@@ -93,6 +95,23 @@ table.form-table input[type="number"] {
 }
 #btnAddBooker:hover {
 	background-color: #f26100;
+}
+
+/* 결재 상태 텍스트 스타일 */
+#approvalReqStatusText {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.status-pending {
+  color: #d39e00;
+}
+.status-approved {
+  color: #218838;
+}
+.status-rejected {
+  color: #c82333;
 }
 
 /* 예약 일정 테이블 각 컬럼 너비 설정 */

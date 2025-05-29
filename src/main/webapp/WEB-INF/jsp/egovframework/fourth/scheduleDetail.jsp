@@ -23,6 +23,8 @@
     <c:url value="/api/booking/getBookingList.do" var="getBookingListApi"/>
    	<!-- 현재 프로그램 일정의 특정 예약 삭제 API URL -->
     <c:url value="/api/booking/delete.do" var="deleteBookingApi"/>
+    <!-- 현재 프로그램 일정의 기안문 정보 조회 -->
+    <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
 
 	
 	<script>
@@ -70,8 +72,10 @@
 	</table>
 	
 	<div class="btn-area1">
-			<button id="btnClose">예약마감</button>
-			<button id="btnSubmit">저장</button>
+		<div id="approvalReqStatusText" style="display: none;"></div>
+		<button id="btnGoApprovalReq" style="display: none;">기안확인</button>
+		<button id="btnClose">예약마감</button>
+		<button id="btnSubmit">저장</button>
 	</div>
 	
 	<br/>
@@ -119,6 +123,7 @@
 		var programName = '${param.programName}'; // 프로그램 이름
 		
 		var bookingList = [];
+		var approvalReqIdx = '';
 		
 		// 체험 인원 로우 추가 함수
 		function addBookingRow(booking) {
@@ -200,6 +205,36 @@
 					alert('현재 프로그램 일정 조회 중 에러 발생');
 				}
     		});
+			
+			// 이 프로그램 일정의 예약 마감 기안문 조회 요청
+    		$.ajax({
+    			url: '${getScheduleReqApi}',
+    			type:'POST',
+    			contentType: 'application/json',
+    			dataType: 'json',
+    			data: JSON.stringify({ programScheduleIdx: idx }),
+    			success: function(res){
+					console.log(JSON.stringify(res.approvalReq));
+					var data = res.approvalReq;
+					if (data) {
+						approvalReqIdx = data.idx;
+						$('#btnGoApprovalReq').show();
+						$('#btnClose').hide();
+						var statusText = '';
+						if (data.status === 'PENDING') {
+							statusText = '결재 상태: 결재 진행 중';
+						} else if (data.status === 'APPROVED') {
+							statusText = '결재 상태: 결재 완료';
+						} else {
+							statusText = '결재 상태: 반려';
+						}
+						$('#approvalReqStatusText').addClass('status-' + data.status.toLowerCase()).text(statusText).show();
+					}
+    			},
+				error: function(){
+					alert('현재 일정의 기안문 조회 중 에러 발생');
+				}
+    		});
     		
     		// 프로그램 일정의 예약 목록 조회 요청
 			loadBookingList();
@@ -259,6 +294,11 @@
 			// 예약마감 버튼(기안문 작성 예정)
 			$('#btnClose').on('click', function () {
 				postTo('${approvalReqUrl}', { programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+			});
+			
+			// 기안 확인 버튼(기안문 작성 예정)
+			$('#btnGoApprovalReq').on('click', function () {
+				console.log(approvalReqIdx);
 			});
 		
 			// 예약자 추가

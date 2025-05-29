@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.web;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,18 @@ public class ApprovalController {
 			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws Exception {
     	approvalReqService.createApprovalReq(vo, files);
         return Collections.singletonMap("status","OK");
+    }
+    
+    // 프로그램 일정의 기안문 정보 조회
+    @PostMapping(value="/getScheduleReq.do", consumes="application/json", produces="application/json")
+    public Map<String, Object> getScheduleApprovalReq(@RequestBody Map<String,String> req) throws Exception {
+        String programScheduleIdx = req.get("programScheduleIdx");
+        ApprovalReqVO vo = approvalReqService.getProgramScheduleApprovalReq(programScheduleIdx);
+        Map<String, Object> result = new HashMap<>();
+        if (vo != null) {
+        	result.put("approvalReq", vo); // 빈 객체로 리턴
+        }
+        return result;
     }
 
 	// 관리자 결재 라인 등록

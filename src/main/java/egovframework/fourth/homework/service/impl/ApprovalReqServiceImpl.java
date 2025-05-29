@@ -45,6 +45,10 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 	@Override
 	public ApprovalReqVO getProgramScheduleApprovalReq(String programScheduleIdx) throws Exception {
 		ApprovalReqVO vo = approvalReqDAO.selectApprovalReqByProgramScheduleIdx(programScheduleIdx);
+	    if (vo == null) {
+	        log.info("SELECT 프로그램 일정({})의 예약 마감 기안문 없음", programScheduleIdx);
+	        return null;
+	    }
 		log.info("SELECT 프로그램 일정({})의 예약 마감 기안문({}) 조회 완료", programScheduleIdx, vo.getIdx());
 		return vo;
 	}

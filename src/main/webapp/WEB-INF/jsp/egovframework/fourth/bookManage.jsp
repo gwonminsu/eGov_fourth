@@ -134,7 +134,7 @@
     			data: JSON.stringify({ programIdx: currentProgramIdx }),
     			success: function(list){
 					programSchedules = list;
-					console.log(JSON.stringify(programSchedules));
+					// console.log(JSON.stringify(programSchedules));
 					
 					// Toast UI 에 맞는 스케줄 객체로 변환
 					var schedules = programSchedules.map(function(item){
