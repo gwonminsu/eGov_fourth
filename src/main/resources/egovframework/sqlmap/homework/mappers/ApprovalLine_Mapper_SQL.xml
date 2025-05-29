@@ -30,7 +30,7 @@
 			updated_at
 		FROM approval_line
 		WHERE create_user_idx = #{createUserIdx}
-		ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+		ORDER BY updated_at DESC
 	</select>
 
 	<!-- 결재 라인 하나 조회 -->

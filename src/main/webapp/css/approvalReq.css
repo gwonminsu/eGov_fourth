@@ -210,7 +210,17 @@ table.form-table textarea {
 	font-weight: bold;
 }
 .approval-line-table tr.active {
-	background-color: #e3f2fd; /* ✅ 결재라인 선택 강조 */
+	background-color: #e3f2fd;
+}
+.btn-remove-line {
+	background-color: #ff8888;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	padding: 4px 8px;
+}
+.btn-remove-line:hover {
+	background-color: #ff5757;
 }
 
 /* 중단 가로 배치 */

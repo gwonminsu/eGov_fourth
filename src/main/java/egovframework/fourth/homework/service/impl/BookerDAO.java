@@ -8,7 +8,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import egovframework.fourth.homework.service.BookerVO;
-import egovframework.fourth.homework.service.BookingVO;
 
 @Repository("bookerDAO")
 public class BookerDAO {

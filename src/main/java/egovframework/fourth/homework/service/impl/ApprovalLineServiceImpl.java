@@ -11,19 +11,29 @@ import org.springframework.stereotype.Service;
 
 import egovframework.fourth.homework.service.ApprovalLineService;
 import egovframework.fourth.homework.service.ApprovalLineVO;
+import egovframework.fourth.homework.service.LineUserService;
+import egovframework.fourth.homework.service.LineUserVO;
 
-@Service("approvalReqService")
+@Service("approvalLineService")
 public class ApprovalLineServiceImpl extends EgovAbstractServiceImpl implements ApprovalLineService {
 	
 	private static final Logger log = LoggerFactory.getLogger(ApprovalLineServiceImpl.class);
 	
 	@Resource(name = "approvalLineDAO")
 	private ApprovalLineDAO approvalLineDAO;
+	
+	@Resource(name = "lineUserService")
+	private LineUserService lineUserService;
 
-	// 결재 라인 생성
+	// 결재 라인 생성 + 결재할 사용자 목록 생성
 	@Override
 	public void createApprovalLine(ApprovalLineVO vo) throws Exception {
-		approvalLineDAO.insertApprovalLine(vo);
+		List<LineUserVO> lineUserList = vo.getLineUserList();
+		approvalLineDAO.insertApprovalLine(vo); // 라인 생성 후
+		for (LineUserVO lineUser : lineUserList) {
+			lineUser.setLineIdx(vo.getIdx()); // 각 라인 유저의 라인 idx 설정하고
+			lineUserService.createLineUser(lineUser); // 각 라인 유저 생성
+		}
 		log.info("INSERT 사용자({})의 결재 라인({}) 등록 성공", vo.getCreateUserIdx(), vo.getIdx());
 	}
 	
@@ -31,6 +41,10 @@ public class ApprovalLineServiceImpl extends EgovAbstractServiceImpl implements 
 	@Override
 	public List<ApprovalLineVO> getUserApprovalLineList(String createUserIdx) throws Exception {
 		List<ApprovalLineVO> list = approvalLineDAO.selectApprovalLineListByCreateUserIdx(createUserIdx);
+		for (ApprovalLineVO vo : list) {
+			List<LineUserVO> lineUser = lineUserService.getLineLineUserList(vo.getIdx());
+			vo.setLineUserList(lineUser); // 라인 유저 목록을 라인에 삽입
+		}
 		log.info("SELECT 사용자({})의 결재 라인 목록 조회 완료", createUserIdx);
 		return list;
 	}
@@ -53,7 +67,8 @@ public class ApprovalLineServiceImpl extends EgovAbstractServiceImpl implements 
 	// 결재 라인 삭제
 	@Override
 	public void removeApprovalLine(String idx) throws Exception {
-		approvalLineDAO.deleteApprovalLine(idx);
+		lineUserService.removeLineLineUser(idx); // 결재 라인에 소속된 라인 유저들 삭제하고
+		approvalLineDAO.deleteApprovalLine(idx); // 라인 삭제
 		log.info("DELETE 결재 라인({}) 삭제 완료", idx);
 	}
 

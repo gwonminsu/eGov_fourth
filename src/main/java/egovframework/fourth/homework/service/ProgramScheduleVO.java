@@ -1,7 +1,6 @@
 package egovframework.fourth.homework.service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
