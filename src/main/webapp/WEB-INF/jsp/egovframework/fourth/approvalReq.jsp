@@ -18,6 +18,7 @@
 <c:url value="/api/approval/editLine.do" var="editLineApi" />
 <c:url value="/api/approval/deleteLine.do" var="deleteLineApi" />
 <c:url value="/api/user/searchUser.do" var="searchUserApi" />
+<c:url value="/api/approval/createReq.do" var="createReqApi" />
 
 <script>
 	var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -193,7 +194,8 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
-		var currentLine = null; // 선택된 결재 라인
+		var currentLine = null; // 선택된 결재 라인(모달창에서 선택하는 용도)
+		var approvalLineIdx = null; // 기안문 등록 요청하는 용도
 		var selectedUser = null; // 선택된 사용자
 		var editingLineIdx = null; // 수정 중인 결재라인 idx 저장
 		var lineMode = 'create'; // 결재 라인 모드
@@ -271,7 +273,7 @@
 				dataType: 'json',
 				data: JSON.stringify({ createUserIdx: sessionUserIdx }),
 				success: function(lineList){
-					console.log(JSON.stringify(lineList));
+					// console.log(JSON.stringify(lineList));
 					lineList.forEach(function(line) {
 						var $tr = $('<tr>').addClass('approval-line-row').attr('data-line', JSON.stringify(line))
 						$tr.append($('<td>').text(line.lineName))
@@ -337,7 +339,7 @@
 						position: position
 					}),
 					success: function (userList) {
-						console.log(JSON.stringify(userList));
+						// console.log(JSON.stringify(userList));
 						$('#userList').empty();
 
 						if (!userList || userList.length === 0) {
@@ -418,13 +420,40 @@
 				lineMode = 'edit';
 				$('#btnSaveLine').text('수정');
 				
-				console.log(JSON.stringify(line.lineUserList));
+				// console.log(JSON.stringify(line.lineUserList));
+				
+				var approvList = [];
+				var coopList = [];
+				var refList = [];
 				
 				line.lineUserList.forEach(function(user) {
-					var li = $('<li>').attr('data-user', user.idx).text(user.userName + '(' + user.userPosition + ')');
-					if (user.type === 'approv') $('#approverList').append(li);
-					else if (user.type === 'coop') $('#cooperatorList').append(li);
-					else if (user.type === 'ref') $('#referenceList').append(li);
+					var li = $('<li>').attr('data-user', user.approvalUserIdx).text(user.userName + '(' + (user.userPosition || '직급 없음') + ')');
+					if (user.type === 'approv') {
+						approvList.push({ seq: user.seq, el: li });
+					} else if (user.type === 'coop') {
+						coopList.push({ seq: user.seq, el: li });
+					} else if (user.type === 'ref') {
+						refList.push({ seq: user.seq, el: li });
+					}
+				});
+				
+				// seq 순서대로 정렬 후 append
+				approvList.sort(function(a, b) {
+					return a.seq - b.seq;
+				}).forEach(function(item) {
+					$('#approverList').append(item.el);
+				});
+				
+				coopList.sort(function(a, b) {
+					return a.seq - b.seq;
+				}).forEach(function(item) {
+					$('#cooperatorList').append(item.el);
+				});
+				
+				refList.sort(function(a, b) {
+					return a.seq - b.seq;
+				}).forEach(function(item) {
+					$('#referenceList').append(item.el);
 				});
 				
 				currentLine = line.idx;
@@ -497,6 +526,7 @@
 			    var cooperators = gatherUsers('#cooperatorList li', 'coop');
 			    if (approvers.length < 1 || cooperators.length < 1) {
 			    	alert('협조자와 결재자는 필수로 등록 하셔야 합니다.');
+			    	return;
 			    }
 			    var references = gatherUsers('#referenceList li', 'ref');
 			    var lineUsers = [...approvers, ...cooperators, ...references];
@@ -516,13 +546,13 @@
 					contentType: 'application/json',
 					data: JSON.stringify(payload),
 					success: function(res) {
-						alert('결재라인 등록 완료');
+						alert('결재라인 ' + (lineMode === 'create' ? '등록' : '수정') + ' 완료');
 						// 목록 다시 불러오기 등 처리
 						lineUserClear(); // 결재 라인 유저 목록들 초기화
 						renderLineList(); // 결재 라인 목록 다시 렌더링
 						if(lineMode === 'edit') {
 							lineMode = 'create';
-							$(this).text('등록');
+							$('#btnSaveLine').text('등록');
 						}
 					},
 					error : function(xhr) {
@@ -541,10 +571,11 @@
 
 			});
 			
-			// 선택 버튼 클릭 시 선택된 라인 currentLine에 저장
+			// 선택 버튼 클릭 시 선택된 라인 approvalLineIdx에 저장
 			$('#btnSelectLine').click(function() {
 				if (!currentLine) return alert('선택된 결재라인이 없습니다');
-				console.log('선택된 결재라인 IDX:', currentLine);
+				approvalLineIdx = currentLine;
+				console.log('선택된 결재라인 idx:', approvalLineIdx);
 				$('.black-bg').removeClass('show-modal');
 			});
 			
@@ -583,9 +614,14 @@
 				// 폼 검증(하나라도 인풋이 비어있으면 알림)
 				if (!$('#reqTitle')[0].reportValidity()) return;
 				if (!$('#reqContent')[0].reportValidity()) return;
+				
+				if (!approvalLineIdx) {
+					alert('결재 라인을 지정하고 등록해 주세요');
+					return;
+				}
 
 				var payload = {
-					approvalLineIdx : 'APPLN-1',
+					approvalLineIdx : approvalLineIdx,
 					programScheduleIdx : programScheduleIdx,
 					reqUserIdx : sessionUserIdx,
 					title : $('#reqTitle').val(),
@@ -597,14 +633,14 @@
 
 				// FormData에 payload와 파일 추가
 				var formData = new FormData();
-				formData.append("program", new Blob([ JSON.stringify(payload) ], { type : "application/json" }));
+				formData.append("approvalReq", new Blob([ JSON.stringify(payload) ], { type : "application/json" }));
 				for (var i = 0; i < fileList.length; i++) {
 					formData.append("files", fileList[i]);
 				}
 				
 				// 예약 마감 기안문 결재 요청
-/* 				$.ajax({
-					url : '${createApi}',
+ 				$.ajax({
+					url : '${createReqApi}',
 					type : 'POST',
 					processData : false,
 					contentType : false,
@@ -633,7 +669,7 @@
 						}
 						alert(errMsg);
 					}
-				}); */
+				}); 
 			});
 
 			// 취소 버튼 핸들러

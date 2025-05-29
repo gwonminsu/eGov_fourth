@@ -8,9 +8,11 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
+import egovframework.fourth.homework.service.AttachService;
 
 @Service("approvalReqService")
 public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements ApprovalReqService {
@@ -19,11 +21,15 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 	
 	@Resource(name = "approvalReqDAO")
 	private ApprovalReqDAO approvalReqDAO;
+	
+    @Resource(name="attachService")
+    private AttachService attachService;
 
 	// 예약 마감 기안문 생성
 	@Override
-	public void createApprovalReq(ApprovalReqVO vo) throws Exception {
+	public void createApprovalReq(ApprovalReqVO vo, List<MultipartFile> files) throws Exception {
 		approvalReqDAO.insertApprovalReq(vo);
+		attachService.createApprovalReqAttach(vo.getIdx(), files);
 		log.info("INSERT 에약 일정({})에 예약 마감 기안문({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());
 	}
 	
@@ -47,7 +53,7 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 	@Override
 	public void editApprovalReq(String idx) throws Exception {
 		approvalReqDAO.updateApprovalReq(idx);
-		log.info("DELETE 예약 마감 기안문({}) 상태 수정 완료", idx);
+		log.info("UPDATE 예약 마감 기안문({}) 상태 수정 완료", idx);
 	}
 	
 	// 예약 마감 기안문 삭제

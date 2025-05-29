@@ -15,7 +15,7 @@ public interface ApprovalLineService {
 	ApprovalLineVO getApprovalLine(String idx) throws Exception;
 	
 	// 결재 라인 수정(라인 이름)
-	void editApprovalLine(String idx) throws Exception;
+	void editApprovalLine(ApprovalLineVO vo) throws Exception;
 	  
 	// 결재 라인 삭제
 	void removeApprovalLine(String idx) throws Exception;

@@ -11,12 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import egovframework.fourth.homework.service.ApprovalLineService;
 import egovframework.fourth.homework.service.ApprovalLineVO;
+import egovframework.fourth.homework.service.ApprovalReqService;
+import egovframework.fourth.homework.service.ApprovalReqVO;
+import egovframework.fourth.homework.service.ProgramVO;
 
 @RestController
 @RequestMapping("/api/approval")
@@ -25,15 +30,35 @@ public class ApprovalController {
 
 	@Resource
 	private ObjectMapper objectMapper;
+	
+	@Resource(name = "approvalReqService")
+	private ApprovalReqService approvalReqService;
 
 	@Resource(name = "approvalLineService")
 	private ApprovalLineService approvalLineService;
+	
+    // 기안문 등록
+    @PostMapping(value="/createReq.do", consumes = "multipart/form-data", produces="application/json")
+    public Map<String, String> write(
+    		@RequestPart("approvalReq") ApprovalReqVO vo,
+			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws Exception {
+    	approvalReqService.createApprovalReq(vo, files);
+        return Collections.singletonMap("status","OK");
+    }
 
 	// 관리자 결재 라인 등록
 	@PostMapping(value = "/createLine.do", consumes = "application/json", produces = "application/json")
 	public Map<String, String> writeApprovalLine(@RequestBody ApprovalLineVO vo) throws Exception {
 		log.info("결재 라인 등록 승인");
 		approvalLineService.createApprovalLine(vo); // 결재 라인과 결재할 사용자 목록 생성
+		return Collections.singletonMap("status", "OK");
+	}
+	
+	// 관리자 결재 라인 수정
+	@PostMapping(value = "/editLine.do", consumes = "application/json", produces = "application/json")
+	public Map<String, String> editApprovalLine(@RequestBody ApprovalLineVO vo) throws Exception {
+		log.info("결재 라인 수정 승인");
+		approvalLineService.editApprovalLine(vo); // 결재 라인과 결재할 사용자 목록 수정
 		return Collections.singletonMap("status", "OK");
 	}
 	

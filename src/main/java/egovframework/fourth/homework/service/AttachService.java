@@ -1,5 +1,7 @@
 package egovframework.fourth.homework.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 //Service 인터페이스
@@ -7,6 +9,9 @@ public interface AttachService {
 
 	// 첨부 파일 등록(프로그램)
 	void createProgramAttach(String programIdx, MultipartFile file) throws Exception;
+	
+	// 첨부 파일 등록(기안문)
+	void createApprovalReqAttach(String approvalReqIdx, List<MultipartFile> files) throws Exception;
 	  
 	// 프로그램 idx로 첨부 이미지 파일 조회
 	AttachVO getAttachByProgramIdx(String programIdx) throws Exception;

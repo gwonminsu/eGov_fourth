@@ -274,10 +274,7 @@
 
 				// FormData에 payload와 파일 추가
 				var formData = new FormData();
-				formData.append("program", new Blob([ JSON
-						.stringify(payload) ], {
-					type : "application/json"
-				}));
+				formData.append("program", new Blob([ JSON.stringify(payload) ], { type : "application/json" }));
 				// var file = $('#imageInput')[0].files[0];
 				if (currentFile) {
 					formData.append("file", currentFile);

@@ -31,8 +31,8 @@ public class ApprovalLineDAO {
     }
     
     // 결재 라인 업데이트(라인 이름)
-    public void updateApprovalLine(String idx) throws Exception {
-        sqlSession.update("approvalLineDAO.updateApprovalLine", idx);
+    public void updateApprovalLine(ApprovalLineVO vo) throws Exception {
+        sqlSession.update("approvalLineDAO.updateApprovalLine", vo);
     }
     
     // 결재 라인 삭제

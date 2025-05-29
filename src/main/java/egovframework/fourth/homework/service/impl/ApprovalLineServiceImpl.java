@@ -57,11 +57,17 @@ public class ApprovalLineServiceImpl extends EgovAbstractServiceImpl implements 
 		return vo;
 	}
 
-	// 결재 라인 수정(라인 이름)
+	// 결재 라인 수정(라인 이름) + 라인 유저 전부 삭제 후 재생성
 	@Override
-	public void editApprovalLine(String idx) throws Exception {
-		approvalLineDAO.updateApprovalLine(idx);
-		log.info("DELETE 결재 라인({}) 이름 수정 완료", idx);
+	public void editApprovalLine(ApprovalLineVO vo) throws Exception {
+		List<LineUserVO> lineUserList = vo.getLineUserList();
+		lineUserService.removeLineLineUser(vo.getIdx()); // 결재 라인에 소속된 라인 유저들 삭제하고
+		approvalLineDAO.updateApprovalLine(vo); // 라인 이름 수정 후
+		for (LineUserVO lineUser : lineUserList) {
+			lineUser.setLineIdx(vo.getIdx()); // 각 라인 유저의 라인 idx 설정하고
+			lineUserService.createLineUser(lineUser); // 각 라인 유저 생성
+		}
+		log.info("INSERT 사용자({})의 결재 라인({}) 수정 성공", vo.getCreateUserIdx(), vo.getIdx());
 	}
 	
 	// 결재 라인 삭제

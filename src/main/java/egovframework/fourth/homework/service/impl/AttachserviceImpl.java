@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.io.File;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -37,7 +38,7 @@ public class AttachserviceImpl extends EgovAbstractServiceImpl implements Attach
         String ext = origName.substring(origName.lastIndexOf('.'));
         long size = file.getSize();
         
-        // db에 질문 이미지 메타데이터 저장
+        // db에 프로그램 이미지 메타데이터 저장
         AttachVO vo = new AttachVO();
         vo.setProgramIdx(programIdx);
         vo.setFileName(origName);
@@ -51,6 +52,36 @@ public class AttachserviceImpl extends EgovAbstractServiceImpl implements Attach
         File dest = new File(uploadDir, vo.getFileUuid() + ext);
         file.transferTo(dest);
         log.info("로컬 저장소에 파일 저장 완료! : {}", vo.getFileUuid() + vo.getExt());		
+	}
+	
+	// 첨부 파일 등록(기안문)
+	@Override
+	public void createApprovalReqAttach(String approvalReqIdx, List<MultipartFile> files) throws Exception {
+		if (files.size() < 1) return;
+        String baseDir = propertiesService.getString("file.upload.dir");
+        File uploadDir = new File(baseDir);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+        
+        for (MultipartFile file : files) {
+            String origName = file.getOriginalFilename();
+            String ext = origName.substring(origName.lastIndexOf('.'));
+            long size = file.getSize();
+            
+            // db에 기안문 파일 메타데이터 저장
+            AttachVO vo = new AttachVO();
+            vo.setApprovalReqIdx(approvalReqIdx);
+            vo.setFileName(origName);
+            vo.setFilePath(baseDir);
+            vo.setFileSize(size);
+            vo.setExt(ext);
+            attachDAO.insertAttach(vo);
+            log.info("INSERT 예약 마감 기안문({})에 첨부 파일({}) 등록 성공", vo.getApprovalReqIdx(), vo.getIdx());
+            
+            // 실제 파일 물리 저장
+            File dest = new File(uploadDir, vo.getFileUuid() + ext);
+            file.transferTo(dest);
+            log.info("로컬 저장소에 파일 저장 완료! : {}", vo.getFileUuid() + vo.getExt());	
+        }
 	}
 
 	// 프로그램 idx로 첨부 이미지 파일 조회

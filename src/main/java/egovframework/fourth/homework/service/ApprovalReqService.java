@@ -2,11 +2,13 @@ package egovframework.fourth.homework.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 //Service 인터페이스
 public interface ApprovalReqService {
 
 	// 예약 마감 기안문 생성
-	void createApprovalReq(ApprovalReqVO vo) throws Exception;
+	void createApprovalReq(ApprovalReqVO vo, List<MultipartFile> files) throws Exception;
 	  
 	// 관리자의 예약 마감 기안문 목록 조회
 	List<ApprovalReqVO> getUserApprovalReqList(String reqUserIdx) throws Exception;

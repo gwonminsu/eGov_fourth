@@ -3,15 +3,23 @@
 <mapper namespace="approvalReqDAO">
 	<!-- 예약 마감 기안문 등록 -->
 	<insert id="insertApprovalReq" parameterType="approvalReqVO">
-		<selectKey keyProperty="idx" resultType="String" order="BEFORE">
-			SELECT 'APREQ-' || COALESCE(
+		<selectKey keyProperty="idx,docId" keyColumn="gen_idx,gen_id" resultType="map" order="BEFORE">
+			SELECT
+				'APREQ-' || COALESCE(
 				(
 					SELECT (SUBSTRING(idx FROM 7))::int + 1
 					FROM approval_req
 					ORDER BY (SUBSTRING(idx FROM 7))::int DESC
 					LIMIT 1
 					FOR UPDATE
-				), 1)
+				), 1) AS gen_idx,
+				'WINI' || TO_CHAR(NOW(), 'YYYYMMDD') || (
+					COALESCE((
+						SELECT COUNT(*) + 1
+						FROM approval_req
+						WHERE TO_CHAR(created_at, 'YYYYMMDD') = TO_CHAR(NOW(), 'YYYYMMDD')
+					), 1)
+				) AS gen_id
 		</selectKey>
 		INSERT INTO approval_req
 			(idx, approval_line_idx, program_schedule_idx, req_user_idx, doc_id, title, content, status, created_at)
@@ -28,7 +36,7 @@
 			program_schedule_idx,
 			req_user_idx,
 			doc_id,
-			titile,
+			title,
 			content,
 			status,
 			created_at
@@ -45,7 +53,7 @@
 			program_schedule_idx,
 			req_user_idx,
 			doc_id,
-			titile,
+			title,
 			content,
 			status,
 			created_at
