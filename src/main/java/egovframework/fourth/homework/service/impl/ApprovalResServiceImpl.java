@@ -8,14 +8,11 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import egovframework.fourth.homework.service.ApprovalReqVO;
 import egovframework.fourth.homework.service.ApprovalResService;
 import egovframework.fourth.homework.service.ApprovalResVO;
-import egovframework.fourth.homework.service.AttachService;
 
-@Service("approvalReqService")
+@Service("approvalResService")
 public class ApprovalResServiceImpl extends EgovAbstractServiceImpl implements ApprovalResService {
 	
 	private static final Logger log = LoggerFactory.getLogger(ApprovalResServiceImpl.class);
