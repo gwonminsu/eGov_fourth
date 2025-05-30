@@ -43,8 +43,19 @@
 	</script>
 </head>
 <body>
-	<h2 id="formTitle">예약 마감 기안문</h2>
-
+	<h2 id="formTitle">예약 마감 기안문</h2><hr/>
+	
+	<div id="lineUserWrapper">
+		<!-- 기안문 결재할 유저 목록 테이블 -->
+		<table class="user-list-table">
+			<thead>
+				<tr><th colspan="3">결재</th></tr>
+			</thead>
+			<tbody id="approvalLineList"><tr><td>이름(직급)</td><td>결재</td><td>2025-MM-DD</td></tr></tbody>
+		</table>
+	</div><hr/>
+	
+	<!-- 기안 상세 테이블 -->
 	<table class="form-table">
 		<tr>
 			<th>문서번호</th>
@@ -105,29 +116,6 @@
 		
 		var approvalLineIdx = null; // 기안문 라인 idx
 		
-		// 첨부된 파일 리스트 렌더링
-		function renderFileList(fileList) {
-			$('#fileList').empty();
-			fileList.forEach(function(file, i) {
-				console.log(JSON.stringify(file));
-				var name = file.fileName;
-				var size = formatBytes(file.fileSize);
-				var url = '/uploads/' + file.fileUuid + file.ext;
-				var $item = $('<div>').addClass('file-item');
-				var $link = $('<a>').attr('href', url).attr('download', name).text(name + ' [' + size + ']');
-				$('#fileList').append($item.append($link));
-			});
-		}
-		
-		// 현재 날짜 반환
-		function getToday() {
-			var today = new Date();
-			var year = today.getFullYear();
-			var month = String(today.getMonth() + 1).padStart(2, '0');
-			var day = String(today.getDate()).padStart(2, '0');
-			return year + '-' + month + '-' + day;
-		}
-		
 		$(function() {
 			// 기안문 상세 내용 조회 요청
  			$.ajax({
@@ -158,9 +146,17 @@
 				contentType: 'application/json',
 				dataType: 'json',
 				data: JSON.stringify({ approvalReqIdx: idx }),
-				success: function(attachList){
-					console.log(JSON.stringify(attachList));
-					renderFileList(attachList); // 첨부파일 렌더링
+				success: function(fileList){
+					console.log(JSON.stringify(fileList));
+					$('#fileList').empty();
+					fileList.forEach(function(file, i) {
+						var name = file.fileName;
+						var size = formatBytes(file.fileSize);
+						var url = '/uploads/' + file.fileUuid + file.ext;
+						var $item = $('<div>').addClass('file-item');
+						var $link = $('<a>').attr('href', url).attr('download', name).text(name + ' [' + size + ']');
+						$('#fileList').append($item.append($link));
+					});
 				},
 				error: function(){
 					alert('결재 기안문의 첨부 파일들 조회 중 에러 발생');
