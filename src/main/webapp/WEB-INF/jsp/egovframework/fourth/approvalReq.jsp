@@ -196,6 +196,7 @@
 		
 		var currentLine = null; // 선택된 결재 라인(모달창에서 선택하는 용도)
 		var approvalLineIdx = null; // 기안문 등록 요청하는 용도
+		var selectedLineName = null; // 기안문에 선택한 라인 이름
 		var selectedUser = null; // 선택된 사용자
 		var editingLineIdx = null; // 수정 중인 결재라인 idx 저장
 		var lineMode = 'create'; // 결재 라인 모드
@@ -457,6 +458,7 @@
 				});
 				
 				currentLine = line.idx;
+				selectedLineName = line.lineName;
 			});
 			
 			// 결재 라인 삭제 버튼 클릭 핸들러
@@ -576,6 +578,7 @@
 				if (!currentLine) return alert('선택된 결재라인이 없습니다');
 				approvalLineIdx = currentLine;
 				console.log('선택된 결재라인 idx:', approvalLineIdx);
+				alert('[' + selectedLineName + ']을 결재 라인으로 선택했습니다')
 				$('.black-bg').removeClass('show-modal');
 			});
 			

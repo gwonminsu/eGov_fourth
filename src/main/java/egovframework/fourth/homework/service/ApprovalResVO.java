@@ -1,0 +1,32 @@
+package egovframework.fourth.homework.service;
+
+import java.sql.Timestamp;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class ApprovalResVO {
+
+    private String idx;
+    
+    private String lineUserIdx; // 결재 라인 유저 idx
+    
+    private String approvalReqIdx; // 예약 마감 결재 기안문 idx
+    
+    private String comment; // 결재 의견(아마 반려 사유에 쓰이지 않을까)
+    
+    private String approvalStatus; // 기안문에 대해 응답 내용(결재 or 반려)
+    
+    private Timestamp createdAt; // 등록일
+    
+    private String lineUserType; // 라인 유저의 결재 타입
+    
+    private String lineUserSeq; // 타입별 우선순위
+	
+}
