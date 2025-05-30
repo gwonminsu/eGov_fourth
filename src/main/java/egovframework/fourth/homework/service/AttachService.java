@@ -15,6 +15,9 @@ public interface AttachService {
 	  
 	// 프로그램 idx로 첨부 이미지 파일 조회
 	AttachVO getAttachByProgramIdx(String programIdx) throws Exception;
+	
+	// 기안문 idx로 첨부 파일 목록 조회
+	List<AttachVO> getAttachListByApprovalReqIdx(String approvalReqIdx) throws Exception;
 	  
 	// 첨부 파일 단일 조회
 	AttachVO getAttach(String idx) throws Exception;

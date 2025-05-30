@@ -40,6 +40,14 @@ table.form-table td[colspan="3"] > #reqContent {
 	font-size: 14px;
 	color: #333;
 }
+.file-item a {
+	color: #000;
+	text-decoration: none;
+}
+.file-item a:hover {
+	color: #1a0dab;
+	text-decoration: underline;
+}
 
 /* 버튼 스타일 */
 .btn-area {

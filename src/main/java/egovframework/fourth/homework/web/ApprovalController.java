@@ -22,6 +22,8 @@ import egovframework.fourth.homework.service.ApprovalLineService;
 import egovframework.fourth.homework.service.ApprovalLineVO;
 import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
+import egovframework.fourth.homework.service.AttachService;
+import egovframework.fourth.homework.service.AttachVO;
 import egovframework.fourth.homework.service.ProgramVO;
 
 @RestController
@@ -38,6 +40,9 @@ public class ApprovalController {
 	@Resource(name = "approvalLineService")
 	private ApprovalLineService approvalLineService;
 	
+	@Resource(name="attachService")
+	private AttachService attachService;
+	
     // 기안문 등록
     @PostMapping(value="/createReq.do", consumes = "multipart/form-data", produces="application/json")
     public Map<String, String> write(
@@ -45,14 +50,6 @@ public class ApprovalController {
 			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws Exception {
     	approvalReqService.createApprovalReq(vo, files);
         return Collections.singletonMap("status","OK");
-    }
-    
-    // 일정의 기안문 상세 정보 조회
-    @PostMapping(value="/scheduleReqDetail.do", consumes="application/json", produces="application/json")
-    public ApprovalReqVO getReqDetail(@RequestBody Map<String,String> req) throws Exception {
-        String programScheduleIdx = req.get("programScheduleIdx");
-        ApprovalReqVO vo = approvalReqService.getProgramScheduleApprovalReq(programScheduleIdx);
-        return vo;
     }
     
     // 프로그램 일정의 기안문 정보 조회
@@ -65,6 +62,14 @@ public class ApprovalController {
         	result.put("approvalReq", vo); // 빈 객체로 리턴
         }
         return result;
+    }
+    
+    // 기안문의 모든 첨부파일 목록 조회
+    @PostMapping(value="/getReqAttachList.do", consumes="application/json", produces="application/json")
+    public List<AttachVO> getReqAttachList(@RequestBody Map<String,String> req) throws Exception {
+        String approvalReqIdx = req.get("approvalReqIdx");
+        List<AttachVO> list = attachService.getAttachListByApprovalReqIdx(approvalReqIdx);
+        return list;
     }
 
 	// 관리자 결재 라인 등록
@@ -85,7 +90,7 @@ public class ApprovalController {
 	
     // 관리자의 결재 라인 목록 정보 조회
     @PostMapping(value="/getLineList.do", consumes="application/json", produces="application/json")
-    public List<ApprovalLineVO> getBookingList(@RequestBody Map<String,String> req) throws Exception {
+    public List<ApprovalLineVO> getUserLineList(@RequestBody Map<String,String> req) throws Exception {
         String createUserIdx = req.get("createUserIdx");
         List<ApprovalLineVO> list = approvalLineService.getUserApprovalLineList(createUserIdx);
         return list;
@@ -93,7 +98,7 @@ public class ApprovalController {
     
     // 결재 라인 삭제
     @PostMapping(value="/deleteLine.do", consumes="application/json", produces="application/json")
-    public Map<String,String> delete(@RequestBody Map<String,String> param) throws Exception {
+    public Map<String,String> lineDelete(@RequestBody Map<String,String> param) throws Exception {
     	approvalLineService.removeApprovalLine(param.get("idx")); // 라인과 소속된 라인 유저들 삭제
         return Collections.singletonMap("status","OK");
     }

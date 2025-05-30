@@ -29,6 +29,13 @@
 		ORDER BY created_at ASC
 		LIMIT 1
 	</select>
+	
+	<!-- 기안문 idx로 첨부 파일 목록 조회 -->
+	<select id="selectAttachListByApprovalReqIdx" parameterType="String" resultType="attachVO">
+		SELECT * FROM attach
+		WHERE approval_req_idx = #{approvalReqIdx}
+		ORDER BY (SUBSTRING(idx FROM 8))::int DESC
+	</select>
 
 	<!-- 첨부 파일 단일 조회 -->
 	<select id="selectAttach" parameterType="String" resultType="attachVO">

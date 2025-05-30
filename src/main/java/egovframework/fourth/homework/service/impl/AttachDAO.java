@@ -1,5 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -19,8 +21,13 @@ public class AttachDAO {
 	}
     
     // 프로그램 idx로 첨부 이미지 파일 조회
-    public AttachVO selectAttachByProgramIdx(String questionIdx) {
-        return sqlSession.selectOne("attachDAO.selectAttachByProgramIdx", questionIdx);
+    public AttachVO selectAttachByProgramIdx(String programIdx) {
+        return sqlSession.selectOne("attachDAO.selectAttachByProgramIdx", programIdx);
+    }
+    
+    // 기안문 idx로 첨부 파일 목록 조회
+    public List<AttachVO> selectAttachListByApprovalReqIdx(String approvalReqIdx) {
+        return sqlSession.selectList("attachDAO.selectAttachListByApprovalReqIdx", approvalReqIdx);
     }
     
     // 첨부 파일 단일 조회

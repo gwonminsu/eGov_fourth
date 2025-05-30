@@ -91,6 +91,14 @@ public class AttachserviceImpl extends EgovAbstractServiceImpl implements Attach
 		log.info("SELECT 프로그램({})에 대한 이미지 첨부 파일 조회 완료", programIdx);
 		return vo;
 	}
+	
+	// 기안문 idx로 첨부 파일 목록 조회
+	@Override
+	public List<AttachVO> getAttachListByApprovalReqIdx(String approvalReqIdx) throws Exception {
+		List<AttachVO> list = attachDAO.selectAttachListByApprovalReqIdx(approvalReqIdx);
+		log.info("SELECT 기안문({})에 대한 첨부 파일 목록 조회 완료", approvalReqIdx);
+		return list;
+	}
 
 	// 첨부 파일 단일 조회
 	@Override

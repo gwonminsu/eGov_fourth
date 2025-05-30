@@ -14,6 +14,7 @@
 	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
 	<!-- API URL -->
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
+    <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -94,7 +95,8 @@
 	</div>
 
 	<script>
-		var idx = '${param.approvalReqIdx}'; // 기안문 idx
+		var idx = '${param.idx}'; // 기안문 idx
+		console.log(idx);
 		// 상태 유지용 파라미터 변수
 		var programScheduleIdx = '${param.programScheduleIdx}'; // 프로그램 일정 idx
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
@@ -102,17 +104,18 @@
 		var programName = '${param.programName}'; // 프로그램 이름
 		
 		var approvalLineIdx = null; // 기안문 라인 idx
-
-		var fileList = [];
 		
 		// 첨부된 파일 리스트 렌더링
-		function renderFileList() {
+		function renderFileList(fileList) {
 			$('#fileList').empty();
 			fileList.forEach(function(file, i) {
-				var name = file.name;
-				var size = formatBytes(file.size);
-				var $item = $('<div>').addClass('file-item').text(name + ' [' + size + '] ');
-				$('#fileList').append($item);
+				console.log(JSON.stringify(file));
+				var name = file.fileName;
+				var size = formatBytes(file.fileSize);
+				var url = '/uploads/' + file.fileUuid + file.ext;
+				var $item = $('<div>').addClass('file-item');
+				var $link = $('<a>').attr('href', url).attr('download', name).text(name + ' [' + size + ']');
+				$('#fileList').append($item.append($link));
 			});
 		}
 		
@@ -145,6 +148,22 @@
 				},
 				error: function(){
 					alert('결재 기안문 상세 조회 중 에러 발생');
+				}
+			});
+			
+			// 기안문 첨부 파일 목록 조회 요청
+ 			$.ajax({
+				url: '${getReqAttachListApi}',
+				type:'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({ approvalReqIdx: idx }),
+				success: function(attachList){
+					console.log(JSON.stringify(attachList));
+					renderFileList(attachList); // 첨부파일 렌더링
+				},
+				error: function(){
+					alert('결재 기안문의 첨부 파일들 조회 중 에러 발생');
 				}
 			});
 
