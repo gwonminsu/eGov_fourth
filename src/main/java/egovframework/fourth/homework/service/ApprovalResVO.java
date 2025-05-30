@@ -15,7 +15,7 @@ public class ApprovalResVO {
 
     private String idx;
     
-    private String lineUserIdx; // 결재 라인 유저 idx
+    private String lineSnapshotIdx; // 결재 라인의 결재자들 스냅샷 idx
     
     private String approvalReqIdx; // 예약 마감 결재 기안문 idx
     

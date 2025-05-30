@@ -18,5 +18,6 @@
 		<typeAlias alias="approvalResVO" type="egovframework.fourth.homework.service.ApprovalResVO"/>
 		<typeAlias alias="approvalLineVO" type="egovframework.fourth.homework.service.ApprovalLineVO"/>
 		<typeAlias alias="lineUserVO" type="egovframework.fourth.homework.service.LineUserVO"/>
+		<typeAlias alias="approvalLineSnapshotVO" type="egovframework.fourth.homework.service.ApprovalLineSnapshotVO"/>
     </typeAliases>
 </configuration>

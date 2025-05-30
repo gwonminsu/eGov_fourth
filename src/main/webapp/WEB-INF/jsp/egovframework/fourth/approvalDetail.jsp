@@ -15,7 +15,7 @@
 	<!-- API URL -->
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
     <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
-    <c:url value="/api/approval/getLineUserList.do" var="getLineUserListApi" />
+    <c:url value="/api/approval/getSnapUserList.do" var="getSnapUserListApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -108,23 +108,42 @@
 
 	<script>
 		var idx = '${param.idx}'; // 기안문 idx
-		console.log(idx);
 		// 상태 유지용 파라미터 변수
 		var programScheduleIdx = '${param.programScheduleIdx}'; // 프로그램 일정 idx
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
-		var approvalLineIdx = null; // 기안문 라인 idx
-		
-		// 기안문의 결재라인의 결재자들 조회
-		function fetchLineUser(lineIdx) {
+		$(function() {
+			// 기안문 상세 내용 조회 요청
  			$.ajax({
-				url: '${getLineUserListApi}',
+				url: '${getScheduleReqApi}',
 				type:'POST',
 				contentType: 'application/json',
 				dataType: 'json',
-				data: JSON.stringify({ lineIdx: lineIdx }),
+				data: JSON.stringify({ programScheduleIdx: programScheduleIdx }),
+				success: function(res){
+					var data = res.approvalReq;
+					// console.log(JSON.stringify(data));
+					$('#docId').text(data.docId);
+					$('#draftDate').text(data.createdAt.substr(0, 10));
+					$('#userName').text(data.userName);
+					$('#departmentAndPosition').text(data.userDepartment + ' / ' + data.userPosition);
+					$('#reqTitle').text(data.title);
+					$('#reqContent').text(data.content);
+				},
+				error: function(){
+					alert('결재 기안문 상세 조회 중 에러 발생');
+				}
+			});
+			
+ 			// 기안문의 결재라인의 결재자들 조회
+ 			$.ajax({
+				url: '${getSnapUserListApi}',
+				type:'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({ approvalReqIdx: idx }),
 				success: function(userList){
 					console.log(JSON.stringify(userList));
 					
@@ -161,32 +180,6 @@
 				},
 				error: function(){
 					alert('결재 기안문 라인 유저 목록 조회 중 에러 발생');
-				}
-			});
-		}
-		
-		$(function() {
-			// 기안문 상세 내용 조회 요청
- 			$.ajax({
-				url: '${getScheduleReqApi}',
-				type:'POST',
-				contentType: 'application/json',
-				dataType: 'json',
-				data: JSON.stringify({ programScheduleIdx: programScheduleIdx }),
-				success: function(res){
-					var data = res.approvalReq;
-					// console.log(JSON.stringify(data));
-					$('#docId').text(data.docId);
-					$('#draftDate').text(data.createdAt.substr(0, 10));
-					$('#userName').text(data.userName);
-					$('#departmentAndPosition').text(data.userDepartment + ' / ' + data.userPosition);
-					$('#reqTitle').text(data.title);
-					$('#reqContent').text(data.content);
-					
-					fetchLineUser(data.approvalLineIdx);
-				},
-				error: function(){
-					alert('결재 기안문 상세 조회 중 에러 발생');
 				}
 			});
 			

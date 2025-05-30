@@ -15,16 +15,16 @@
 				), 1)
 		</selectKey>
 		INSERT INTO approval_res
-			(idx, line_user_idx, approval_req_idx, comment, approval_status, created_at)
+			(idx, line_snapshot_idx, approval_req_idx, comment, approval_status, created_at)
 		VALUES
-			(#{idx}, #{lineUserIdx}, #{approvalReqIdx}, #{comment}, #{approvalStatus}, NOW())
+			(#{idx}, #{lineSnapshotIdx}, #{approvalReqIdx}, #{comment}, #{approvalStatus}, NOW())
 	</insert>
 	
 	<!-- 기안문 응답 하나 조회 -->
 	<select id="selectApprovalRes" parameterType="String" resultType="approvalResVO">
 		SELECT
 			idx,
-			line_user_idx,
+			line_snapshot_idx,
 			approval_req_idx,
 			comment,
 			approval_status,
@@ -37,7 +37,7 @@
 	<select id="selectApprovalResListByApprovalReqIdx" parameterType="String" resultType="approvalResVO">
 		SELECT
 			ar.idx,
-			ar.line_user_idx,
+			ar.line_snapshot_idx,
 			ar.approval_req_idx,
 			ar.comment,
 			ar.approval_status,
@@ -54,7 +54,7 @@
 	<select id="selectApprovalResListByUserIdx" parameterType="String" resultType="approvalResVO">
 		SELECT
 			ar.idx,
-			ar.line_user_idx,
+			ar.line_snapshot_idx,
 			ar.approval_req_idx,
 			ar.comment,
 			ar.approval_status,

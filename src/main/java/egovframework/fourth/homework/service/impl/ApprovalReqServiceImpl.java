@@ -10,9 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.fourth.homework.service.ApprovalLineSnapshotService;
+import egovframework.fourth.homework.service.ApprovalLineSnapshotVO;
 import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
 import egovframework.fourth.homework.service.AttachService;
+import egovframework.fourth.homework.service.LineUserService;
+import egovframework.fourth.homework.service.LineUserVO;
 
 @Service("approvalReqService")
 public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements ApprovalReqService {
@@ -22,14 +26,32 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 	@Resource(name = "approvalReqDAO")
 	private ApprovalReqDAO approvalReqDAO;
 	
+    @Resource(name="lineUserService")
+    private LineUserService lineUserService;
+    
+    @Resource(name="approvalLineSnapshotService")
+    private ApprovalLineSnapshotService approvalLineSnapshotService;
+	
     @Resource(name="attachService")
     private AttachService attachService;
 
-	// 예약 마감 기안문 생성
+	// 예약 마감 기안문 생성 + 기안문을 결재할 사용자들 생성
 	@Override
 	public void createApprovalReq(ApprovalReqVO vo, List<MultipartFile> files) throws Exception {
-		approvalReqDAO.insertApprovalReq(vo);
-		attachService.createApprovalReqAttach(vo.getIdx(), files);
+		approvalReqDAO.insertApprovalReq(vo); // 기안문 생성하고
+		attachService.createApprovalReqAttach(vo.getIdx(), files); // 기안문에 대한 파일들 생성하고
+		
+		// 기안문이 사용한 라인의 라인 유저 목록 조회하여
+		List<LineUserVO> lineUserList = lineUserService.getLineLineUserList(vo.getApprovalLineIdx());
+		for (LineUserVO lineUser : lineUserList) {
+			ApprovalLineSnapshotVO snapUser = new ApprovalLineSnapshotVO();
+			// 데이터 세팅 후
+			snapUser.setApprovalReqIdx(vo.getIdx());
+			snapUser.setUserIdx(lineUser.getApprovalUserIdx());
+			snapUser.setSeq(lineUser.getSeq());
+			snapUser.setType(lineUser.getType());
+			approvalLineSnapshotService.createApprovalLineSnapshot(snapUser); // 기안문을 결재할 사용자 생성
+		}
 		log.info("INSERT 에약 일정({})에 예약 마감 기안문({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());
 	}
 	

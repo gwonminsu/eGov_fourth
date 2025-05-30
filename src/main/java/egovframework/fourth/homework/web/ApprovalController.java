@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import egovframework.fourth.homework.service.ApprovalLineService;
+import egovframework.fourth.homework.service.ApprovalLineSnapshotService;
+import egovframework.fourth.homework.service.ApprovalLineSnapshotVO;
 import egovframework.fourth.homework.service.ApprovalLineVO;
 import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
@@ -41,6 +43,9 @@ public class ApprovalController {
 
 	@Resource(name = "approvalLineService")
 	private ApprovalLineService approvalLineService;
+	
+	@Resource(name = "approvalLineSnapshotService")
+	private ApprovalLineSnapshotService approvalLineSnapshotService;
 	
 	@Resource(name = "lineUserService")
 	private LineUserService lineUserService;
@@ -101,13 +106,22 @@ public class ApprovalController {
         return list;
     }
     
-    // 결재 라인의 라인 유저 목록 조회
-    @PostMapping(value="/getLineUserList.do", consumes="application/json", produces="application/json")
-    public List<LineUserVO> getLineUserList(@RequestBody Map<String,String> req) throws Exception {
-        String lineIdx = req.get("lineIdx");
-        List<LineUserVO> list = lineUserService.getLineLineUserList(lineIdx);
+    // 결재 기안문의 라인 유저 목록 조회
+    @PostMapping(value="/getSnapUserList.do", consumes="application/json", produces="application/json")
+    public List<ApprovalLineSnapshotVO> getSnapUserList(@RequestBody Map<String,String> req) throws Exception {
+        String approvalReqIdx = req.get("approvalReqIdx");
+        List<ApprovalLineSnapshotVO> list = approvalLineSnapshotService.getApprovalReqApprovalLineSnapshotList(approvalReqIdx);
         return list;
     }
+    
+    // 결재 라인의 라인 유저 목록 조회
+	/*
+	 * @PostMapping(value="/getLineUserList.do", consumes="application/json",
+	 * produces="application/json") public List<LineUserVO>
+	 * getLineUserList(@RequestBody Map<String,String> req) throws Exception {
+	 * String lineIdx = req.get("lineIdx"); List<LineUserVO> list =
+	 * lineUserService.getLineLineUserList(lineIdx); return list; }
+	 */
     
     // 결재 라인 삭제
     @PostMapping(value="/deleteLine.do", consumes="application/json", produces="application/json")
