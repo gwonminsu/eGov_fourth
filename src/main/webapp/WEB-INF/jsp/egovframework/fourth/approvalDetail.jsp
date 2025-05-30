@@ -114,6 +114,24 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
+		// 결재할 유저가 이 기안에 응답한 데이터를 조회
+		function checkApprovalResponse() {
+ 			$.ajax({
+				url: '${}',
+				type:'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({ approvalReqIdx: idx, userIdx: ? }),
+				success: function(list){
+					// console.log(JSON.stringify(fileList));
+
+				},
+				error: function(){
+					alert('응답 조회 중 에러 발생');
+				}
+			});
+		}
+		
 		$(function() {
 			// 기안문 상세 내용 조회 요청
  			$.ajax({
@@ -166,8 +184,9 @@
 						list.sort(function(a, b) {
 							return a.seq - b.seq;
 						}).forEach(function(user) {
+							console.log(JSON.stringify(user));
 							var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
-							var $status = $('<td>').text('대기중'); // 여기에 라인 유저가 이 기안에 응답한 데이터를 조회해서 있으면 approval_status 값을 넣을 예정
+							var $status = $('<td>').text('대기중'); // 여기에 결재할 유저가 이 기안에 응답한 데이터를 조회해서 있으면 approval_status 값을 넣을 예정
 							var $resDate = $('<td>').text(''); // 이것도
 							var $row = $('<tr>').append($name).append($status).append($resDate);
 							$('#approvalLineList').append($row);

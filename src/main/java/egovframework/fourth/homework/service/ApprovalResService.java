@@ -16,6 +16,9 @@ public interface ApprovalResService {
 	  
 	// 사용자의 기안문 응답 목록 조회
 	List<ApprovalResVO> getUserApprovalResList(String userIdx) throws Exception;
+	
+	// 사용자가 특정 기안문에 응답한 데이터 조회
+	List<ApprovalResVO> getUserAndApprovalReqApprovalRes(String userIdx, String approvalReqIdx) throws Exception;
 	  
 	// 기안문 응답 삭제
 	void removeApprovalRes(String idx) throws Exception;

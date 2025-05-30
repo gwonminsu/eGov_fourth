@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -34,6 +35,11 @@ public class ApprovalResDAO {
     // 사용자의 기안문 응답 목록 조회
     public List<ApprovalResVO> selectApprovalResListByUserIdx(String userIdx) throws Exception {
         return sqlSession.selectList("approvalResDAO.selectApprovalResListByUserIdx", userIdx);
+    }
+    
+    // 사용자가 특정 기안문에 응답한 데이터들 조회
+    public List<ApprovalResVO> selectApprovalResListByUserIdxAndApprovalReqIdx(Map<String,Object> param) throws Exception {
+        return sqlSession.selectList("approvalResDAO.selectApprovalResListByUserIdxAndApprovalReqIdx", param);
     }
     
     // 기안문 응답 삭제
