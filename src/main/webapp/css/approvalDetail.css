@@ -73,7 +73,7 @@ table.user-list-table td:nth-child(3) {
 }
 .file-item {
 	margin-bottom: 6px;
-	font-size: 14px;
+	font-size: 0.8em;
 	color: #333;
 }
 .file-item a {
@@ -83,6 +83,20 @@ table.user-list-table td:nth-child(3) {
 .file-item a:hover {
 	color: #1a0dab;
 	text-decoration: underline;
+}
+
+/* 의견 리스트 영역 스타일 */
+#commentWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	box-sizing: border-box;
+}
+.comment-item {
+	margin-bottom: 6px;
+	font-size: 0.8em;
+	color: #333;
 }
 
 /* 버튼 스타일 */

@@ -192,6 +192,7 @@
 							// console.log(JSON.stringify(user));
 							// 먼저 결재 사용자가 응답했는지 검사하고 응답 있으면 reData 제공
 							checkApprovalResponse(user.userIdx, function(resData) {
+								// 결재자 테이블 렌더링
 								console.log(JSON.stringify(resData));
 								var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
 								var $status = $('<td>')
@@ -205,6 +206,12 @@
 								}
 								var $row = $('<tr>').append($name).append($status).append($resDate);
 								$('#approvalLineList').append($row);
+								// 의견 리스트 렌더링
+								if (resData && resData.comment) {
+									var $item = $('<div>').addClass('comment-item')
+													.text('🔸 ' + user.userName + '(' + user.userPosition + ')' + ': ' + resData.comment);
+									$('#commentList').append($item)
+								}
 							});
 						});
 					}
@@ -233,7 +240,7 @@
 						var size = formatBytes(file.fileSize);
 						var url = '/uploads/' + file.fileUuid + file.ext;
 						var $item = $('<div>').addClass('file-item');
-						var $link = $('<a>').attr('href', url).attr('download', name).text(name + ' [' + size + ']');
+						var $link = $('<a>').attr('href', url).attr('download', name).text('🔹 ' + name + ' [' + size + ']');
 						$('#fileList').append($item.append($link));
 					});
 				},
