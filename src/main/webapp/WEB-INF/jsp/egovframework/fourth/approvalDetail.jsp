@@ -16,6 +16,7 @@
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
     <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
     <c:url value="/api/approval/getSnapUserList.do" var="getSnapUserListApi" />
+	<c:url value="/api/approval/getUserAndReqRes.do" var="getUserReqResApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -115,19 +116,23 @@
 		var programName = '${param.programName}'; // 프로그램 이름
 		
 		// 결재할 유저가 이 기안에 응답한 데이터를 조회
-		function checkApprovalResponse() {
+		function checkApprovalResponse(userIdx, callback) {
  			$.ajax({
-				url: '${}',
+				url: '${getUserReqResApi}',
 				type:'POST',
 				contentType: 'application/json',
 				dataType: 'json',
-				data: JSON.stringify({ approvalReqIdx: idx, userIdx: ? }),
+				data: JSON.stringify({ approvalReqIdx: idx, userIdx: userIdx }),
 				success: function(list){
-					// console.log(JSON.stringify(fileList));
-
+					if (list && list.length > 0) {
+						callback(list[0]);
+					} else {
+						callback(null);
+					}
 				},
 				error: function(){
 					alert('응답 조회 중 에러 발생');
+					callback(null);
 				}
 			});
 		}
@@ -184,12 +189,23 @@
 						list.sort(function(a, b) {
 							return a.seq - b.seq;
 						}).forEach(function(user) {
-							console.log(JSON.stringify(user));
-							var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
-							var $status = $('<td>').text('대기중'); // 여기에 결재할 유저가 이 기안에 응답한 데이터를 조회해서 있으면 approval_status 값을 넣을 예정
-							var $resDate = $('<td>').text(''); // 이것도
-							var $row = $('<tr>').append($name).append($status).append($resDate);
-							$('#approvalLineList').append($row);
+							// console.log(JSON.stringify(user));
+							// 먼저 결재 사용자가 응답했는지 검사하고 응답 있으면 reData 제공
+							checkApprovalResponse(user.userIdx, function(resData) {
+								console.log(JSON.stringify(resData));
+								var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
+								var $status = $('<td>')
+								var $resDate = $('<td>')
+								if (resData) {
+									$status.text(resData.approvalStatus === 'approved' ? '결재' : '반려');
+									$resDate.text(resData.createdAt.substr(0,10));
+								} else {
+									$status.text('대기중');
+									$resDate.text('');
+								}
+								var $row = $('<tr>').append($name).append($status).append($resDate);
+								$('#approvalLineList').append($row);
+							});
 						});
 					}
 					

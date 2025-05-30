@@ -24,6 +24,8 @@ import egovframework.fourth.homework.service.ApprovalLineSnapshotVO;
 import egovframework.fourth.homework.service.ApprovalLineVO;
 import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
+import egovframework.fourth.homework.service.ApprovalResService;
+import egovframework.fourth.homework.service.ApprovalResVO;
 import egovframework.fourth.homework.service.AttachService;
 import egovframework.fourth.homework.service.AttachVO;
 import egovframework.fourth.homework.service.LineUserService;
@@ -40,6 +42,9 @@ public class ApprovalController {
 	
 	@Resource(name = "approvalReqService")
 	private ApprovalReqService approvalReqService;
+	
+	@Resource(name = "approvalResService")
+	private ApprovalResService approvalResService;
 
 	@Resource(name = "approvalLineService")
 	private ApprovalLineService approvalLineService;
@@ -111,6 +116,15 @@ public class ApprovalController {
     public List<ApprovalLineSnapshotVO> getSnapUserList(@RequestBody Map<String,String> req) throws Exception {
         String approvalReqIdx = req.get("approvalReqIdx");
         List<ApprovalLineSnapshotVO> list = approvalLineSnapshotService.getApprovalReqApprovalLineSnapshotList(approvalReqIdx);
+        return list;
+    }
+    
+    // 사용자가 특정 기안문에 응답한 데이터 조회
+    @PostMapping(value="/getUserAndReqRes.do", consumes="application/json", produces="application/json")
+    public List<ApprovalResVO> getUserAndReqRes(@RequestBody Map<String,String> req) throws Exception {
+        String approvalReqIdx = req.get("approvalReqIdx");
+        String userIdx = req.get("userIdx");
+        List<ApprovalResVO> list = approvalResService.getUserAndApprovalReqApprovalRes(userIdx, approvalReqIdx);
         return list;
     }
     
