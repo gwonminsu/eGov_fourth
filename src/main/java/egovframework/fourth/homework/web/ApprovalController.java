@@ -24,6 +24,8 @@ import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalReqVO;
 import egovframework.fourth.homework.service.AttachService;
 import egovframework.fourth.homework.service.AttachVO;
+import egovframework.fourth.homework.service.LineUserService;
+import egovframework.fourth.homework.service.LineUserVO;
 import egovframework.fourth.homework.service.ProgramVO;
 
 @RestController
@@ -39,6 +41,9 @@ public class ApprovalController {
 
 	@Resource(name = "approvalLineService")
 	private ApprovalLineService approvalLineService;
+	
+	@Resource(name = "lineUserService")
+	private LineUserService lineUserService;
 	
 	@Resource(name="attachService")
 	private AttachService attachService;
@@ -93,6 +98,14 @@ public class ApprovalController {
     public List<ApprovalLineVO> getUserLineList(@RequestBody Map<String,String> req) throws Exception {
         String createUserIdx = req.get("createUserIdx");
         List<ApprovalLineVO> list = approvalLineService.getUserApprovalLineList(createUserIdx);
+        return list;
+    }
+    
+    // 결재 라인의 라인 유저 목록 조회
+    @PostMapping(value="/getLineUserList.do", consumes="application/json", produces="application/json")
+    public List<LineUserVO> getLineUserList(@RequestBody Map<String,String> req) throws Exception {
+        String lineIdx = req.get("lineIdx");
+        List<LineUserVO> list = lineUserService.getLineLineUserList(lineIdx);
         return list;
     }
     

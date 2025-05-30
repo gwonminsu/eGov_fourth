@@ -15,6 +15,7 @@
 	<!-- API URL -->
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
     <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
+    <c:url value="/api/approval/getLineUserList.do" var="getLineUserListApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -51,7 +52,7 @@
 			<thead>
 				<tr><th colspan="3">결재</th></tr>
 			</thead>
-			<tbody id="approvalLineList"><tr><td>이름(직급)</td><td>결재</td><td>2025-MM-DD</td></tr></tbody>
+			<tbody id="approvalLineList"></tbody>
 		</table>
 	</div><hr/>
 	
@@ -116,6 +117,54 @@
 		
 		var approvalLineIdx = null; // 기안문 라인 idx
 		
+		// 기안문의 결재라인의 결재자들 조회
+		function fetchLineUser(lineIdx) {
+ 			$.ajax({
+				url: '${getLineUserListApi}',
+				type:'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({ lineIdx: lineIdx }),
+				success: function(userList){
+					console.log(JSON.stringify(userList));
+					
+					var approvList = [];
+					var coopList = [];
+					var refList = [];
+					
+					userList.forEach(function(user) {
+						if (user.type === 'approv') {
+							approvList.push(user);
+						} else if (user.type === 'coop') {
+							coopList.push(user);
+						} else if (user.type === 'ref') {
+							refList.push(user);
+						}
+					});
+					
+					// seq 순서대로 정렬 후 append
+					function renderLineUserList(list) {
+						list.sort(function(a, b) {
+							return a.seq - b.seq;
+						}).forEach(function(user) {
+							var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
+							var $status = $('<td>').text('대기중'); // 여기에 라인 유저가 이 기안에 응답한 데이터를 조회해서 있으면 approval_status 값을 넣을 예정
+							var $resDate = $('<td>').text(''); // 이것도
+							var $row = $('<tr>').append($name).append($status).append($resDate);
+							$('#approvalLineList').append($row);
+						});
+					}
+					
+					renderLineUserList(coopList);
+					renderLineUserList(approvList);
+					renderLineUserList(refList);
+				},
+				error: function(){
+					alert('결재 기안문 라인 유저 목록 조회 중 에러 발생');
+				}
+			});
+		}
+		
 		$(function() {
 			// 기안문 상세 내용 조회 요청
  			$.ajax({
@@ -126,13 +175,15 @@
 				data: JSON.stringify({ programScheduleIdx: programScheduleIdx }),
 				success: function(res){
 					var data = res.approvalReq;
-					console.log(JSON.stringify(data));
+					// console.log(JSON.stringify(data));
 					$('#docId').text(data.docId);
 					$('#draftDate').text(data.createdAt.substr(0, 10));
 					$('#userName').text(data.userName);
 					$('#departmentAndPosition').text(data.userDepartment + ' / ' + data.userPosition);
 					$('#reqTitle').text(data.title);
 					$('#reqContent').text(data.content);
+					
+					fetchLineUser(data.approvalLineIdx);
 				},
 				error: function(){
 					alert('결재 기안문 상세 조회 중 에러 발생');
@@ -147,7 +198,7 @@
 				dataType: 'json',
 				data: JSON.stringify({ approvalReqIdx: idx }),
 				success: function(fileList){
-					console.log(JSON.stringify(fileList));
+					// console.log(JSON.stringify(fileList));
 					$('#fileList').empty();
 					fileList.forEach(function(file, i) {
 						var name = file.fileName;

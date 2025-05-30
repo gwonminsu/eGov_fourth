@@ -30,7 +30,7 @@ table.form-table td[colspan="3"] > #reqContent {
 	width: 100%;
 }
 table.user-list-table {
-	width: 350px;
+	width: 300px;
 	border-collapse: collapse;
 }
 table.user-list-table th,
@@ -49,13 +49,13 @@ table.user-list-table td {
 	font-size: 0.8em;
 }
 table.user-list-table td:nth-child(1) {
-	width: 60%;
+	width: 50%;
 }
 table.user-list-table td:nth-child(2) {
-	width: 15%;
+	width: 20%;
 }
 table.user-list-table td:nth-child(3) {
-	width: 25%;
+	width: 30%;
 }
 
 /* 첨부파일 영역 스타일 */
