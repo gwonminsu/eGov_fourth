@@ -4,50 +4,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>프로그램 작성/수정 폼</title>
-
-<link rel="stylesheet" href="<c:url value='/css/approvalReq.css'/>" />
-<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
-
-<!-- 일정 관리(상세) 페이지 URL -->
-<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
-<!-- API URL -->
-<c:url value="/api/approval/getLineList.do" var="getLineListApi" />
-<c:url value="/api/approval/createLine.do" var="createLineApi" />
-<c:url value="/api/approval/editLine.do" var="editLineApi" />
-<c:url value="/api/approval/deleteLine.do" var="deleteLineApi" />
-<c:url value="/api/user/searchUser.do" var="searchUserApi" />
-<c:url value="/api/approval/createReq.do" var="createReqApi" />
-
-<script>
-	var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
-	var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
-	var userName = '<c:out value="${sessionScope.loginUser.userName}" default="" />';
-	var userDepartment = '<c:out value="${sessionScope.loginUser.department}" default="" />';
-	var userPosition = '<c:out value="${sessionScope.loginUser.position}" default="" />';
+	<meta charset="UTF-8">
+	<title>기안문 작성</title>
 	
-    // 동적 POST 폼 생성 함수
-    function postTo(url, params) {
-        var form = $('<form>').attr({ method: 'POST', action: url });
-        $.each(params, function(name, value){
-            $('<input>').attr({ type: 'hidden', name: name, value: value }).appendTo(form);
-        });
-        form.appendTo('body').submit();
-    }
-
-	// 바이트 수를 읽기 편한 문자열로 변환
-	function formatBytes(bytes) {
-		if (bytes === 0) return '0 Bytes';
-		var k = 1024;
-		var sizes = [ 'Bytes', 'KB', 'MB', 'GB', 'TB' ];
-		// 지수 계산
-		var i = Math.floor(Math.log(bytes) / Math.log(k));
-		// 해당 단위로 나눈 값
-		var value = bytes / Math.pow(k, i);
-		return value.toFixed(2) + ' ' + sizes[i];
-	}
-</script>
+	<link rel="stylesheet" href="<c:url value='/css/approvalReq.css'/>" />
+	<script src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
+	
+	<!-- 일정 관리(상세) 페이지 URL -->
+	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
+	<!-- API URL -->
+	<c:url value="/api/approval/getLineList.do" var="getLineListApi" />
+	<c:url value="/api/approval/createLine.do" var="createLineApi" />
+	<c:url value="/api/approval/editLine.do" var="editLineApi" />
+	<c:url value="/api/approval/deleteLine.do" var="deleteLineApi" />
+	<c:url value="/api/user/searchUser.do" var="searchUserApi" />
+	<c:url value="/api/approval/createReq.do" var="createReqApi" />
+	
+	<script>
+		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
+		var isAdmin = '<c:out value="${sessionScope.loginUser.isAdmin}" default="" />';
+		var userName = '<c:out value="${sessionScope.loginUser.userName}" default="" />';
+		var userDepartment = '<c:out value="${sessionScope.loginUser.department}" default="" />';
+		var userPosition = '<c:out value="${sessionScope.loginUser.position}" default="" />';
+		
+	    // 동적 POST 폼 생성 함수
+	    function postTo(url, params) {
+	        var form = $('<form>').attr({ method: 'POST', action: url });
+	        $.each(params, function(name, value){
+	            $('<input>').attr({ type: 'hidden', name: name, value: value }).appendTo(form);
+	        });
+	        form.appendTo('body').submit();
+	    }
+	
+		// 바이트 수를 읽기 편한 문자열로 변환
+		function formatBytes(bytes) {
+			if (bytes === 0) return '0 Bytes';
+			var k = 1024;
+			var sizes = [ 'Bytes', 'KB', 'MB', 'GB', 'TB' ];
+			// 지수 계산
+			var i = Math.floor(Math.log(bytes) / Math.log(k));
+			// 해당 단위로 나눈 값
+			var value = bytes / Math.pow(k, i);
+			return value.toFixed(2) + ' ' + sizes[i];
+		}
+	</script>
 </head>
 <body>
 	<h2 id="formTitle">예약 마감 기안문</h2>

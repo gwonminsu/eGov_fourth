@@ -1,0 +1,74 @@
+@charset "UTF-8";
+
+/* form-table(프로그램 등록 폼) 스타일 */
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+table.form-table th {
+	width: 15%;
+	background: #f2f9ff;
+	text-align: center;
+	white-space: nowrap;
+}
+table.form-table td[colspan="3"] > #reqContent {
+	min-height: 300px;
+}
+
+/* 첨부파일 영역 스타일 */
+#attachFileWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	box-sizing: border-box;
+	white-space: nowrap;
+}
+#fileList {
+	width: 100%;
+	margin-top: 10px;
+}
+.file-item {
+	margin-bottom: 6px;
+	font-size: 14px;
+	color: #333;
+}
+
+/* 버튼 스타일 */
+.btn-area {
+	text-align: right;
+	margin-top: 16px;
+	display: flex;
+	justify-content: flex-end;
+	align-content: center;
+}
+.btn-area button {
+	min-width: 60px;
+	padding: 6px 12px;
+	margin: 0 4px;
+}
+#btnDelete {
+	background-color: #ff5757;
+	color: #FFFFFF;
+	border: none;
+}
+#btnDelete:hover {
+	background-color: #ff5757;
+}
+#btnReuse,
+#btnCancel {
+	background-color: #0B5773;
+	color: #FFFFFF;
+	border: none;
+}
+#btnReuse:hover,
+#btnCancel:hover {
+	background-color: #094055;
+}

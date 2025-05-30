@@ -21,6 +21,12 @@ public class ApprovalReqVO {
     
     private String reqUserIdx; // 기안문 작성자 idx
     
+    private String userName; // 기안문 작성자 이름
+    
+    private String userDepartment; // 기안문 작성자 소속 부서
+    
+    private String userPosition; // 기안문 작성자 직급
+    
     private String docId; // 문서 번호
     
     private String title; // 기안문 제목

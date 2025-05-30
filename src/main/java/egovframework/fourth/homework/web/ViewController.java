@@ -120,4 +120,15 @@ public class ViewController {
 		return "approvalReq";
 	}
 	
+	// 예약 마감 기안문 확인(상세) 페이지
+	@RequestMapping(value = "/approvalDetail.do")
+	public String approvalDetailPage(HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+		return "approvalDetail";
+	}
 }

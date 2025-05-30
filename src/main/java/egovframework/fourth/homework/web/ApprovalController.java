@@ -47,6 +47,14 @@ public class ApprovalController {
         return Collections.singletonMap("status","OK");
     }
     
+    // 일정의 기안문 상세 정보 조회
+    @PostMapping(value="/scheduleReqDetail.do", consumes="application/json", produces="application/json")
+    public ApprovalReqVO getReqDetail(@RequestBody Map<String,String> req) throws Exception {
+        String programScheduleIdx = req.get("programScheduleIdx");
+        ApprovalReqVO vo = approvalReqService.getProgramScheduleApprovalReq(programScheduleIdx);
+        return vo;
+    }
+    
     // 프로그램 일정의 기안문 정보 조회
     @PostMapping(value="/getScheduleReq.do", consumes="application/json", produces="application/json")
     public Map<String, Object> getScheduleApprovalReq(@RequestBody Map<String,String> req) throws Exception {

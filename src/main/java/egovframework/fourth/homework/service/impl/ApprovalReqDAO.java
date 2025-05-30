@@ -25,6 +25,12 @@ public class ApprovalReqDAO {
         return sqlSession.selectList("approvalReqDAO.selectApprovalReqListByReqUserIdx", reqUserIdx);
     }
     
+    // 예약 마감 기안문 상세 조회
+    public ApprovalReqVO selectApprovalReq(String idx) throws Exception {
+        return sqlSession.selectOne("approvalReqDAO.selectApprovalReq", idx);
+    }
+    
+    
     // 프로그램 일정의 예약 마감 기안문 상세 조회
     public ApprovalReqVO selectApprovalReqByProgramScheduleIdx(String programScheduleIdx) throws Exception {
         return sqlSession.selectOne("approvalReqDAO.selectApprovalReqByProgramScheduleIdx", programScheduleIdx);

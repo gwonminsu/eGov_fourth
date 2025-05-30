@@ -15,6 +15,8 @@
 	<c:url value="/addBooker.do" var="addBookerUrl"/>
    	<!-- 예약 마감 기안문 작성 페이지 URL -->
 	<c:url value="/approvalReq.do" var="approvalReqUrl"/>
+   	<!-- 예약 마감 기안문 확인 페이지 URL -->
+	<c:url value="/approvalDetail.do" var="approvalDetailUrl"/>
 	<!-- 프로그램 일정 수정 API URL -->
     <c:url value="/api/schedule/updateSchedule.do" var="updateApi"/>
    	<!-- 현재 프로그램 일정 조회 API URL -->
@@ -25,7 +27,6 @@
     <c:url value="/api/booking/delete.do" var="deleteBookingApi"/>
     <!-- 현재 프로그램 일정의 기안문 정보 조회 -->
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
-
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -299,6 +300,7 @@
 			// 기안 확인 버튼(기안문 작성 예정)
 			$('#btnGoApprovalReq').on('click', function () {
 				console.log(approvalReqIdx);
+				postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
 			});
 		
 			// 예약자 추가
