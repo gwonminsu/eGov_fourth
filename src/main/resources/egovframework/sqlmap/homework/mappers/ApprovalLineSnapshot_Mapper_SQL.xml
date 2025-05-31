@@ -52,6 +52,23 @@
 		WHERE idx = #{idx}
 	</select>
 	
+	<!-- 기안문idx + 사용자idx 로 lineSnapshotIdx 조회 -->
+	<select id="selectLineSnapshotIdxByReqAndUser" parameterType="map" resultType="String">
+		SELECT idx
+		FROM approval_line_snapshot
+		WHERE approval_req_idx = #{approvalReqIdx}
+		AND user_idx = #{userIdx}
+		AND is_locked = false
+		LIMIT 1
+	</select>
+	
+	<!-- 결재자 결재 잠금 해제 -->
+	<update id="updateIsLocked" parameterType="String">
+	    UPDATE approval_line_snapshot
+	    SET is_locked = false
+	    WHERE idx = #{idx}
+	</update>
+	
 	<!-- 결재 기안문에 등록된 결재할 특정 사용자 하나 삭제 -->
 	<delete id="deleteApprovalLineSnapshot" parameterType="String">
 		DELETE FROM approval_line_snapshot WHERE idx = #{idx}

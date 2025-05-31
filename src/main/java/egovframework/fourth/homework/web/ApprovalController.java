@@ -88,9 +88,7 @@ public class ApprovalController {
         int pageIndex = (Integer) req.get("pageIndex") <= 0 ? 1 : (Integer) req.get("pageIndex");
         int recordCountPerPage = (Integer) req.get("recordCountPerPage");
         int firstIndex = (pageIndex - 1) * recordCountPerPage;
-        System.out.println("▶️ pageIndex: " + pageIndex);
-        System.out.println("▶️ recordCountPerPage: " + recordCountPerPage);
-        System.out.println("▶️ firstIndex: " + firstIndex);
+
         int totalCount = approvalReqService.getSnapApprovalReqCount(userIdx);
     	List<ApprovalReqVO> reqList = approvalReqService.getSnapUserApprovalReqList(userIdx, recordCountPerPage, firstIndex);
         
@@ -189,9 +187,27 @@ public class ApprovalController {
     
     // 결재 라인 삭제
     @PostMapping(value="/deleteLine.do", consumes="application/json", produces="application/json")
-    public Map<String,String> lineDelete(@RequestBody Map<String,String> param) throws Exception {
-    	approvalLineService.removeApprovalLine(param.get("idx")); // 라인과 소속된 라인 유저들 삭제
+    public Map<String,String> lineDelete(@RequestBody Map<String,String> req) throws Exception {
+    	approvalLineService.removeApprovalLine(req.get("idx")); // 라인과 소속된 라인 유저들 삭제
         return Collections.singletonMap("status","OK");
     }
+    
+	// 기안문에 응답 등록
+	@PostMapping(value = "/createApprovalRes.do", consumes = "application/json", produces = "application/json")
+	public Map<String, String> createApprovalRes(@RequestBody Map<String,String> req) throws Exception {
+		String approvalReqIdx = req.get("approvalReqIdx");
+		String userIdx = req.get("userIdx");
+		log.info("approvalReqIdx: {}, userIdx: {}", approvalReqIdx, userIdx);
+		String lineSnapshotIdx = approvalLineSnapshotService.getReqAndUserApprovalLineSnapshotIdx(approvalReqIdx, userIdx);
+		
+	    // 본인 차례 아니면 등록 못함
+	    if (!approvalLineSnapshotService.isCurrentTurn(approvalReqIdx, userIdx)) {
+	        return Collections.singletonMap("error", "더 이상 결재할 수 없습니다");
+	    }
+		
+	    req.put("lineSnapshotIdx", lineSnapshotIdx);
+		approvalResService.createApprovalRes(req); // 결재 응답 등록
+		return Collections.singletonMap("status", "OK");
+	}
 
 }

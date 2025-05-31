@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -28,6 +29,16 @@ public class ApprovalLineSnapshotDAO {
     // 결재 기안문에 등록된 결재할 특정 사용자 조회
     public ApprovalLineSnapshotVO selectApprovalLineSnapshot(String idx) throws Exception {
         return sqlSession.selectOne("approvalLineSnapshotDAO.selectApprovalLineSnapshot", idx);
+    }
+    
+    // 기안문idx와 사용자idx로 결재할 사용자 idx 조회
+    public String selectLineSnapshotIdxByReqAndUser(Map<String,Object> param) throws Exception {
+        return sqlSession.selectOne("approvalLineSnapshotDAO.selectLineSnapshotIdxByReqAndUser", param);
+    }
+    
+    // 결재자 결재 잠금 해제
+    public void updateIsLocked(String idx) throws Exception {
+        sqlSession.update("approvalLineSnapshotDAO.updateIsLocked", idx);
     }
     
     // 결재 기안문에 등록된 결재할 특정 사용자 하나 삭제

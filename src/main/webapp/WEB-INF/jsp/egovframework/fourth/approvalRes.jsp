@@ -19,6 +19,7 @@
 	<c:url value="/api/approval/getUserAndReqRes.do" var="getUserReqResApi" />
 	<c:url value="/api/approval/getReqRes.do" var="getReqResApi" />
 	<c:url value="/api/approval/deleteReq.do" var="deleteReqApi" />
+    <c:url value="/api/approval/createApprovalRes.do" var="createApprovalResApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -130,7 +131,6 @@
 
 	<script>
 		var idx = '${param.idx}'; // 기안문 idx
-		console.log(idx);
 
 		// 상태 유지용 파라미터 변수
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
@@ -162,21 +162,27 @@
 		function handleApproval(status, comment) {
 			if (!confirm(status === 'APPROVED' ? '결재하시겠습니까?' : '반려하시겠습니까?')) return;
 
-			const req = {
+			var req = {
 				approvalReqIdx: idx,
 				userIdx: sessionUserIdx,
 				approvalStatus: status,
 				comment: comment
 			};
+			
+			console.log(JSON.stringify(req));
 
-			$.ajax({
-				url: '${approvalRespondApi}',
+ 			$.ajax({
+				url: '${createApprovalResApi}',
 				type: 'POST',
 				contentType: 'application/json',
 				data: JSON.stringify(req),
-				success: function () {
-					alert('처리 완료');
-					postTo('${approvalListUrl}', { programIdx: programIdx, pageIndex: pageIndex });
+				success: function (res) {
+					if (res.error) {
+						alert(res.error);
+					} else {
+						alert('처리 완료');
+						postTo('${approvalListUrl}', { programIdx: programIdx, pageIndex: pageIndex });
+					}
 				},
 				error: function () {
 					alert('결재 처리 중 에러 발생');
@@ -209,7 +215,7 @@
 						dataType: 'json',
 						data: JSON.stringify({ approvalReqIdx: idx }),
 						success: function(resList){
-							console.log(JSON.stringify(resList));
+							// console.log(JSON.stringify(resList));
 							if (resList.length < 1 && data.reqUserIdx === sessionUserIdx) {
 								$('#btnDelete').show();
 							}
@@ -232,7 +238,7 @@
 				dataType: 'json',
 				data: JSON.stringify({ approvalReqIdx: idx }),
 				success: function(userList){
-					console.log(JSON.stringify(userList));
+					// console.log(JSON.stringify(userList));
 					
 					var approvList = [];
 					var coopList = [];
@@ -267,7 +273,7 @@
 							// user의 응답 이력 조회
 							checkApprovalResponse(user.userIdx, function(resData) {
 								// 결재자 테이블 렌더링
-								console.log(JSON.stringify(resData));
+								// console.log(JSON.stringify(resData));
 								var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
 								var $status = $('<td>')
 								var $resDate = $('<td>')

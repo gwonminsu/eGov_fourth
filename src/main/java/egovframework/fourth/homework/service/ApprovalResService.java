@@ -1,12 +1,13 @@
 package egovframework.fourth.homework.service;
 
 import java.util.List;
+import java.util.Map;
 
 //Service 인터페이스
 public interface ApprovalResService {
 
 	// 기안문 응답 생성
-	void createApprovalRes(ApprovalResVO vo) throws Exception;
+	void createApprovalRes(Map<String,String> req) throws Exception;
 	
 	// 기안문 응답 하나 조회
 	ApprovalResVO getApprovalRes(String idx) throws Exception;

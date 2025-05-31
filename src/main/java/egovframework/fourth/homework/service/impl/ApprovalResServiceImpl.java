@@ -1,5 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import egovframework.fourth.homework.service.ApprovalLineSnapshotService;
+import egovframework.fourth.homework.service.ApprovalLineSnapshotVO;
 import egovframework.fourth.homework.service.ApprovalResService;
 import egovframework.fourth.homework.service.ApprovalResVO;
 
@@ -22,12 +26,67 @@ public class ApprovalResServiceImpl extends EgovAbstractServiceImpl implements A
 	@Resource(name = "approvalResDAO")
 	private ApprovalResDAO approvalResDAO;
 	
+	@Resource(name = "approvalLineSnapshotService")
+	private ApprovalLineSnapshotService approvalLineSnapshotService;
+	
 
-	// 기안문 응답 생성
+	// 기안문 응답 생성 + 다음 차례의 결재자 잠금 풀기
 	@Override
-	public void createApprovalRes(ApprovalResVO vo) throws Exception {
+	public void createApprovalRes(Map<String,String> req) throws Exception {
+		String approvalReqIdx = req.get("approvalReqIdx");
+		String userIdx = req.get("userIdx");
+		String approvalStatus = req.get("approvalStatus");
+		String comment = req.get("comment");
+		String lineSnapshotIdx = req.get("lineSnapshotIdx");
+		
+		ApprovalResVO vo = new ApprovalResVO();
+		vo.setApprovalReqIdx(approvalReqIdx);
+		vo.setLineSnapshotIdx(lineSnapshotIdx);
+		vo.setComment(comment);
+		vo.setApprovalStatus(approvalStatus);
+		
 		approvalResDAO.insertApprovalRes(vo);
-		log.info("INSERT 기안문({})에 대한 기안문 응답({}) 등록 성공", vo.getApprovalReqIdx(), vo.getIdx());
+		
+		// 다음 차례 결재자 잠금 풀기
+		List<ApprovalLineSnapshotVO> all = approvalLineSnapshotService.getApprovalReqApprovalLineSnapshotList(approvalReqIdx);
+
+		// coop -> approv -> ref 정렬
+		List<ApprovalLineSnapshotVO> coopList = new ArrayList<>();
+		List<ApprovalLineSnapshotVO> approvList = new ArrayList<>();
+		List<ApprovalLineSnapshotVO> refList = new ArrayList<>();
+
+		for (ApprovalLineSnapshotVO snap : all) {
+		    switch (snap.getType()) {
+		        case "coop": coopList.add(snap); break;
+		        case "approv": approvList.add(snap); break;
+		        case "ref": refList.add(snap); break;
+		    }
+		}
+
+		Comparator<ApprovalLineSnapshotVO> seqComp = Comparator.comparingInt(ApprovalLineSnapshotVO::getSeq);
+		coopList.sort(seqComp);
+		approvList.sort(seqComp);
+		refList.sort(seqComp);
+
+		// 순서대로 병합
+		List<ApprovalLineSnapshotVO> ordered = new ArrayList<>();
+		ordered.addAll(coopList);
+		ordered.addAll(approvList);
+		ordered.addAll(refList);
+
+		// 현재 위치 찾아서 다음 차례 unlock
+		for (int i = 0; i < ordered.size(); i++) {
+		    if (ordered.get(i).getIdx().equals(lineSnapshotIdx)) {
+		        if (i + 1 < ordered.size()) {
+		            ApprovalLineSnapshotVO nextSnapUser = ordered.get(i + 1);
+		            approvalLineSnapshotService.unlockSnapUser(nextSnapUser.getIdx()); // 다음 차례 결재자 unlock
+		            log.info("UPDATE 기안문({})의 다음 차례 결재자({}) is_locked = false", approvalReqIdx, nextSnapUser.getUserIdx());
+		        }
+		        break;
+		    }
+		}
+		
+		log.info("INSERT 기안문({})에 대한 기안문 응답({}) 등록 성공", approvalReqIdx, vo.getIdx());
 	}
 	
 	// 기안문 응답 하나 조회
