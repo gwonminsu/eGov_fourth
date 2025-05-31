@@ -118,7 +118,7 @@ table.user-list-table td:nth-child(3) {
 	border: none;
 }
 #btnDelete:hover {
-	background-color: #ff5757;
+	background-color: #ff1717;
 }
 #btnReuse,
 #btnCancel {

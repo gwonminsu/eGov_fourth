@@ -25,8 +25,8 @@ public class ApprovalResVO {
     
     private Timestamp createdAt; // 등록일
     
-    private String lineUserType; // 라인 유저의 결재 타입
+    private String snapUserType; // 기안문 (라인 스냅샷) 결재자의 결재 타입
     
-    private String lineUserSeq; // 타입별 우선순위
+    private String snapUserSeq; // 결재자 타입별 우선순위
 	
 }

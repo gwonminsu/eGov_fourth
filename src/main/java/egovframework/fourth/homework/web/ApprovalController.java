@@ -67,6 +67,20 @@ public class ApprovalController {
         return Collections.singletonMap("status","OK");
     }
     
+    // 기안문 삭제
+    @PostMapping(value="/deleteReq.do", consumes="application/json", produces="application/json")
+    public Map<String,String> reqDelete(@RequestBody Map<String,String> req) throws Exception {
+    	String idx = req.get("idx");
+    	// 먼저 기안문에 결재 응답 목록 조회해서 검사
+        List<ApprovalResVO> list = approvalResService.getApprovalReqApprovalResList(idx);
+        if (!list.isEmpty()) {
+        	// 결재 응답이 있으면 튕굼
+        	return Collections.singletonMap("error","한명 이상의 결재자가 결재하여 삭제할 수 없습니다");
+        }
+    	approvalReqService.removeApprovalReq(idx); // 기안문과 소속된 첨부파일들 + 결재자 유저들 삭제
+        return Collections.singletonMap("status","OK");
+    }
+    
     // 프로그램 일정의 기안문 정보 조회
     @PostMapping(value="/getScheduleReq.do", consumes="application/json", produces="application/json")
     public Map<String, Object> getScheduleApprovalReq(@RequestBody Map<String,String> req) throws Exception {
@@ -116,6 +130,14 @@ public class ApprovalController {
     public List<ApprovalLineSnapshotVO> getSnapUserList(@RequestBody Map<String,String> req) throws Exception {
         String approvalReqIdx = req.get("approvalReqIdx");
         List<ApprovalLineSnapshotVO> list = approvalLineSnapshotService.getApprovalReqApprovalLineSnapshotList(approvalReqIdx);
+        return list;
+    }
+    
+    // 기안문에 있는 모든 결재 응답 데이터 조회
+    @PostMapping(value="/getReqRes.do", consumes="application/json", produces="application/json")
+    public List<ApprovalResVO> getReqRes(@RequestBody Map<String,String> req) throws Exception {
+        String approvalReqIdx = req.get("approvalReqIdx");
+        List<ApprovalResVO> list = approvalResService.getApprovalReqApprovalResList(approvalReqIdx);
         return list;
     }
     

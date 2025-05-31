@@ -64,6 +64,7 @@
  				<value>/api/schedule/createSchedule.do</value>
  				<value>/api/schedule/updateSchedule.do</value>
  				<value>/api/approval/createReq.do</value>
+ 				<value>/api/approval/deleteReq.do</value>
  				<value>/api/approval/createLine.do</value>
  				<value>/api/approval/deleteLine.do</value>
  			</list>

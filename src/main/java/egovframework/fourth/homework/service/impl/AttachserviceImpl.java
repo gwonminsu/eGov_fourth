@@ -57,7 +57,7 @@ public class AttachserviceImpl extends EgovAbstractServiceImpl implements Attach
 	// 첨부 파일 등록(기안문)
 	@Override
 	public void createApprovalReqAttach(String approvalReqIdx, List<MultipartFile> files) throws Exception {
-		if (files.size() < 1) return;
+		if (files == null || files.isEmpty()) return;
         String baseDir = propertiesService.getString("file.upload.dir");
         File uploadDir = new File(baseDir);
         if (!uploadDir.exists()) uploadDir.mkdirs();
@@ -143,6 +143,28 @@ public class AttachserviceImpl extends EgovAbstractServiceImpl implements Attach
 		} else {
 			log.info("로컬 저장소에서 삭제할 파일이 존재하지 않음 : {}", vo.getFileUuid() + vo.getExt());
 		}
+	}
+	
+	// 기안문에 있는 모든 첨부파일 삭제
+	@Override
+	public void removeAttachByApprovalReqIdx(String approvalReqIdx) throws Exception {
+		List<AttachVO> list = attachDAO.selectAttachListByApprovalReqIdx(approvalReqIdx);
+	    // 기존 파일이 없으면 리턴
+	    if (list == null || list.isEmpty()) return;
+	    
+	    for (AttachVO vo : list) {
+			attachDAO.deleteAttach(vo.getIdx()); // DB에서 삭제
+			log.info("DELETE 기안문({})에 대한 이미지 첨부 파일({}) 삭제 완료", approvalReqIdx, vo.getFileName());
+			// 물리 파일 삭제
+			File file = new File(vo.getFilePath(), vo.getFileUuid() + vo.getExt());
+			log.info("삭제될 기안문({})에 소속된 삭제되는 첨부파일 이름: {}", approvalReqIdx, vo.getFileName());
+			if (file.exists()) {
+				file.delete();
+				log.info("로컬 저장소에서 파일 삭제 완료! : {}", vo.getFileUuid() + vo.getExt());
+			} else {
+				log.info("로컬 저장소에서 삭제할 파일이 존재하지 않음 : {}", vo.getFileUuid() + vo.getExt());
+			}
+	    }
 	}
 
 }

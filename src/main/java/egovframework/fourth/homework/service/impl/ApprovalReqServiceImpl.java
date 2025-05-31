@@ -82,10 +82,12 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 		log.info("UPDATE 예약 마감 기안문({}) 상태 수정 완료", idx);
 	}
 	
-	// 예약 마감 기안문 삭제
+	// 예약 마감 기안문 + 소속된 첨부파일들 + 결재자 유저들 삭제
 	@Override
 	public void removeApprovalReq(String idx) throws Exception {
-		approvalReqDAO.deleteApprovalReq(idx);
+		attachService.removeAttachByApprovalReqIdx(idx); // 첨부 파일들 삭제하고
+		approvalLineSnapshotService.removeApprovalReqApprovalLineSnapshot(idx); // 결재자 유저들 삭제하고
+		approvalReqDAO.deleteApprovalReq(idx); // 기안문 삭제
 		log.info("DELETE 예약 마감 기안문({}) 삭제 완료", idx);
 	}
 

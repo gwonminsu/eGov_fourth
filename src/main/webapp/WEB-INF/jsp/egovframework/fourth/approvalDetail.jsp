@@ -17,6 +17,8 @@
     <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
     <c:url value="/api/approval/getSnapUserList.do" var="getSnapUserListApi" />
 	<c:url value="/api/approval/getUserAndReqRes.do" var="getUserReqResApi" />
+	<c:url value="/api/approval/getReqRes.do" var="getReqResApi" />
+	<c:url value="/api/approval/deleteReq.do" var="deleteReqApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -147,13 +149,31 @@
 				data: JSON.stringify({ programScheduleIdx: programScheduleIdx }),
 				success: function(res){
 					var data = res.approvalReq;
-					// console.log(JSON.stringify(data));
+					console.log(JSON.stringify(data));
 					$('#docId').text(data.docId);
 					$('#draftDate').text(data.createdAt.substr(0, 10));
 					$('#userName').text(data.userName);
 					$('#departmentAndPosition').text(data.userDepartment + ' / ' + data.userPosition);
 					$('#reqTitle').text(data.title);
 					$('#reqContent').text(data.content);
+					
+					// 기안문의 모든 결재 응답 데이터 조회(삭제 버튼 권한 확인용)
+		 			$.ajax({
+						url: '${getReqResApi}',
+						type:'POST',
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify({ approvalReqIdx: idx }),
+						success: function(resList){
+							// console.log(JSON.stringify(resList));
+							if (resList.length < 1 && data.reqUserIdx === sessionUserIdx) {
+								$('#btnDelete').show();
+							}
+						},
+						error: function(){
+							alert('결재 기안문의 결재 응답 데이터 조회 중 에러 발생');
+						}
+					});
 				},
 				error: function(){
 					alert('결재 기안문 상세 조회 중 에러 발생');
@@ -263,6 +283,31 @@
 				error: function(){
 					alert('결재 기안문의 첨부 파일들 조회 중 에러 발생');
 				}
+			});
+			
+			// 기안문 삭제 버튼 핸들러
+			$('#btnDelete').click(function() {
+				if (!confirm('정말 기안문을 삭제하시겠습니까?')) return;
+				// 결재 기안문 삭제 요청
+				$.ajax({
+					url: '${deleteReqApi}',
+					type:'POST',
+					contentType: 'application/json',
+					dataType: 'json',
+					data: JSON.stringify({ idx: idx }),
+					success: function(res){
+						if (res.error) {
+							alert(res.error);
+						} else {
+							alert('예약 마감 기안문이 삭제되었습니다')
+							// 예약 관리(상세) 페이지 이동
+							postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, programName: programName, date: date });
+						}
+					},
+					error: function(){
+						alert('사용자 결재 기안문 삭제 중 에러 발생');
+					}
+				});
 			});
 
 			// 취소 버튼 핸들러

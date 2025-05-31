@@ -27,5 +27,8 @@ public interface AttachService {
 	  
 	// 프로그램에 있는 이미지 첨부파일 삭제
 	void removeAttachByProgramIdx(String programIdx) throws Exception;
+	
+	// 기안문에 있는 모등 첨부파일 삭제
+	void removeAttachByApprovalReqIdx(String approvalReqIdx) throws Exception;
   
 }

@@ -41,11 +41,11 @@
 			ar.approval_req_idx,
 			ar.comment,
 			ar.approval_status,
-			lu.type AS lineUserType,
-			lu.seq AS lineUserSeq,
+			ls.type AS snapUserType,
+			ls.seq AS snapUserSeq,
 			ar.created_at
 		FROM approval_res ar
-		JOIN line_user lu ON ar.line_user_idx = lu.idx
+		JOIN approval_line_snapshot ls ON ar.line_snapshot_idx = ls.idx
 		WHERE ar.approval_req_idx = #{approvalReqIdx}
 		ORDER BY ar.created_at ASC
 	</select>
@@ -58,6 +58,8 @@
 			ar.approval_req_idx,
 			ar.comment,
 			ar.approval_status,
+			ls.type AS snapUserType,
+			ls.seq AS snapUserSeq,
 			ar.created_at
 		FROM approval_res ar
 		JOIN approval_line_snapshot ls ON ar.line_snapshot_idx = ls.idx
