@@ -59,6 +59,11 @@ table#approvalListTbl td:nth-child(5) {
 	font-weight: bold;
 	font-size: 1.2em;
 }
+.no-data-text {
+	font-size: 0.8rem;
+	font-style: oblique;
+	color: #686868;
+}
 
 /* 제목 컬럼은 링크로 처리 */
 table#approvalListTbl td a {

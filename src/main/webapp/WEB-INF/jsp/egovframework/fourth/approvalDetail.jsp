@@ -19,6 +19,7 @@
 	<c:url value="/api/approval/getUserAndReqRes.do" var="getUserReqResApi" />
 	<c:url value="/api/approval/getReqRes.do" var="getReqResApi" />
 	<c:url value="/api/approval/deleteReq.do" var="deleteReqApi" />
+    <c:url value="/api/approval/isCurrentTurn.do" var="checkCurrentTurnApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -129,7 +130,20 @@
 					if (list && list.length > 0) {
 						callback(list[0]);
 					} else {
-						callback(null);
+						// 응답 없으면 지금 턴인지 추가 확인
+						$.ajax({
+							url: '${checkCurrentTurnApi}',
+							type: 'POST',
+							contentType: 'application/json',
+							dataType: 'json',
+							data: JSON.stringify({ approvalReqIdx: idx, userIdx: userIdx }),
+							success: function(isTurn){
+								callback(isTurn ? 'WAITING' : null); // WAITING이면 대기중, 아니면 null
+							},
+							error: function(){
+								callback(null);
+							}
+						});
 					}
 				},
 				error: function(){
@@ -227,11 +241,14 @@
 								var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
 								var $status = $('<td>')
 								var $resDate = $('<td>')
-								if (resData) {
+								if (resData && resData !== 'WAITING') {
 									$status.text(resData.approvalStatus === 'APPROVED' ? '결재' : '반려');
 									$resDate.text(resData.createdAt.substr(0,10));
-								} else {
+								} else if(resData === 'WAITING') {
 									$status.text('대기중');
+									$resDate.text('');
+								} else {
+									$status.text('');
 									$resDate.text('');
 								}
 								var $row = $('<tr>').append($name).append($status).append($resDate);

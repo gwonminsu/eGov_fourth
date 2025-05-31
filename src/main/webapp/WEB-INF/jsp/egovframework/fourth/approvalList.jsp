@@ -168,6 +168,11 @@
 		            $('.count-red').text(totalCount); // 기안문 수 표시
 	                var $tbody = $('#approvalListTbl').find('tbody');
 	                $tbody.empty();
+	                if (totalCount === 0) {
+	                	var $noDataRow = $('<tr>').append($('<td>').attr('colspan', '5').append($('<div>').addClass('no-data-text').text('아직 요청받은 기안문이 없습니다.')));
+	                	$tbody.append($noDataRow);
+	                	return;
+	                }
 	                $.each(data, function(i, item) {
 	                	// console.log(JSON.stringify(item));
 	                	var $tr = $('<tr>');
