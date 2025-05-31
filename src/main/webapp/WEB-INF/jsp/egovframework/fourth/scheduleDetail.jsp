@@ -125,6 +125,7 @@
 		
 		var bookingList = [];
 		var approvalReqIdx = '';
+		var approvalReqUserIdx = '';
 		
 		// 체험 인원 로우 추가 함수
 		function addBookingRow(booking) {
@@ -219,6 +220,7 @@
 					var data = res.approvalReq;
 					if (data) {
 						approvalReqIdx = data.idx;
+						approvalReqUserIdx = data.reqUserIdx;
 						$('#btnGoApprovalReq').show();
 						$('#btnClose').hide();
 						var statusText = '';
@@ -292,15 +294,19 @@
 
 			});
 		
-			// 예약마감 버튼(기안문 작성 예정)
+			// 예약마감 버튼
 			$('#btnClose').on('click', function () {
 				postTo('${approvalReqUrl}', { programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
 			});
 			
-			// 기안 확인 버튼(기안문 작성 예정)
+			// 기안 확인 버튼
 			$('#btnGoApprovalReq').on('click', function () {
 				console.log(approvalReqIdx);
-				postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+				if (approvalReqUserIdx === sessionUserIdx) { // 기안문 주인인지 확인
+					postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+				} else {
+					alert('기안문 작성자만 확인 할 수 있습니다');
+				}
 			});
 		
 			// 예약자 추가
