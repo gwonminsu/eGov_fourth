@@ -65,6 +65,25 @@ table.user-list-table td:nth-child(3) {
 #approvalComment {
 	width: 98%;
 }
+.type-tag {
+	font-weight: bold;
+	padding: 2px 2px 2px 5px;
+	border-radius: 4px;
+	margin-right: 5px;
+	font-size: 0.7em;
+}
+.type-coop {
+	color: #d9534f;
+	background-color: #fbeaea;
+}
+.type-approv {
+	color: #f0ad4e;
+	background-color: #fff3e0;
+}
+.type-ref {
+	color: #5bc0de;
+	background-color: #e6f5fa;
+}
 
 /* 첨부파일 영역 스타일 */
 #attachFileWrapper {

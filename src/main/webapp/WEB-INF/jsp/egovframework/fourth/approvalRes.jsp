@@ -252,7 +252,7 @@
 				dataType: 'json',
 				data: JSON.stringify({ approvalReqIdx: idx }),
 				success: function(userList){
-					// console.log(JSON.stringify(userList));
+					console.log(JSON.stringify(userList));
 					
 					var approvList = [];
 					var coopList = [];
@@ -288,7 +288,21 @@
 							checkApprovalResponse(user.userIdx, function(resData) {
 								// 결재자 테이블 렌더링
 								console.log(JSON.stringify(resData));
-								var $name = $('<td>').text(user.userName + '(' + user.userPosition + ')');
+								var typeLabel = '';
+								var typeClass = '';
+								if (user.type === 'coop') {
+									typeLabel = '협조';
+									typeClass = 'type-coop';
+								} else if (user.type === 'approv') {
+									typeLabel = '결재';
+									typeClass = 'type-approv';
+								} else if (user.type === 'ref') {
+									typeLabel = '참조';
+									typeClass = 'type-ref';
+								}
+								var $tag = $('<span>').addClass('type-tag').addClass(typeClass).text(typeLabel + ' ');
+								
+								var $name = $('<td>').append($tag).append($('<span>').text(user.userName + '(' + user.userPosition + ')'));
 								var $status = $('<td>')
 								var $resDate = $('<td>')
 								if (resData && resData !== 'WAITING') {
