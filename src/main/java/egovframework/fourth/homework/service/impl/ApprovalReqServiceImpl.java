@@ -83,6 +83,14 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 		log.info("SELECT 사용자({})의 예약 마감 기안문 목록 조회 완료", reqUserIdx);
 		return list;
 	}
+	
+	// 특정 예약 마감 기안문 상세 조회
+	@Override
+	public ApprovalReqVO getApprovalReq(String idx) throws Exception {
+		ApprovalReqVO vo = approvalReqDAO.selectApprovalReq(idx);
+		log.info("SELECT 예약 마감 기안문({}) 조회 완료", vo.getIdx());
+		return vo;
+	}
 
 	// 프로그램 일정의 예약 마감 기안문 상세 조회
 	@Override

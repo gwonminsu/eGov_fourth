@@ -88,6 +88,9 @@ public class ApprovalController {
         int pageIndex = (Integer) req.get("pageIndex") <= 0 ? 1 : (Integer) req.get("pageIndex");
         int recordCountPerPage = (Integer) req.get("recordCountPerPage");
         int firstIndex = (pageIndex - 1) * recordCountPerPage;
+        System.out.println("▶️ pageIndex: " + pageIndex);
+        System.out.println("▶️ recordCountPerPage: " + recordCountPerPage);
+        System.out.println("▶️ firstIndex: " + firstIndex);
         int totalCount = approvalReqService.getSnapApprovalReqCount(userIdx);
     	List<ApprovalReqVO> reqList = approvalReqService.getSnapUserApprovalReqList(userIdx, recordCountPerPage, firstIndex);
         
@@ -98,6 +101,13 @@ public class ApprovalController {
         return result;
     }
     
+    // 특정 기안문 상세 정보 조회
+    @PostMapping(value="/getApprovalReq.do", consumes="application/json", produces="application/json")
+    public ApprovalReqVO getApprovalReq(@RequestBody Map<String,String> req) throws Exception {
+        String idx = req.get("idx");
+        ApprovalReqVO vo = approvalReqService.getApprovalReq(idx);
+        return vo;
+    }
     
     // 프로그램 일정의 기안문 정보 조회
     @PostMapping(value="/getScheduleReq.do", consumes="application/json", produces="application/json")

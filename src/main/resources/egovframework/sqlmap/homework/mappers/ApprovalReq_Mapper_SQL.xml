@@ -77,23 +77,27 @@
 			COUNT(*)
 		FROM approval_req ar
 		JOIN approval_line_snapshot ls ON ar.idx = ls.approval_req_idx
-		WHERE ls.user_idx = #{userIdx}
+		WHERE ls.user_idx = #{userIdx} AND ls.is_locked = false
 	</select>
 	
 	<!-- 프로그램 일정의 예약 마감 기안문 상세 조회 -->
 	<select id="selectApprovalReq" parameterType="String" resultType="approvalReqVO">
 		SELECT
-			idx,
-			approval_line_idx,
-			program_schedule_idx,
-			req_user_idx,
-			doc_id,
-			title,
-			content,
-			status,
-			created_at
-		FROM approval_req
-		WHERE idx = #{idx}
+			ar.idx,
+			ar.approval_line_idx,
+			ar.program_schedule_idx,
+			ar.req_user_idx,
+			u.user_name AS userName,
+			u.department AS userDepartment,
+			u.position AS userPosition,
+			ar.doc_id,
+			ar.title,
+			ar.content,
+			ar.status,
+			ar.created_at
+		FROM approval_req ar
+		JOIN "user" u ON ar.req_user_idx = u.idx
+		WHERE ar.idx = #{idx}
 	</select>
 
 	<!-- 프로그램 일정의 예약 마감 기안문 상세 조회 -->

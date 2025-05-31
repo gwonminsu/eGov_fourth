@@ -18,6 +18,9 @@ public interface ApprovalReqService {
 	  
 	// 관리자의 예약 마감 기안문 목록 조회
 	List<ApprovalReqVO> getUserApprovalReqList(String reqUserIdx) throws Exception;
+	
+	// 특정 예약 마감 기안문 상세 조회
+	ApprovalReqVO getApprovalReq(String idx) throws Exception;
 	  
 	// 프로그램 일정의 예약 마감 기안문 상세 조회
 	ApprovalReqVO getProgramScheduleApprovalReq(String programScheduleIdx) throws Exception;

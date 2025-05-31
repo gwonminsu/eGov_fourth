@@ -151,4 +151,16 @@ public class ViewController {
 	    model.addAttribute("pageSize", prop.getInt("pageSize"));
 		return "approvalList";
 	}
+	
+	// 결재 페이지
+	@RequestMapping(value = "/approvalRes.do")
+	public String approvalResPage(HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+		return "approvalRes";
+	}
 }

@@ -17,8 +17,8 @@
 	<c:url value="/api/user/logout.do" var="logoutUrl" />
 	<!-- 예약 관리 페이지 URL -->
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
-	<!-- 설문 상세 페이지 url -->
-	<c:url value="/surveyDetail.do" var="surveyDetailUrl"/>
+	<!-- 결재 페이지 URL -->
+	<c:url value="/approvalRes.do" var="approvalResUrl"/>
 	
 	<!-- 페이지네이션 버튼 이미지 url -->
 	<c:url value="/images/egovframework/cmmn/btn_page_pre10.gif" var="firstImgUrl"/>
@@ -34,62 +34,15 @@
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
 		
 	    var PAGE_SIZE = ${pageSize} // 한 그룹당 페이지 버튼 개수
+	    console.log(PAGE_SIZE);
 	    var PAGE_UNIT = ${pageUnit} // 한 페이지당 레코드 수
+	    console.log(PAGE_UNIT);
 	    var FIRST_IMG_URL = '${firstImgUrl}';
 	    var PREV_IMG_URL = '${prevImgUrl}';
 	    var NEXT_IMG_URL = '${nextImgUrl}';
 	    var LAST_IMG_URL = '${lastImgUrl}';
 	    
-	    // 검색 변수(파라미터에서 값 받아와서 검색 상태 유지)
-		var currentPageIndex = parseInt('<c:out value="${param.pageIndex}" default="1"/>');
-		
-		// AJAX 로 페이징/리스트를 불러오는 함수
-		function loadSurveyList(pageIndex) {
-			currentPageIndex = pageIndex;
-		    
-			var req = {
-					userIdx: sessionUserIdx,
-					pageIndex: currentPageIndex,
-					recordCountPerPage: PAGE_UNIT,
-			};
 
-	        $.ajax({
-	            url: '${getSnapUserReqListUrl}',
-	            type: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify(req),
-	            dataType: 'json',
-	            success: function(res) {
-	            	// console.log(JSON.stringify(res));
-	            	var data = res.list;
-		            var totalCount = res.totalCount;
-	            	console.log('받아온 데이터=', data, '총건수=', totalCount);
-		            $('.count-red').text(totalCount); // 기안문 수 표시
-	                var $tbody = $('#approvalListTbl').find('tbody');
-	                $tbody.empty();
-	                $.each(data, function(i, item) {
-	                	var $tr = $('<tr>');
-
-	                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
-	                    	
-	                    })
-
-	                    // td 추가
-	                	$tr.append($('<td>').text(item.number));
-	                    $tr.append($('<td>').text(item.title));
-	                    $tr.append($('<td>').text(item.userName));
-	                    $tr.append($('<td>').text(item.status));
-	                    $tr.append($('<td>').text(item.createdAt));
-						$tbody.append($tr);
-	                });
-	                renderPagination(totalCount, pageIndex);
-	            },
-	            error: function(xhr, status, error) {
-	                console.error('기안문 목록을 불러오는 중 에러 발생:', error);
-	            }
-	        });
-		}
-		
 		// 페이지네이션 UI
 		function renderPagination(totalCount, currentPage) {
 			var $pg = $('#paginationArea').empty();
@@ -187,6 +140,56 @@
     
     <script>
     	var programIdx = '${param.programIdx}'; // 프로그램 idx
+    	
+	    // 검색 변수(파라미터에서 값 받아와서 검색 상태 유지)
+		var currentPageIndex = parseInt('<c:out value="${param.pageIndex}" default="1"/>');
+    	
+		// AJAX 로 페이징/리스트를 불러오는 함수
+		function loadSurveyList(pageIndex) {
+			currentPageIndex = pageIndex;
+		    
+			var req = {
+					userIdx: sessionUserIdx,
+					pageIndex: currentPageIndex,
+					recordCountPerPage: PAGE_UNIT,
+			};
+
+	        $.ajax({
+	            url: '${getSnapUserReqListUrl}',
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify(req),
+	            dataType: 'json',
+	            success: function(res) {
+	            	console.log(JSON.stringify(res));
+	            	var data = res.list;
+		            var totalCount = res.totalCount;
+	            	console.log('받아온 데이터=', data, '총건수=', totalCount);
+		            $('.count-red').text(totalCount); // 기안문 수 표시
+	                var $tbody = $('#approvalListTbl').find('tbody');
+	                $tbody.empty();
+	                $.each(data, function(i, item) {
+	                	// console.log(JSON.stringify(item));
+	                	var $tr = $('<tr>');
+	                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
+	                    	postTo('${approvalResUrl}', { idx: item.idx, programIdx: programIdx, pageIndex: currentPageIndex });
+	                    })
+
+	                    // td 추가
+	                	$tr.append($('<td>').text(item.number));
+	                    $tr.append($('<td>').append($linkTitle));
+	                    $tr.append($('<td>').text(item.userName));
+	                    $tr.append($('<td>').text(item.status));
+	                    $tr.append($('<td>').text(item.createdAt));
+						$tbody.append($tr);
+	                });
+	                renderPagination(totalCount, pageIndex);
+	            },
+	            error: function(xhr, status, error) {
+	                console.error('기안문 목록을 불러오는 중 에러 발생:', error);
+	            }
+	        });
+		}
     
 	    $(function(){
 	    	loadSurveyList(currentPageIndex);
