@@ -185,12 +185,22 @@
 					});
 					
 					// seq 순서대로 정렬 후 append
-					function renderLineUserList(list) {
+					function renderLineUserList(list, callback) {
 						list.sort(function(a, b) {
 							return a.seq - b.seq;
-						}).forEach(function(user) {
-							// console.log(JSON.stringify(user));
-							// 먼저 결재 사용자가 응답했는지 검사하고 응답 있으면 reData 제공
+						});
+						
+						var i = 0;
+						
+						function processNext() {
+							// 리스트의 모든 결재자 처리하면 다음 콜백 실행
+							if (i >= list.length) {
+								if (typeof callback === 'function') callback();
+								return;
+							}
+							
+							var user = list[i];
+							// user의 응답 이력 조회
 							checkApprovalResponse(user.userIdx, function(resData) {
 								// 결재자 테이블 렌더링
 								console.log(JSON.stringify(resData));
@@ -198,7 +208,7 @@
 								var $status = $('<td>')
 								var $resDate = $('<td>')
 								if (resData) {
-									$status.text(resData.approvalStatus === 'approved' ? '결재' : '반려');
+									$status.text(resData.approvalStatus === 'APPROVED' ? '결재' : '반려');
 									$resDate.text(resData.createdAt.substr(0,10));
 								} else {
 									$status.text('대기중');
@@ -212,13 +222,19 @@
 													.text('🔸 ' + user.userName + '(' + user.userPosition + ')' + ': ' + resData.comment);
 									$('#commentList').append($item)
 								}
+								i++;
+								processNext(); // 재귀 호출
 							});
-						});
+						}
+						processNext();
 					}
 					
-					renderLineUserList(coopList);
-					renderLineUserList(approvList);
-					renderLineUserList(refList);
+					// 콜백을 이용해서 협조자, 결재자, 참조자 순서로 순차 실행
+					renderLineUserList(coopList, function() {
+						renderLineUserList(approvList, function() {
+							renderLineUserList(refList);
+						});
+					});
 				},
 				error: function(){
 					alert('결재 기안문 라인 유저 목록 조회 중 에러 발생');
