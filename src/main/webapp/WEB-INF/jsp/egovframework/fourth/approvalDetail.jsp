@@ -165,7 +165,7 @@
 						dataType: 'json',
 						data: JSON.stringify({ approvalReqIdx: idx }),
 						success: function(resList){
-							// console.log(JSON.stringify(resList));
+							console.log(JSON.stringify(resList));
 							if (resList.length < 1 && data.reqUserIdx === sessionUserIdx) {
 								$('#btnDelete').show();
 							}

@@ -50,6 +50,7 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 			snapUser.setUserIdx(lineUser.getApprovalUserIdx());
 			snapUser.setSeq(lineUser.getSeq());
 			snapUser.setType(lineUser.getType());
+			snapUser.setIsLocked(!(lineUser.getType().equals("coop") && lineUser.getSeq() == 0)); // coope 타입의 seq가 0인 결재자만 false, 나머지 true
 			approvalLineSnapshotService.createApprovalLineSnapshot(snapUser); // 기안문을 결재할 사용자 생성
 		}
 		log.info("INSERT 에약 일정({})에 예약 마감 기안문({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());

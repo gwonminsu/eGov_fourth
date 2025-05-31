@@ -531,7 +531,7 @@
 			    	return;
 			    }
 			    var references = gatherUsers('#referenceList li', 'ref');
-			    var lineUsers = [...approvers, ...cooperators, ...references];
+			    var lineUsers = [...cooperators, ...approvers, ...references];
 				
 				var payload = {
 					      createUserIdx: sessionUserIdx,

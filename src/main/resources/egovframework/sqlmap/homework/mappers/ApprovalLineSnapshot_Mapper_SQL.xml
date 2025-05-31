@@ -14,9 +14,9 @@
 				), 1)
 		</selectKey>
 		INSERT INTO approval_line_snapshot
-			(idx, approval_req_idx, user_idx, seq, type, created_at)
+			(idx, approval_req_idx, user_idx, seq, type, is_locked, created_at)
 		VALUES
-			(#{idx}, #{approvalReqIdx}, #{userIdx}, #{seq}, #{type}, NOW())
+			(#{idx}, #{approvalReqIdx}, #{userIdx}, #{seq}, #{type}, #{isLocked}, NOW())
 	</insert>
 	
 	
@@ -30,6 +30,7 @@
 			u.position AS userPosition,
 			ls.seq,
 			ls.type,
+			ls.is_locked,
 			ls.created_at
 		FROM approval_line_snapshot ls
 		JOIN "user" u ON ls.user_idx = u.idx
@@ -45,6 +46,7 @@
 			user_idx,
 			seq,
 			type,
+			is_locked,
 			created_at
 		FROM approval_line_snapshot
 		WHERE idx = #{idx}

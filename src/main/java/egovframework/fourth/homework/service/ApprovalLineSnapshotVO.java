@@ -27,6 +27,8 @@ public class ApprovalLineSnapshotVO {
     
     private Integer seq; // 순서
     
+    private Boolean isLocked = true; // 기안문 열람 잠금 여부
+    
     private Timestamp createdAt; // 등록일
 	
 }

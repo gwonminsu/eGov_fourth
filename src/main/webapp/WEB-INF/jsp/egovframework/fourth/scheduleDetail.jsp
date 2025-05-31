@@ -27,6 +27,8 @@
     <c:url value="/api/booking/delete.do" var="deleteBookingApi"/>
     <!-- 현재 프로그램 일정의 기안문 정보 조회 -->
     <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
+    <!-- 등록된 기안문의 결재자들 조회 -->
+	<c:url value="/api/approval/getSnapUserList.do" var="getSnapUserListApi" />
 	
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -302,11 +304,34 @@
 			// 기안 확인 버튼
 			$('#btnGoApprovalReq').on('click', function () {
 				console.log(approvalReqIdx);
-				if (approvalReqUserIdx === sessionUserIdx) { // 기안문 주인인지 확인
-					postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
-				} else {
-					alert('기안문 작성자만 확인 할 수 있습니다');
-				}
+	 			// 기안문의 결재라인의 결재자들 조회
+	 			$.ajax({
+					url: '${getSnapUserListApi}',
+					type:'POST',
+					contentType: 'application/json',
+					dataType: 'json',
+					data: JSON.stringify({ approvalReqIdx: approvalReqIdx }),
+					success: function(userList){
+						// console.log(JSON.stringify(userList));
+						// 기안문 열람 가능한 유저인지 확인
+						var allowd = false
+						for (var i=0; i < userList.length; i++) {
+							var user = userList[i];
+							// 기안문 열람 잠금이 false인 사용자이거나 기안문 작성자면 허용
+							if (approvalReqUserIdx === sessionUserIdx || (sessionUserIdx === user.userIdx && !user.isLocked)) {
+								postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+								allowd = true;
+								break;
+							}
+						}
+						if (!allowd) {
+							alert('기안문 작성자와 허용된 결재자만 확인 할 수 있습니다');
+						}
+					},
+					error: function(){
+						alert('결재 기안문 라인 유저 목록 조회 중 에러 발생');
+					}
+				});
 			});
 		
 			// 예약자 추가
