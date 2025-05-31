@@ -31,6 +31,8 @@
 	<c:url value="/scheduleCreate.do" var="scheduleCreateUrl"/>
 	<!-- 일정 상세 페이지 URL -->
 	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
+	<!-- 결재 목록 페이지 URL -->
+	<c:url value="/approvalList.do" var="approvalListUrl"/>
 
 	<!-- 세션에 담긴 사용자 이름을 JS 변수로 -->
 	<script>
@@ -88,9 +90,15 @@
    	<!-- 캘린더 -->
    	<div id='calendar'></div>
     
-    <button type="button" id="btnCreateProgram">프로그램 신규 등록</button>
-    <button type="button" id="btnEditProgram" style="display: none;">선택한 프로그램 수정</button>
-    <button type="button" id="btnGoBooking">예약 페이지로 돌아가기</button>
+    <div class="btn-area">
+    	<div>
+   		    <button id="btnCreateProgram">프로그램 신규 등록</button>
+    		<button id="btnEditProgram" style="display: none;">선택한 프로그램 수정</button>
+   			<button id="btnGoBooking">예약 페이지로 돌아가기</button>
+    	</div>
+    	<button id="btnGoApprovalList">결재 목록</button>
+    </div>
+
     
     <script>
     	var idx = '${param.programIdx}';
@@ -343,6 +351,12 @@
 	        $('#btnGoBooking').click(function() {
 	        	// 예약 페이지로 이동
 				postTo('${bookingUrl}', {});
+			});
+			
+			// 결재 목록 페이지 버튼 핸들러
+	        $('#btnGoApprovalList').click(function() {
+	        	// 결재 목록 페이지로 이동
+				postTo('${approvalListUrl}', { programIdx: currentProgramIdx });
 			});
 			
 	    });

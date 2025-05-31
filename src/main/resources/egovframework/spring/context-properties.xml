@@ -5,8 +5,8 @@
 	<bean name="propertiesService" class="org.egovframe.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
 		<property name="properties">
 	        <map>
-	        	<entry key="pageUnit" value="10"/>
-	        	<entry key="pageSize" value="10"/>
+	        	<entry key="pageUnit" value="3"/>
+	        	<entry key="pageSize" value="5"/>
 	        	<entry key="file.upload.dir" value="C:/uploadFiles/"/>
 	        </map>
 		</property>

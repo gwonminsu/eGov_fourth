@@ -81,6 +81,24 @@ public class ApprovalController {
         return Collections.singletonMap("status","OK");
     }
     
+    // 관리자에게 결재 요청받은 예약 마감 기안문 목록 조회
+    @PostMapping(value="/getSnapUserReqList.do", consumes="application/json", produces="application/json")
+    public Map<String, Object> getSnapUserReqList(@RequestBody Map<String,Object> req) throws Exception {
+    	String userIdx = (String) req.get("userIdx");
+        int pageIndex = (Integer) req.get("pageIndex") <= 0 ? 1 : (Integer) req.get("pageIndex");
+        int recordCountPerPage = (Integer) req.get("recordCountPerPage");
+        int firstIndex = (pageIndex - 1) * recordCountPerPage;
+        int totalCount = approvalReqService.getSnapApprovalReqCount(userIdx);
+    	List<ApprovalReqVO> reqList = approvalReqService.getSnapUserApprovalReqList(userIdx, recordCountPerPage, firstIndex);
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", reqList);
+        result.put("totalCount", totalCount);
+
+        return result;
+    }
+    
+    
     // 프로그램 일정의 기안문 정보 조회
     @PostMapping(value="/getScheduleReq.do", consumes="application/json", produces="application/json")
     public Map<String, Object> getScheduleApprovalReq(@RequestBody Map<String,String> req) throws Exception {

@@ -1,6 +1,7 @@
 package egovframework.fourth.homework.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -19,6 +20,16 @@ public class ApprovalReqDAO {
 	public void insertApprovalReq(ApprovalReqVO vo) throws Exception {
 		sqlSession.insert("approvalReqDAO.insertApprovalReq", vo);
 	}
+	
+    // 관리자에게 결재 요청받은 예약 마감 기안문 목록 조회
+    public List<ApprovalReqVO> selectApprovalReqListBySnapUserIdx(Map<String,Object> param) throws Exception {
+        return sqlSession.selectList("approvalReqDAO.selectApprovalReqListBySnapUserIdx", param);
+    }
+    
+    // 관리자의 예약 마감 기안문 목록 조회
+    public int selectSnapApprovalReqCount(String userIdx) throws Exception {
+        return sqlSession.selectOne("approvalReqDAO.selectSnapApprovalReqCount", userIdx);
+    }
     
     // 관리자의 예약 마감 기안문 목록 조회
     public List<ApprovalReqVO> selectApprovalReqListByReqUserIdx(String reqUserIdx) throws Exception {

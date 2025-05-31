@@ -1,10 +1,13 @@
 package egovframework.fourth.homework.web;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -14,6 +17,9 @@ import egovframework.fourth.homework.service.UserVO;
 public class ViewController {
 	
 	private static final Logger log = LoggerFactory.getLogger(ViewController.class);
+	
+    @Resource(name="propertiesService")
+    private EgovPropertyService prop;
 
 //    @Resource(name = "userService")
 //    protected UserService userService;
@@ -130,5 +136,19 @@ public class ViewController {
             return "redirect:/booking.do";
         }
 		return "approvalDetail";
+	}
+	
+	// 결재 목록 페이지
+	@RequestMapping(value = "/approvalList.do")
+	public String approvalListPage(Model model, HttpSession session, RedirectAttributes rt) {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했거나, 관리자 아니면
+        if (me == null || !me.getIsAdmin()) {
+            rt.addFlashAttribute("errorMsg", "관리자 권한이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+	    model.addAttribute("pageUnit", prop.getInt("pageUnit"));
+	    model.addAttribute("pageSize", prop.getInt("pageSize"));
+		return "approvalList";
 	}
 }

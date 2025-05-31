@@ -153,10 +153,17 @@
 	color: #fff;
 }
 
+/* 버튼 영역 */
+.btn-area {
+	display: flex;
+	justify-content: space-between;
+}
+
 /* 버튼 공통 스타일 */
 #btnGoNewMonthSchedule,
 #btnCreateProgram,
 #btnEditProgram,
+#btnGoApprovalList,
 #btnGoBooking,
 #btnGoLogin,
 #btnLogout {
@@ -165,6 +172,7 @@
     cursor: pointer;
     font-size: 0.9rem;
     margin-right: 8px;
+   	white-space: nowrap;
 }
 
 /* 프로그램 등록/수정 버튼 */
@@ -198,6 +206,16 @@
 }
 #btnGoNewMonthSchedule:hover {
 	background-color: #2b2b2b;
+}
+
+/* 예약 페이지 버튼, 결재 목록 버튼 */
+#btnGoApprovalList,
+#btnGoBooking {
+    margin-top: 10px;
+}
+#btnGoApprovalList:hover,
+#btnGoBooking:hover {
+    background-color: #bfbfbf;
 }
 
 /* 사용자 정보 영역 */

@@ -9,6 +9,12 @@ public interface ApprovalReqService {
 
 	// 예약 마감 기안문 생성
 	void createApprovalReq(ApprovalReqVO vo, List<MultipartFile> files) throws Exception;
+	
+	// 관리자의 예약 마감 기안문 목록 조회
+	List<ApprovalReqVO> getSnapUserApprovalReqList(String userIdx, int recordCountPerPage, int firstIndex) throws Exception;
+	
+	// 관리자의 예약 마감 기안문 개수 조회
+	int getSnapApprovalReqCount(String userIdx) throws Exception;
 	  
 	// 관리자의 예약 마감 기안문 목록 조회
 	List<ApprovalReqVO> getUserApprovalReqList(String reqUserIdx) throws Exception;

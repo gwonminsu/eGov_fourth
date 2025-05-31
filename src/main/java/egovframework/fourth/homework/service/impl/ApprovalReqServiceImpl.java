@@ -1,6 +1,8 @@
 package egovframework.fourth.homework.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -54,6 +56,24 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 			approvalLineSnapshotService.createApprovalLineSnapshot(snapUser); // 기안문을 결재할 사용자 생성
 		}
 		log.info("INSERT 에약 일정({})에 예약 마감 기안문({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());
+	}
+	
+	// 관리자에게 결재 요청받은 예약 마감 기안문 목록 조회
+	@Override
+	public List<ApprovalReqVO> getSnapUserApprovalReqList(String userIdx, int recordCountPerPage, int firstIndex) throws Exception {
+		Map<String,Object> param = new HashMap<>();
+		param.put("userIdx", userIdx);
+		param.put("recordCountPerPage", recordCountPerPage);
+		param.put("firstIndex", firstIndex);
+		List<ApprovalReqVO> list = approvalReqDAO.selectApprovalReqListBySnapUserIdx(param);
+		log.info("SELECT 사용자({})에게 요청받은 예약 마감 기안문 목록 조회 완료", userIdx);
+		return list;
+	}
+	
+	// 관리자에게 결재 요청받은 예약 마감 기안문 목록 조회
+	@Override
+	public int getSnapApprovalReqCount(String userIdx) throws Exception {
+		return approvalReqDAO.selectSnapApprovalReqCount(userIdx);
 	}
 	
 	// 관리자의 예약 마감 기안문 목록 조회

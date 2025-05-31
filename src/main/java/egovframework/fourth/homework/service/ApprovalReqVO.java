@@ -35,6 +35,8 @@ public class ApprovalReqVO {
     
     private String status = "PENDING"; // 결재 상태
     
+    private Integer number; // 순번
+    
     private Timestamp createdAt; // 등록일
 	
 }

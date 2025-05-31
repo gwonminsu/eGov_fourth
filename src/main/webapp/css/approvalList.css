@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+/* 기안문 목록 테이블 스타일 */
+table#approvalListTbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+table#approvalListTbl th,
+table#approvalListTbl td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    vertical-align: middle;
+    text-align: center;   
+}
+table#approvalListTbl th {
+    background-color: #f8f9fa;
+}
+table#approvalListTbl tbody tr:hover {
+    background-color: #f1f3f5;
+}
+/* 순번 컬럼 */
+table#approvalListTbl th:nth-child(1),
+table#approvalListTbl td:nth-child(1) {
+	white-space: nowrap;
+    width: 50px;
+}
+/* 제목 컬럼 */
+table#approvalListTbl th:nth-child(2),
+table#approvalListTbl td:nth-child(2) {
+	width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* 작성자 컬럼 */
+table#approvalListTbl th:nth-child(3),
+table#approvalListTbl td:nth-child(3) {
+   	width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* 최종 결재 상태 컬럼 */
+table#approvalListTbl th:nth-child(4),
+table#approvalListTbl td:nth-child(4) {
+    width: 100px;
+    white-space: nowrap;
+}
+/* 등록일 컬럼 */
+table#approvalListTbl th:nth-child(5),
+table#approvalListTbl td:nth-child(5) {
+	white-space: nowrap;
+    width: 150px;
+}
+.count-red {
+	color: red;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+/* 제목 컬럼은 링크로 처리 */
+table#approvalListTbl td a {
+    color: #3498DB;
+    text-decoration: none;
+    cursor: pointer;
+}
+table#approvalListTbl td a:hover {
+    color: #2980B9;
+    text-decoration: underline;
+}
+
+/* 설문 상태 딱지 */
+.closed-tag {
+	display: inline-block;
+	user-select: none;
+	padding: 0.25em 0.5em;
+	margin: 0 0.5em;
+	background-color: #f28b82;
+	color: #ffffff;
+	font-size: 0.75rem;
+	border-radius: 0.25rem;
+	line-height: 1;   
+}
+.commingSoon-tag {
+	display: inline-block;
+	user-select: none;
+	padding: 0.25em 0.5em;
+	margin: 0 0.5em;
+	background-color: #ffaa82;
+	color: #ffffff;
+	font-size: 0.75rem;
+	border-radius: 0.25rem;
+	line-height: 1;   
+}
+.available-tag {
+	display: inline-block;
+	user-select: none;
+	padding: 0.25em 0.5em;
+	margin: 0 0.5em;
+	background-color: #98d187;
+	color: #ffffff;
+	font-size: 0.75rem;
+	border-radius: 0.25rem;
+	line-height: 1;   
+}
+
+/* 버튼 공통 스타일 */
+#btnPrev,
+#btnGoLogin,
+#btnLogout {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+/* 예약 관리 페이지 이동 버튼 */
+#btnPrev {
+    background-color: #bfbfbf;
+    color: #fff;
+    margin-top: 10px;
+}
+#btnPrev:hover {
+    background-color: #939393;
+}
+
+/* 로그인/로그아웃 버튼 */
+#btnGoLogin,
+#btnLogout {
+	border-radius: 8px;
+    background-color: #E9ECEF;
+    color: #333;
+}
+#btnGoLogin:hover,
+#btnLogout:hover {
+    background-color: #CED4DA;
+}
+
+/* 사용자 정보 영역 */
+#userInfo {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+#userInfo span {
+    margin-right: 12px;
+    font-weight: bold;
+}
+
+/* 페이지네이션 영역 스타일 */
+#paginationArea {
+    margin-top: 1em;
+    text-align: center;
+}
+#paginationArea a,
+#paginationArea strong {
+    display: inline-block;
+    margin: 0 4px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #3498DB;
+}
+#paginationArea a:hover {
+    text-decoration: underline;
+}
+#paginationArea strong {
+    font-weight: bold;
+    color: #333;
+}
+.disabled {
+	opacity:0.3;
+	cursor:default;
+	pointer-events:none;
+}
