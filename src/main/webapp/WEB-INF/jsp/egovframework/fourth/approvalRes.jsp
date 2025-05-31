@@ -158,6 +158,32 @@
 			});
 		}
 		
+		// 응답 처리 핸들러
+		function handleApproval(status, comment) {
+			if (!confirm(status === 'APPROVED' ? '결재하시겠습니까?' : '반려하시겠습니까?')) return;
+
+			const req = {
+				approvalReqIdx: idx,
+				userIdx: sessionUserIdx,
+				approvalStatus: status,
+				comment: comment
+			};
+
+			$.ajax({
+				url: '${approvalRespondApi}',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(req),
+				success: function () {
+					alert('처리 완료');
+					postTo('${approvalListUrl}', { programIdx: programIdx, pageIndex: pageIndex });
+				},
+				error: function () {
+					alert('결재 처리 중 에러 발생');
+				}
+			});
+		}
+		
 		$(function() {
 			// 기안문 상세 내용 조회 요청
  			$.ajax({
@@ -302,6 +328,18 @@
 					alert('결재 기안문의 첨부 파일들 조회 중 에러 발생');
 				}
 			});
+			
+ 			// 결재 처리
+ 			$('#btnApprove').click(function () {
+ 				var comment = $('#approvalComment').val().trim();
+ 				handleApproval('APPROVED', comment);
+ 			});
+
+ 			// 반려 처리
+ 			$('#btnReject').click(function () {
+ 				var comment = $('#approvalComment').val().trim();
+ 				handleApproval('REJECTED', comment);
+ 			});
 
 			// 취소 버튼 핸들러
 			$('#btnCancel').click(function() {
