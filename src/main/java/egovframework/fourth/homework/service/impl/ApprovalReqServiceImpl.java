@@ -106,8 +106,11 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 
 	// 예약 마감 기안문 수정(상태)
 	@Override
-	public void editApprovalReq(String idx) throws Exception {
-		approvalReqDAO.updateApprovalReq(idx);
+	public void editApprovalReq(String idx, String status) throws Exception {
+		ApprovalReqVO vo = new ApprovalReqVO();
+		vo.setIdx(idx);
+		vo.setStatus(status);
+		approvalReqDAO.updateApprovalReq(vo);
 		log.info("UPDATE 예약 마감 기안문({}) 상태 수정 완료", idx);
 	}
 	

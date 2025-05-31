@@ -26,7 +26,7 @@ public interface ApprovalReqService {
 	ApprovalReqVO getProgramScheduleApprovalReq(String programScheduleIdx) throws Exception;
 	
 	// 예약 마감 기안문 수정(상태)
-	void editApprovalReq(String idx) throws Exception;
+	void editApprovalReq(String idx, String status) throws Exception;
 	  
 	// 예약 마감 기안문 삭제
 	void removeApprovalReq(String idx) throws Exception;

@@ -209,5 +209,13 @@ public class ApprovalController {
 		approvalResService.createApprovalRes(req); // 결재 응답 등록
 		return Collections.singletonMap("status", "OK");
 	}
+	
+	// 결재자가 현재 턴인지 확인
+	@PostMapping(value = "/isCurrentTurn.do", consumes = "application/json", produces = "application/json")
+	public boolean isCurrentTurn(@RequestBody Map<String, String> param) throws Exception {
+	    String approvalReqIdx = param.get("approvalReqIdx");
+	    String userIdx = param.get("userIdx");
+	    return approvalLineSnapshotService.isCurrentTurn(approvalReqIdx, userIdx);
+	}
 
 }

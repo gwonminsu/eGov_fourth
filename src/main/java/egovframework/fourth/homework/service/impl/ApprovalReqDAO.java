@@ -48,8 +48,8 @@ public class ApprovalReqDAO {
     }
     
     // 예약 마감 기안문 상태 업데이트
-    public void updateApprovalReq(String idx) throws Exception {
-        sqlSession.update("approvalReqDAO.updateApprovalReq", idx);
+    public void updateApprovalReq(ApprovalReqVO vo) throws Exception {
+        sqlSession.update("approvalReqDAO.updateApprovalReq", vo);
     }
     
     // 예약 마감 기안문 삭제

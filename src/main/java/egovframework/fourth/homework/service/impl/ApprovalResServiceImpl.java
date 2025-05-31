@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import egovframework.fourth.homework.service.ApprovalLineSnapshotService;
 import egovframework.fourth.homework.service.ApprovalLineSnapshotVO;
+import egovframework.fourth.homework.service.ApprovalReqService;
 import egovframework.fourth.homework.service.ApprovalResService;
 import egovframework.fourth.homework.service.ApprovalResVO;
 
@@ -28,6 +29,9 @@ public class ApprovalResServiceImpl extends EgovAbstractServiceImpl implements A
 	
 	@Resource(name = "approvalLineSnapshotService")
 	private ApprovalLineSnapshotService approvalLineSnapshotService;
+	
+	@Resource(name = "approvalReqService")
+	private ApprovalReqService approvalReqService;
 	
 
 	// 기안문 응답 생성 + 다음 차례의 결재자 잠금 풀기
@@ -46,6 +50,13 @@ public class ApprovalResServiceImpl extends EgovAbstractServiceImpl implements A
 		vo.setApprovalStatus(approvalStatus);
 		
 		approvalResDAO.insertApprovalRes(vo);
+		
+		// 응답이 반려면 즉시 상태 업데이트하고 return
+		if (approvalStatus.equals("REJECTED")) {
+		    approvalReqService.editApprovalReq(approvalReqIdx, approvalStatus); // 바로 반영
+		    log.info("UPDATE 기안문({}) 상태를 REJECTED로 즉시 변경 완료", approvalReqIdx);
+		    return;
+		}
 		
 		// 다음 차례 결재자 잠금 풀기
 		List<ApprovalLineSnapshotVO> all = approvalLineSnapshotService.getApprovalReqApprovalLineSnapshotList(approvalReqIdx);
@@ -85,6 +96,34 @@ public class ApprovalResServiceImpl extends EgovAbstractServiceImpl implements A
 		        break;
 		    }
 		}
+		
+		// ref 전까지 승인이면 기안문 상태 업데이트
+		List<ApprovalResVO> allRes = approvalResDAO.selectApprovalResListByApprovalReqIdx(approvalReqIdx);
+
+		// ref가 있는지 여부와 그 이전 마지막 snap 저장용
+		ApprovalLineSnapshotVO lastNonRef = null;
+		
+		for (int i = 0; i < ordered.size(); i++) {
+		    ApprovalLineSnapshotVO snap = ordered.get(i);
+
+		    if (snap.getType().equals("ref")) {
+		        break; // 첫 ref 만나면 반복 종료
+		    }
+
+		    lastNonRef = snap; // ref 전까지 계속 갱신됨
+		}
+
+		// 마지막 non-ref의 응답 상태 조회해서 반영
+		if (lastNonRef != null) {
+		    for (ApprovalResVO res : allRes) {
+		        if (res.getLineSnapshotIdx().equals(lastNonRef.getIdx())) {
+		            approvalReqService.editApprovalReq(approvalReqIdx, res.getApprovalStatus()); // 상태 그대로 반영
+		            log.info("UPDATE 기안문({}) 상태를 {}로 변경 완료", approvalReqIdx, res.getApprovalStatus());
+		            break;
+		        }
+		    }
+		}
+
 		
 		log.info("INSERT 기안문({})에 대한 기안문 응답({}) 등록 성공", approvalReqIdx, vo.getIdx());
 	}
