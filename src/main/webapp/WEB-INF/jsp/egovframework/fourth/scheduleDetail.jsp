@@ -198,10 +198,6 @@
 		}
 		
 		$(function () {
-/* 			$('#programName').text(programName);
-			$('#scheduleDate').text(date); */
-			console.log(programIdx);
-			
 			// 이 프로그램 일정 조회 요청
     		$.ajax({
     			url: '${getProgramScheduleApi}',
@@ -257,8 +253,8 @@
 							$('#btnReuseApprovalReq').show();
 						}
 						$('#approvalReqStatusText').addClass('status-' + data.status.toLowerCase()).text(statusText).show();
-						loadBookingList(); // 프로그램 일정의 예약 목록 조회 요청
 					}
+					loadBookingList(); // 프로그램 일정의 예약 목록 조회 요청
     			},
 				error: function(){
 					alert('현재 일정의 기안문 조회 중 에러 발생');
