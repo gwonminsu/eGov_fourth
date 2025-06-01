@@ -42,6 +42,13 @@
 				INNER JOIN booker be ON bi.idx = be.booking_idx -- INNER JOIN으로 혹여 booker 없는 booking이 있으면 무시
 				WHERE bi.program_schedule_idx = ps.idx
 			) AS bookerCount,
+			COALESCE((
+				SELECT status 
+				FROM approval_req ar 
+				WHERE ar.program_schedule_idx = ps.idx 
+				ORDER BY ar.created_at DESC
+				LIMIT 1
+			), 'NONE') AS closeReqState,
 			ps.created_at AS createdAt,
 			ps.updated_at AS updatedAt
 		FROM program_schedule ps

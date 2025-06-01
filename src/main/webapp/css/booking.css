@@ -156,10 +156,12 @@
 .btnGoProgramBooking:hover .scheduleStatus {
 	color: #fff;
 }
+.btnGoProgramBooking.closed,
 .btnGoProgramBooking.disabled {
 	background: #ccc;
 	color: #999;
 }
+.btnGoProgramBooking.closed .scheduleStatus,
 .btnGoProgramBooking.disabled .scheduleStatus {
 	color: #999;
 }

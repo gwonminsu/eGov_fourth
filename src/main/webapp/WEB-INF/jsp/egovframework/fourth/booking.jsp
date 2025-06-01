@@ -226,17 +226,21 @@
 						return parseInt(date.date.substr(8,2));
 					},
 					time: function(schedule) {
-						// console.log(JSON.stringify(schedule));
+						console.log(JSON.stringify(schedule));
 						var bookerCnt = schedule.raw.bookerCount; // 예약인 수
 						var possible = bookerCnt < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
+						if (schedule.raw.closeReqState === 'APPROVED') {
+							possible = ' 예약 마감됨';
+						}
 						var date = schedule.raw.startDatetime.substr(0,10);
 						var start = schedule.raw.startDatetime.substr(11,5);
 						var end = schedule.raw.startDatetime.substr(11,5);
 						$status = $('<span>').addClass('scheduleStatus').text(start + possible + ' (' + bookerCnt + '/' + schedule.raw.capacity + ')');
-						$btn = $('<span>').addClass('btnGoProgramBooking').attr('data-id', schedule.id).attr('data-date', date)
-											.append($status);
+						$btn = $('<span>').addClass('btnGoProgramBooking').attr('data-id', schedule.id).attr('data-date', date).append($status);
 						if (possible === ' 예약 불가') {
 							$btn.addClass('disabled');
+						} else if (possible === ' 예약 마감됨') {
+							$btn.addClass('closed');
 						}
 						return $btn.prop('outerHTML');
 					}
@@ -282,6 +286,8 @@
 	        	e.stopPropagation();
 	        	if ($(this).hasClass('disabled')) {
 	        		alert('해당 일정엔 더 이상 예약할 수 없습니다. 전화로 문의바랍니다.');
+	        	} else if ($(this).hasClass('closed')) {
+	        		alert('해당 일정은 마감되어 더 이상 예약할 수 없습니다.');
 	        	} else {
 		        	var programScheduleIdx = $(this).data('id');
 		        	var date = $(this).data('date');
