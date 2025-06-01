@@ -176,7 +176,7 @@
 	                var $tbody = $('#approvalListTbl').find('tbody');
 	                $tbody.empty();
 	                if (totalCount === 0) {
-	                	var $noDataRow = $('<tr>').append($('<td>').attr('colspan', '5').append($('<div>').addClass('no-data-text').text('아직 요청받은 기안문이 없습니다.')));
+	                	var $noDataRow = $('<tr>').append($('<td>').attr('colspan', '6').append($('<div>').addClass('no-data-text').text('아직 요청받은 기안문이 없습니다.')));
 	                	$tbody.append($noDataRow);
 	                	return;
 	                }

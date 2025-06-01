@@ -17,6 +17,8 @@
 	<c:url value="/approvalReq.do" var="approvalReqUrl"/>
    	<!-- 예약 마감 기안문 확인 페이지 URL -->
 	<c:url value="/approvalDetail.do" var="approvalDetailUrl"/>
+	<!-- 결재 페이지 URL -->
+	<c:url value="/approvalRes.do" var="approvalResUrl"/>
 	<!-- 프로그램 일정 수정 API URL -->
     <c:url value="/api/schedule/updateSchedule.do" var="updateApi"/>
    	<!-- 현재 프로그램 일정 조회 API URL -->
@@ -77,6 +79,7 @@
 	<div class="btn-area1">
 		<div id="approvalReqStatusText" style="display: none;"></div>
 		<button id="btnGoApprovalReq" style="display: none;">기안확인</button>
+		<button id="btnReuseApprovalReq" style="display: none;">기안문 재작성</button>
 		<button id="btnClose">예약마감</button>
 		<button id="btnSubmit">저장</button>
 	</div>
@@ -124,6 +127,10 @@
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
+		
+		// 기안문 응답 페이지에서 진입한 경우 사용
+		var reqIdx = '${param.approvalReqIdx}';
+		var pageIndex = '${param.pageIndex}';
 		
 		var bookingList = [];
 		var approvalReqIdx = '';
@@ -191,8 +198,8 @@
 		}
 		
 		$(function () {
-			$('#programName').text(programName);
-			$('#scheduleDate').text(date);
+/* 			$('#programName').text(programName);
+			$('#scheduleDate').text(date); */
 			console.log(programIdx);
 			
 			// 이 프로그램 일정 조회 요청
@@ -204,6 +211,9 @@
     			data: JSON.stringify({ idx: idx }),
     			success: function(schedule){
 					console.log(JSON.stringify(schedule));
+					$('#programName').text(schedule.programName);
+					var scheduleDate = schedule.startDatetime.substr(0,10);
+					$('#scheduleDate').text(scheduleDate);
 					var start = schedule.startDatetime.substr(11,5);
 					var end = schedule.endDatetime.substr(11,5);
 					$('#scheduleTime').text(start + ' - ' + end);
@@ -243,6 +253,8 @@
 							$('#pageTitle').append($tag);
 						} else {
 							statusText = '결재 상태: 반려';
+							$('#btnGoApprovalReq').hide();
+							$('#btnReuseApprovalReq').show();
 						}
 						$('#approvalReqStatusText').addClass('status-' + data.status.toLowerCase()).text(statusText).show();
 						loadBookingList(); // 프로그램 일정의 예약 목록 조회 요청
@@ -255,7 +267,11 @@
     		
 			// 돌아가기
 			$('#btnCancel').on('click', function () {
-				postTo('${bookManageUrl}', { programIdx: programIdx });
+				if (pageIndex) {
+					postTo('${approvalResUrl}', { idx: reqIdx, programIdx: programIdx, pageIndex: pageIndex });
+				} else {
+					postTo('${bookManageUrl}', { programIdx: programIdx });
+				}
 			});
 		
 			// 저장 버튼
@@ -309,9 +325,9 @@
 
 			});
 		
-			// 예약마감 버튼
-			$('#btnClose').on('click', function () {
-				postTo('${approvalReqUrl}', { programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+			// 예약마감, 기안문 재작성 버튼
+			$('#btnClose, #btnReuseApprovalReq').on('click', function () {
+				postTo('${approvalReqUrl}', { programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 			});
 			
 			// 기안 확인 버튼
@@ -332,7 +348,7 @@
 							var user = userList[i];
 							// 기안문 열람 잠금이 false인 사용자이거나 기안문 작성자면 허용
 							if (approvalReqUserIdx === sessionUserIdx || (sessionUserIdx === user.userIdx && !user.isLocked)) {
-								postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date });
+								postTo('${approvalDetailUrl}', { idx: approvalReqIdx, programScheduleIdx: idx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 								allowd = true;
 								break;
 							}
@@ -353,7 +369,7 @@
 					e.preventDefault();
 					return;
 				}
-				postTo('${addBookerUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date });
+				postTo('${addBookerUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 			});
 		
 			// 예약자 테이블 내부 버튼

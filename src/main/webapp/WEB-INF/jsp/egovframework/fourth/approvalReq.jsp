@@ -13,6 +13,7 @@
 	<!-- 일정 관리(상세) 페이지 URL -->
 	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
 	<!-- API URL -->
+    <c:url value="/api/approval/getScheduleReq.do" var="getScheduleReqApi" />
 	<c:url value="/api/approval/getLineList.do" var="getLineListApi" />
 	<c:url value="/api/approval/createLine.do" var="createLineApi" />
 	<c:url value="/api/approval/editLine.do" var="editLineApi" />
@@ -194,6 +195,11 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
+		// 기안문 응답 페이지에서 진입한 경우 사용
+		var reqIdx = '${param.approvalReqIdx}';
+		var pageIndex = '${param.pageIndex}';
+
+		
 		var currentLine = null; // 선택된 결재 라인(모달창에서 선택하는 용도)
 		var approvalLineIdx = null; // 기안문 등록 요청하는 용도
 		var selectedLineName = null; // 기안문에 선택한 라인 이름
@@ -300,7 +306,28 @@
 			$('#draftDate').val(getToday());
 			$('#userName').val(userName);
 			$('#departmentAndPosition').val(userDepartment + ' / ' + userPosition);
-			$('#reqTitle').val(date.substr(0, 4) + '년 ' + date.substr(5,2) + '월 ' + date.substr(8,2) + '일 예약 마감 결재건');
+			
+			// 이전 기안문 상세 내용 조회 요청
+ 			$.ajax({
+				url: '${getScheduleReqApi}',
+				type:'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({ programScheduleIdx: programScheduleIdx }),
+				success: function(res){
+					var data = res.approvalReq;
+					//console.log(JSON.stringify(data));
+					if (data) {
+						$('#reqTitle').val(data.title);
+						$('#reqContent').text(data.content);
+					} else {
+						$('#reqTitle').val(date.substr(0, 4) + '년 ' + date.substr(5,2) + '월 ' + date.substr(8,2) + '일 예약 마감 결재건');
+					}
+				},
+				error: function(){
+					alert('결재 기안문 상세 조회 중 에러 발생');
+				}
+			});
 			
 			/* ------------------ 결재 라인 선택 모달 관련 스크립트 시작 ------------------  */
 			
@@ -678,7 +705,7 @@
 			// 취소 버튼 핸들러
 			$('#btnCancel').click(function() {
 				// 예약 관리(상세) 페이지 이동
-				postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, programName: programName, date: date });
+				postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 			});
 
 		});

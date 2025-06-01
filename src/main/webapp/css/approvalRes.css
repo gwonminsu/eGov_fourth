@@ -1,5 +1,26 @@
 @charset "UTF-8";
 
+/* 타이틀 헤더 스타일 */
+#titleHeader {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	align-items: center;
+}
+#btnGoSchedule {
+	min-width: 10px;
+	padding: 6px 12px;
+	margin: 0 4px;
+	background-color: #575757;
+	color: #FFFFFF;
+	border: none;
+	border-radius: 10px;
+}
+#btnGoSchedule:hover {
+	background-color: #444444;
+}
+
+
 /* form-table(기안문 상세 테이블) 스타일 */
 table.form-table {
 	width: 100%;

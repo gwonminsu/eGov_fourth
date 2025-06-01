@@ -93,11 +93,13 @@ button.disabled-btn {
 #btnCancel:hover {
 	background-color: #1f2225;
 }
+#btnReuseApprovalReq,
 #btnGoApprovalReq,
 #btnClose {
 	margin-right: 8px;
 	background-color: #e2e6ea;
 }
+#btnReuseApprovalReq:hover,
 #btnGoApprovalReq:hover,
 #btnClose:hover {
 	background-color: #c0c8cf;

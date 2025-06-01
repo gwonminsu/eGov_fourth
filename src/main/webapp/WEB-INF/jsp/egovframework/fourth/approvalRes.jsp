@@ -12,6 +12,8 @@
 
 	<!-- 결재 목록 페이지 URL -->
 	<c:url value="/approvalList.do" var="approvalListUrl"/>
+	<!-- 일정 상세 페이지 URL -->
+	<c:url value="/scheduleDetail.do" var="scheduleDetailUrl"/>
 	<!-- API URL -->
     <c:url value="/api/approval/getApprovalReq.do" var="getApprovalReq" />
     <c:url value="/api/approval/getReqAttachList.do" var="getReqAttachListApi" />
@@ -49,7 +51,11 @@
 	</script>
 </head>
 <body>
-	<h2 id="formTitle">기안문 결재</h2><hr/>
+	<div id="titleHeader">
+		<h2 id="formTitle">기안문 결재</h2>
+		<button id="btnGoSchedule">이 기안문에 대한 일정 페이지</button>
+	</div>
+	<hr/>
 	
 	<div id="headTableWrapper">
 		<!-- 결재 수행 테이블 -->
@@ -115,7 +121,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>기타 의견</th>
+			<th>결재 의견</th>
 			<td colspan="3">
 				<div id="commentWrapper">
 					<div id="commentList"></div>
@@ -136,6 +142,8 @@
 		// 상태 유지용 파라미터 변수
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
 		var pageIndex = '${param.pageIndex}' // 페이지 인덱스
+		
+		var programScheduleIdx = '';
 		
 		// 결재할 유저가 이 기안에 응답한 데이터를 조회
 		function checkApprovalResponse(userIdx, callback) {
@@ -214,6 +222,7 @@
 				data: JSON.stringify({ idx: idx }),
 				success: function(data){
 					console.log(JSON.stringify(data));
+					programScheduleIdx = data.programScheduleIdx;
 					$('#docId').text(data.docId);
 					$('#draftDate').text(data.createdAt.substr(0, 10));
 					$('#userName').text(data.userName);
@@ -365,6 +374,11 @@
 					alert('결재 기안문의 첨부 파일들 조회 중 에러 발생');
 				}
 			});
+			
+	        // 예약 일정 관리 페이지(상세) 이동
+	        $('#btnGoSchedule').click(function () {
+	        	postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, pageIndex: pageIndex, approvalReqIdx: idx });
+	        });
 			
  			// 결재 처리
  			$('#btnApprove').click(function () {

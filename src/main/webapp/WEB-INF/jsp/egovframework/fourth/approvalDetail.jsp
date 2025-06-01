@@ -93,7 +93,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>기타 의견</th>
+			<th>결재 의견</th>
 			<td colspan="3">
 				<div id="commentWrapper">
 					<div id="commentList"></div>
@@ -117,6 +117,10 @@
 		var programIdx = '${param.programIdx}'; // 프로그램 idx
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
+		
+		// 기안문 응답 페이지에서 진입한 경우 사용
+		var reqIdx = '${param.approvalReqIdx}';
+		var pageIndex = '${param.pageIndex}';
 		
 		// 결재할 유저가 이 기안에 응답한 데이터를 조회
 		function checkApprovalResponse(userIdx, callback) {
@@ -344,7 +348,7 @@
 			// 취소 버튼 핸들러
 			$('#btnCancel').click(function() {
 				// 예약 관리(상세) 페이지 이동
-				postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, programName: programName, date: date });
+				postTo('${scheduleDetailUrl}', { idx: programScheduleIdx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 			});
 
 		});

@@ -88,6 +88,7 @@
 			ps.idx,
 			ps.create_user_idx,
 			ps.program_idx,
+			p.program_name AS programName,
 			ps.start_datetime,
 			ps.end_datetime,
 			ps.capacity,
@@ -103,7 +104,8 @@
 			ps.created_at AS createdAt,
 			ps.updated_at AS updatedAt
 		FROM program_schedule ps
-		WHERE idx = #{idx}
+		JOIN program p ON ps.program_idx = p.idx
+		WHERE ps.idx = #{idx}
 	</select>
 
 	<!-- 프로그램 일정 수정 -->

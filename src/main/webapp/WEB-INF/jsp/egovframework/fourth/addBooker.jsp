@@ -75,6 +75,10 @@
 		var date = '${param.date}'; // 선택된 날짜
 		var programName = '${param.programName}'; // 프로그램 이름
 		
+		// 기안문 응답 페이지에서 진입한 경우 사용
+		var reqIdx = '${param.approvalReqIdx}';
+		var pageIndex = '${param.pageIndex}';
+		
 		var optionsData = {}; // 예약인 드롭다운 데이터
 		
 		// 체험 인원 로우 추가 함수
@@ -251,7 +255,7 @@
 	
 			// 돌아가기 버튼
 			$('#btnCancel').on('click', function () {
-				postTo('${scheduleDetailUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date });
+				postTo('${scheduleDetailUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date, approvalReqIdx: reqIdx, pageIndex: pageIndex });
 			});
 		});
 	</script>

@@ -19,6 +19,8 @@ public class ProgramScheduleVO {
     
     private String programIdx; // 프로그램 idx
     
+    private String programName; //프로그램 이름
+    
     private Timestamp startDatetime; // 시작 날짜 + 시간
     
     private Timestamp endDatetime; // 끝 날짜 + 시간
