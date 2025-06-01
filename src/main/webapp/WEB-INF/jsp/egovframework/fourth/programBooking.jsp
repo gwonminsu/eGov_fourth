@@ -40,11 +40,12 @@
 	
 	<h2>예약 하기<span id="capacityView"></span></h2>
 	
+
 	<p class="info-desc">
-		※ 어쩌구 하시길 바랍니다
+		※ 이용안내 및 체험시 유의사항을 반드시 확인해 주시길 바랍니다
 	</p>
 	<p class="info-desc">
-		※ 저쩌구 하시길 바랍니다
+		※ 단체 선택시 단체명을 입력해 주세요
 	</p>
 	
 	<table class="form-table booking-table">

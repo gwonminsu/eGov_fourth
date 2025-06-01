@@ -46,7 +46,7 @@
 </head>
 <body>
 
-	<h2>예약정보 변경</h2>
+	<h2 id="pageTitle">예약정보 변경</h2>
 	
 	<h4>예약정보 확인</h4>
 	
@@ -129,6 +129,8 @@
 		var approvalReqIdx = '';
 		var approvalReqUserIdx = '';
 		
+		var isClosed = false;
+		
 		// 체험 인원 로우 추가 함수
 		function addBookingRow(booking) {
 			var index = $('#bookerList tr').length + 1;
@@ -150,6 +152,9 @@
 			// 버튼들
 			var $btnShow = $('<button>').addClass('btn-show').text('확인');
 			var $btnDelete = $('<button>').addClass('btn-delete').text('삭제');
+			if (isClosed) {
+				$btnDelete.addClass('disabled-btn');
+			}
 			var $btnPrint = $('<button>').addClass('btn-print').text('출력');
 
 			$tr.append($('<td>').append($btnShow)); // 예약자확인
@@ -229,11 +234,18 @@
 						if (data.status === 'PENDING') {
 							statusText = '결재 상태: 결재 진행 중';
 						} else if (data.status === 'APPROVED') {
+							isClosed = true;
+							$('#btnAddBooker').addClass('disabled-btn');
+							$('#btnSubmit').addClass('disabled-btn');
+							$('.btn-delete').addClass('disabled-btn');
 							statusText = '결재 상태: 결재 완료';
+							var $tag = $('<div>').addClass('title-tag').text('예약 마감');
+							$('#pageTitle').append($tag);
 						} else {
 							statusText = '결재 상태: 반려';
 						}
 						$('#approvalReqStatusText').addClass('status-' + data.status.toLowerCase()).text(statusText).show();
+						loadBookingList(); // 프로그램 일정의 예약 목록 조회 요청
 					}
     			},
 				error: function(){
@@ -241,16 +253,17 @@
 				}
     		});
     		
-    		// 프로그램 일정의 예약 목록 조회 요청
-			loadBookingList();
-		
 			// 돌아가기
 			$('#btnCancel').on('click', function () {
 				postTo('${bookManageUrl}', { programIdx: programIdx });
 			});
 		
 			// 저장 버튼
-			$('#btnSubmit').on('click', function () {
+			$('#btnSubmit').on('click', function (e) {
+				if (isClosed) {
+					e.preventDefault();
+					return;
+				}
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 	            var capacity = parseInt($('#capacity').val());
 
@@ -335,7 +348,11 @@
 			});
 		
 			// 예약자 추가
-			$('#btnAddBooker').on('click', function () {
+			$('#btnAddBooker').on('click', function (e) {
+				if (isClosed) {
+					e.preventDefault();
+					return;
+				}
 				postTo('${addBookerUrl}', { idx: idx, programIdx: programIdx, programName: programName, date: date });
 			});
 		
@@ -374,7 +391,11 @@
 				// 모달창 열기
 				$('.black-bg').addClass('show-modal');
 			});
-			$('#bookerList').on('click', '.btn-delete', function () {
+			$('#bookerList').on('click', '.btn-delete', function (e) {
+				if (isClosed) {
+					e.preventDefault();
+					return;
+				}
 				if (!confirm('정말 삭제하시겠습니까?')) return;
 				var $tr = $(this).closest('tr');
 				var bookingIdx = $tr.data('booking-idx');

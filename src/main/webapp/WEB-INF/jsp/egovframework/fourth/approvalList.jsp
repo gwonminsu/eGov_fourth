@@ -11,6 +11,8 @@
 	
 	<!-- 요청받은 결재 리스트 호출 api -->
 	<c:url value="/api/approval/getSnapUserReqList.do" var="getSnapUserReqListUrl"/>
+	<!-- 사용자가 이 기안에 응답한 데이터 조회 api -->
+	<c:url value="/api/approval/getUserAndReqRes.do" var="getUserReqResApi" />
 	<!-- 로그인 페이지 url -->
 	<c:url value="/login.do" var="loginUrl"/>
 	<!-- 로그아웃 api 호출 url -->
@@ -119,6 +121,10 @@
 		<button type="button" id="btnLogout">로그아웃</button>
 	</div>
 	
+	<p class="info-desc">
+		※ 응답 이력: 본인이 기안문에 결재 응답한 이력이 존재하는지 여부
+	</p>
+	
 	<p>전체: <span class="count-red"></span>건</p>
 	
     <table id="approvalListTbl" border="1">
@@ -127,6 +133,7 @@
 	            <th>순번</th>
 	            <th>제목</th>
 	            <th>작성자</th>
+	            <th>응답 이력</th>
 	            <th>최종 결재 상태</th>
 	            <th>등록일</th>
 	        </tr>
@@ -145,7 +152,7 @@
 		var currentPageIndex = parseInt('<c:out value="${param.pageIndex}" default="1"/>');
     	
 		// AJAX 로 페이징/리스트를 불러오는 함수
-		function loadSurveyList(pageIndex) {
+		function loadApprovalList(pageIndex) {
 			currentPageIndex = pageIndex;
 		    
 			var req = {
@@ -175,18 +182,43 @@
 	                }
 	                $.each(data, function(i, item) {
 	                	// console.log(JSON.stringify(item));
-	                	var $tr = $('<tr>');
-	                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
-	                    	postTo('${approvalResUrl}', { idx: item.idx, programIdx: programIdx, pageIndex: currentPageIndex });
-	                    })
+	                	// 결재할 유저가 이 기안에 응답한 데이터를 조회
+						$.ajax({
+							url: '${getUserReqResApi}',
+							type:'POST',
+							contentType: 'application/json',
+							dataType: 'json',
+							data: JSON.stringify({ approvalReqIdx: item.idx, userIdx: sessionUserIdx }),
+							success: function(list){
+			                	var $tr = $('<tr>');
+			                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
+			                    	postTo('${approvalResUrl}', { idx: item.idx, programIdx: programIdx, pageIndex: currentPageIndex });
+			                    })
 
-	                    // td 추가
-	                	$tr.append($('<td>').text(item.number));
-	                    $tr.append($('<td>').append($linkTitle));
-	                    $tr.append($('<td>').text(item.userName));
-	                    $tr.append($('<td>').text(item.status));
-	                    $tr.append($('<td>').text(item.createdAt));
-						$tbody.append($tr);
+			                    // td 추가
+			                	$tr.append($('<td>').text(item.number));
+			                    $tr.append($('<td>').append($linkTitle));
+			                    $tr.append($('<td>').text(item.userName));
+			                    $tr.append($('<td>').text((list && list.length > 0) ? 'O' : 'X'));
+			                    var statusText = '';
+			                    if (item.status === 'PENDING') {
+			                    	statusText = '결재 진행 중';
+			                    } else if (item.status === 'APPROVED') {
+			                    	statusText = '결재 완료';
+			                    } else if (item.status === 'REJECTED') {
+			                    	statusText = '반려됨';
+			                    } else {
+			                    	statusText = '알 수 없음';
+			                    }
+			                    $tr.append($('<td>').text(statusText));
+			                    $tr.append($('<td>').text(item.createdAt));
+								$tbody.append($tr);
+							},
+							error: function(){
+								alert('응답 조회 중 에러 발생');
+								callback(null);
+							}
+						});
 	                });
 	                renderPagination(totalCount, pageIndex);
 	            },
@@ -197,7 +229,7 @@
 		}
     
 	    $(function(){
-	    	loadSurveyList(currentPageIndex);
+	    	loadApprovalList(currentPageIndex);
 	    	
 	        // 로그인 여부에 따라 버튼 토글
 	        if (loginUserName) {
@@ -205,16 +237,8 @@
 				$('#btnGoLogin').hide();
 				$('#btnLogout').show();
 	        } else {
-				$('#welcomeMsg').text('');
 				$('#btnGoLogin').show();
 				$('#btnLogout').hide();
-	        }
-	        
-	        // 관리자면 설문 관리 페이지 이동 버튼 표시
-	        if (isAdmin == 'true') {
-	        	$('#btnGoSurveyManage').show();
-	        } else {
-	        	$('#btnGoSurveyManage').hide();
 	        }
 	    	
 	    	// 로그인 버튼 핸들러

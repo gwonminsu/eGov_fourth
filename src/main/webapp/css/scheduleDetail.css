@@ -4,6 +4,22 @@ h4 {
 	margin: 20px 0 10px 0;
 	color: #6e6e6e;
 }
+#pageTitle {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.title-tag {
+	text-align: center;
+	background-color: #ff8080;
+	color: #ffffff;
+	border: none;
+	border-radius: 18px;
+	font-size: 0.7em;
+	width: 80px;
+	padding: 6px;
+	margin-left: 5px;
+}
 
 /* 테이블 공통 스타일 */
 table.form-table {
@@ -38,6 +54,10 @@ table.form-table input[type="number"] {
 }
 
 /* 버튼 영역 */
+button.disabled-btn {
+	opacity: 0.5;
+	cursor: not-allowed !important;
+}
 .btn-area1 {
 	display: flex;
 	justify-content: flex-end;
