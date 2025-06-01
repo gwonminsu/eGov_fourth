@@ -10,6 +10,9 @@ public interface BookingService {
 	  
 	// 프로그램 일정에 대한 예약 목록 조회
 	List<BookingVO> getProgramScheduleBookingList(String programScheduleIdx) throws Exception;
+	
+	// 사용자가 예약한 예약 목록 조회
+	List<BookingVO> getUserBookingList(String userIdx) throws Exception;
 	  
 	// 예약 상세 조회
 	BookingVO getBooking(String idx) throws Exception;

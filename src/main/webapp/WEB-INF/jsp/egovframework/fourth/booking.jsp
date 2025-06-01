@@ -27,6 +27,8 @@
 	<c:url value="/programBooking.do" var="programBookingUrl"/>
 	<!-- 관리자 페이지 URL -->
 	<c:url value="/bookManage.do" var="bookManageUrl"/>
+	<!-- 예약 정보 확인 페이지 URL -->
+	<c:url value="/bookingInfo.do" var="bookingInfoUrl"/>
 
 	<!-- 세션에 담긴 사용자 이름을 JS 변수로 -->
 	<script>
@@ -81,7 +83,11 @@
    	<!-- 캘린더 -->
    	<div id='calendar'></div>
    	
-   	<button type="button" id="btnGoBookManage" style="display: none;">관리자 페이지</button>
+   	<div class="btn-area">
+   		<button id="btnGoBookManage" style="display: none;">관리자 페이지</button>
+   		<button id="btnGoUserBooking">예약 정보 확인</button>
+   	</div>
+   	
     
     <script>
     	var idx = '${param.programIdx}';
@@ -318,6 +324,12 @@
 				});
 	        });
 	        
+			// 예약 정보 확인 버튼 핸들러
+	        $('#btnGoUserBooking').click(function() {
+	        	// 관리자 페이지로 이동
+				postTo('${bookingInfoUrl}', { programIdx: currentProgramIdx });
+			});
+			
 			// 관리자 페이지 버튼 핸들러
 	        $('#btnGoBookManage').click(function() {
 	        	// 관리자 페이지로 이동

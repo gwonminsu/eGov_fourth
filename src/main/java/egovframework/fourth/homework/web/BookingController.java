@@ -63,6 +63,14 @@ public class BookingController {
         return list;
     }
     
+    // 프로그램 일정의 전체 예약 정보 조회
+    @PostMapping(value="/getUserBookingList.do", consumes="application/json", produces="application/json")
+    public List<BookingVO> getUserBookingList(@RequestBody Map<String,String> req) throws Exception {
+        String userIdx = req.get("userIdx");
+        List<BookingVO> list = bookingService.getUserBookingList(userIdx);
+        return list;
+    }
+    
     // 예약 삭제
     @PostMapping(value="/delete.do", consumes="application/json", produces="application/json")
     public Map<String,String> delete(@RequestBody Map<String,String> param) throws Exception {

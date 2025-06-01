@@ -1,0 +1,162 @@
+@charset "UTF-8";@charset "UTF-8";
+
+#pageTitle {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 10px;
+	font-size: 22px;
+	font-weight: bold;
+}
+p.info-desc {
+	font-size: 0.85rem;
+	color: #004085;
+	background: #e9ecef;
+	padding: 8px;
+	margin-top: 10px;
+}
+
+/* 테이블 */
+table.form-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+table.form-table th,
+table.form-table td {
+	border: 1px solid #ccc;
+	text-align: center;
+	padding: 8px;
+	vertical-align: middle;
+}
+table.form-table th {
+	background: #f7f7f7;
+	white-space: nowrap;
+}
+
+.meta-table {
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+/* 버튼 */
+.btn-area {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-top: 20px;
+}
+.btn-area button {
+	padding: 6px 12px;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+	white-space: nowrap;
+}
+#btnPrev {
+	background-color: #343a40;
+	color: #FFFFFF;
+}
+#btnPrev:hover {
+	background-color: #1f2225;
+}
+.btn-show {
+	background-color: #dee2e6;
+	border: none;
+	white-space: nowrap;
+	min-width: 50px;
+	padding: 6px 8px;
+	cursor: pointer;
+}
+.btn-show:hover {
+	background-color: #c0c8cf;
+}
+.btn-delete {
+	background-color: #ff6b6b;
+	color: white;
+	border: none;
+	white-space: nowrap;
+	min-width: 50px;
+	padding: 6px 8px;
+	cursor: pointer;
+}
+.btn-delete:hover {
+	background-color: #ff4040;
+}
+
+.no-data-text {
+	font-size: 0.85rem;
+	color: #666;
+	font-style: oblique;
+}
+
+/* 모달창 */
+.black-bg {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	visibility: hidden;
+	background: rgba(0,0,0,0.6);
+	z-index: 5;
+	padding: 30px;
+	opacity: 0;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.white-bg {
+	background: #fff;
+	border-radius: 10px;
+	padding: 0 15px 30px 30px;
+	width: 600px;
+	max-width: 90%;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.show-modal {
+	visibility: visible;
+	opacity: 1;
+}
+#modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#modal-body h4 {
+	margin: 0;
+	color: #666666;
+}
+#modal-content {
+	background: #fdfdfd;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 5px 20px;
+	margin-right: 15px;
+	max-height: 200px;
+	overflow-y: auto;
+	margin-top: 12px;
+}
+.modal-item {
+	display: block;
+	padding: 8px 0;
+	border-bottom: 1px solid #eee;
+	font-size: 14px;
+	color: #333;
+	line-height: 1.4;
+}
+.modal-item:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+#btnModalClose {
+	padding: 10px;
+	border: none;
+	cursor: pointer;
+	color: #333;
+	background-color: #fff;
+}
+#btnModalClose:hover {
+	color: #ff5353;
+}

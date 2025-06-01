@@ -167,6 +167,11 @@
 }
 
 /* 버튼 공통 스타일 */
+.btn-area {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 #btnGoLogin,
 #btnLogout {
     padding: 6px 12px;
@@ -182,7 +187,7 @@
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
-    margin-right: 8px;
+    margin-left: 8px;
    	background-image: repeating-linear-gradient(
 		45deg,
 		#888888 0px,
@@ -195,6 +200,20 @@
 }
 #btnGoBookManage:hover {
     filter: brightness(0.6);
+}
+
+/* 예약 확인 페이지 버튼 */
+#btnGoUserBooking {
+	padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    background-color: #ff8951;
+    margin-top: 10px;
+}
+#btnGoUserBooking:hover {
+    background-color: #ff661c;
 }
 
 /* 로그인/로그아웃 버튼 */

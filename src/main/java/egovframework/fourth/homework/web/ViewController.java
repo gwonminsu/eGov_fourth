@@ -54,6 +54,18 @@ public class ViewController {
 		return "programBooking";
 	}
 	
+	// 예약정보 확인 페이지
+	@RequestMapping(value = "/bookingInfo.do")
+	public String bookingInfoPage(HttpSession session, RedirectAttributes rt) throws Exception {
+		UserVO me = (UserVO) session.getAttribute("loginUser");
+        // 로그인 안 했으면
+        if (me == null) {
+            rt.addFlashAttribute("errorMsg", "로그인이 필요합니다.");
+            return "redirect:/booking.do";
+        }
+		return "bookingInfo";
+	}
+	
 	// 예약 관리 페이지(관리자 페이지)
 	@RequestMapping(value = "/bookManage.do")
 	public String bookManagePage(HttpSession session, RedirectAttributes rt) {

@@ -25,6 +25,11 @@ public class BookingDAO {
         return sqlSession.selectList("bookingDAO.selectBookingListByProgramScheduleIdx", programScheduleIdx);
     }
     
+    // 사용자가 예약한 예약 목록 조회
+    public List<BookingVO> selectBookingListByUserIdx(String userIdx) throws Exception {
+        return sqlSession.selectList("bookingDAO.selectBookingListByUserIdx", userIdx);
+    }
+    
     // 예약 상세 조회
     public BookingVO selectBooking(String idx) throws Exception {
         return sqlSession.selectOne("bookingDAO.selectBooking", idx);

@@ -51,6 +51,19 @@ public class BookingServiceImpl extends EgovAbstractServiceImpl implements Booki
 		log.info("SELECT 프로그램의 일정({})의 예약 목록 조회 완료", programScheduleIdx);
 		return bookingList;
 	}
+	
+	// 프로그램 일정에 대한 예약 목록 조회
+	@Override
+	public List<BookingVO> getUserBookingList(String userIdx) throws Exception {
+		List<BookingVO> bookingList = bookingDAO.selectBookingListByUserIdx(userIdx);
+		// 각 예약VO에 예약인 목록 집어넣기 
+		for (BookingVO booking : bookingList) {
+			List<BookerVO> bookerList = bookerService.getBookingBookerList(booking.getIdx());
+			booking.setBookerList(bookerList);
+		}
+		log.info("SELECT 사용자({})의 예약 목록 조회 완료", userIdx);
+		return bookingList;
+	}
 
 	// 예약 상세 조회
 	@Override
