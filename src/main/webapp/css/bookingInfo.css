@@ -83,6 +83,10 @@ table.form-table th {
 .btn-delete:hover {
 	background-color: #ff4040;
 }
+.disabled-btn {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
 
 .no-data-text {
 	font-size: 0.85rem;

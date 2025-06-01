@@ -13,6 +13,8 @@
 	<c:url value="/booking.do" var="bookingUrl"/>
 	<!-- 예약 목록 API URL -->
 	<c:url value="/api/booking/getUserBookingList.do" var="getBookingListApi"/>
+	<!-- 예약 삭제 API URL -->
+	<c:url value="/api/booking/delete.do" var="deleteBookingApi"/>
 
 	<script>
 		var sessionUserIdx = '<c:out value="${sessionScope.loginUser.idx}" default="" />';
@@ -146,7 +148,20 @@
 						$tr.append($('<td>').text(booking.createdAt.substr(0, 10) + '(' + booking.createdAt.substr(11, 5) + ')'));
 						$tr.append($('<td>').text(booking.bookerList.length));
 						$tr.append($('<td>').append($('<button>').addClass('btn-show').text('확인')));
-						$tr.append($('<td>').append($('<button>').addClass('btn-delete').text('예약 취소')));
+						
+						var startDateStr = booking.scheduleStart.substr(0, 10);
+						var startDate = new Date(startDateStr);
+						var today = new Date();
+						var limitDate = new Date(today);
+						limitDate.setDate(today.getDate() + 2); // 오늘 + 2일
+
+						var $cancelBtn = $('<button>').addClass('btn-delete').text('예약 취소');
+
+						if (startDate <= limitDate) {
+							$cancelBtn.addClass('disabled-btn').prop('disabled', true); // 취소 제한
+						}
+
+						$tr.append($('<td>').append($cancelBtn));
 						$('#bookingList').append($tr);
 					});
 				},
@@ -154,6 +169,43 @@
 					alert('예약 목록 조회 실패');
 				}
 			});
+			
+			// 예약 취소 버튼
+			$('#bookingList').on('click', '.btn-delete', function () {
+				var index = $(this).closest('tr').index();
+				var booking = bookingList[index];
+
+				// 다시 한 번 시간 체크
+				var startDateStr = booking.scheduleStart.substr(0, 10);
+				var startDate = new Date(startDateStr);
+				var today = new Date();
+				var limitDate = new Date(today);
+				limitDate.setDate(today.getDate() + 2);
+
+				if (startDate <= limitDate) {
+					alert('일정 시작일 기준 2일 전까지만 취소가 가능합니다.');
+					return;
+				}
+
+				if (!confirm('정말 예약을 취소하시겠습니까?')) return;
+
+				// 예약 + 예약 인원 삭제 요청
+ 				$.ajax({
+					url: '${deleteBookingApi}',
+					type: 'POST',
+					contentType: 'application/json',
+					dataType: 'json',
+					data: JSON.stringify({ idx: booking.idx }),
+					success: function (res) {
+						alert('예약이 취소되었습니다.');
+						location.reload(); // 페이지 새로고침
+					},
+					error: function () {
+						alert('예약 취소 중 에러 발생');
+					}
+				});
+			});
+
 			
 			// 돌아가기 버튼
 			$('#btnPrev').on('click', function () {
