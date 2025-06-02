@@ -63,9 +63,9 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 			snapUser.setSeq(lineUser.getSeq());
 			snapUser.setType(lineUser.getType());
 			if ("coop".equals(lineUser.getType()) && lineUser.getSeq() == 0) {
-				snapUser.setIsLocked(false); // coop + seq 0 → 잠금 해제
+				snapUser.setIsLocked(false); // coop + seq 0 -> 잠금 해제
 			} else if (!hasCoop && "approv".equals(lineUser.getType()) && lineUser.getSeq() == 0) {
-				snapUser.setIsLocked(false); // coop 없고 approv + seq 0 → 잠금 해제
+				snapUser.setIsLocked(false); // coop 없고 approv + seq 0 -> 잠금 해제
 			} else {
 				snapUser.setIsLocked(true); // 그 외는 잠금
 			}

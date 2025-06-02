@@ -296,9 +296,10 @@
 					}
 					
 					// 콜백을 이용해서 협조자, 결재자, 참조자 순서로 순차 실행
-					var combinedList = coopList.concat(approvList);
-					renderLineUserList(combinedList, 'approvalLineList', function() {
-						renderLineUserList(refList, 'cooperatorLineList');
+					renderLineUserList(coopList, 'approvalLineList', function() {
+						renderLineUserList(approvList, 'approvalLineList', function() {
+							renderLineUserList(refList, 'cooperatorLineList');
+						});
 					});
 				},
 				error: function(){
