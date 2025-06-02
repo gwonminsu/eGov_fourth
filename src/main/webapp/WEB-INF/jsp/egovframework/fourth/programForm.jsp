@@ -248,6 +248,8 @@
 			});
 
 			$('#btnSubmit').click(function(e) {
+				if(!confirm('프로그램을 ' + (mode === 'edit' ? '수정' : '등록') + '하시겠습니까?')) return;
+
 				// 폼 검증(하나라도 인풋이 비어있으면 알림)
 				if (!$('#programName')[0].reportValidity())
 					return;

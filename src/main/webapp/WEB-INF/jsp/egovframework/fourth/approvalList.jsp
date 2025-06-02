@@ -186,7 +186,7 @@
 	                var loadedCount = 0;
 	                
 	                $.each(data, function(i, item) {
-	                	// console.log(JSON.stringify(item));
+	                	console.log(JSON.stringify(item));
 	                	// 결재할 유저가 이 기안에 응답한 데이터를 조회
 						$.ajax({
 							url: '${getUserReqResApi}',

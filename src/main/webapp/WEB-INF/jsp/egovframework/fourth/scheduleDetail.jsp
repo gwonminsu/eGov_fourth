@@ -276,6 +276,9 @@
 					e.preventDefault();
 					return;
 				}
+				
+				if (!confirm('일정 정보를 수정하시겠습니까?')) return;
+				
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 	            var capacity = parseInt($('#capacity').val());
 

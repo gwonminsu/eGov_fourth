@@ -188,7 +188,10 @@
 			});
 	    	
 	        $('#btnSubmit').click(function(e){
-	        	if (mode === 'bulk') confirm('일괄 저장 시 겹치는 일정은 제외하고 저장됩니다.');
+	        	if (mode === 'bulk') {
+	        		if(!confirm('일괄 저장 시 겹치는 일정은 제외하고 저장됩니다. 등록하시겠습니까?')) return;
+	        	}
+	        	if(!confirm('일정을 등록하시겠습니까?')) return;
 	        	// 폼 검증(하나라도 인풋이 비어있으면 알림)
 	            var startTime = $('#scheduleStartTime').val();
 	            var endTime = $('#scheduleEndTime').val();

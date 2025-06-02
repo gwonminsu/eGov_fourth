@@ -536,6 +536,7 @@
 			
 			// 등록/수정 버튼 클릭 시 ajax 전송
 			$('#btnSaveLine').click(function() {
+				if (!confirm('결재 라인을 수정하시겠습니까?')) return;
 				var lineName = $('#approvalLineName').val();
 				if (!lineName) return alert('결재라인명을 입력하세요');
 				
@@ -641,6 +642,7 @@
 
 
 			$('#btnSubmit').click(function(e) {
+				if (!confirm('기안문을 제출 하시겠습니까?')) return;
 				// 폼 검증(하나라도 인풋이 비어있으면 알림)
 				if (!$('#reqTitle')[0].reportValidity()) return;
 				if (!$('#reqContent')[0].reportValidity()) return;

@@ -172,6 +172,7 @@
 	
 			// 저장 버튼
 			$('#btnSave').on('click', function () {
+				if (!confirm('예약 인원을 추가하시겠습니끼?')) return;
 				var isValid = true;
 				
 				var bookerList = [];
