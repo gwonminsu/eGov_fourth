@@ -361,15 +361,8 @@
 					var city = $tr.find('.city').val();
 
 					// 필수값 검증
-					if (!name || !sex || !userType || !area) {
-						alert((i + 1) + '번 인원의 성명, 성별, 구분, 거주지는 필수입니다.');
-						isValid = false;
-						return false;
-					}
-
-					// 경상북도일 때만 시군 입력 필요
-					if (area === '경상북도' && !city) {
-						alert((i + 1) + '번 인원의 상세주소(시·군)를 선택해주세요.');
+					if (!name || !sex || !userType || !area || !city) {
+						alert((i + 1) + '번 인원의 성명, 성별, 구분, 거주지, 상세주소는 필수입니다.');
 						isValid = false;
 						return false;
 					}
