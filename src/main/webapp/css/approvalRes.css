@@ -22,6 +22,11 @@
 
 
 /* form-table(기안문 상세 테이블) 스타일 */
+#listTableWrapper {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px 20px;
+}
 table.form-table {
 	width: 100%;
 	border-collapse: collapse;

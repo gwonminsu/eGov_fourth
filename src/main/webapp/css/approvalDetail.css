@@ -26,7 +26,8 @@ table.form-table td[colspan="3"] > #reqContent {
 #lineUserWrapper {
 	display: flex;
 	justify-content: flex-end;
-	align-items: center;
+	align-items: flex-start;
+	gap: 10px 20px;
 	width: 100%;
 }
 table.user-list-table {

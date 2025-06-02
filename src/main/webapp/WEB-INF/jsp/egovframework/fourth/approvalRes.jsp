@@ -80,12 +80,22 @@
 			</tbody>
 		</table>
 		<!-- 기안문 결재할 유저 목록 테이블 -->
-		<table class="user-list-table">
-			<thead>
-				<tr><th colspan="3">결재</th></tr>
-			</thead>
-			<tbody id="approvalLineList"></tbody>
-		</table>
+		<div id="listTableWrapper">
+			<table class="user-list-table" id="refTable" style="display: none;">
+				<thead>
+					<tr><th colspan="3">참조</th></tr>
+				</thead>
+				<tbody id="cooperatorLineList"></tbody>
+			</table>
+			
+			<table class="user-list-table">
+				<thead>
+					<tr><th colspan="3">결재</th></tr>
+				</thead>
+				<tbody id="approvalLineList"></tbody>
+			</table>
+		</div>
+
 	</div><hr/>
 	
 	<!-- 기안 상세 테이블 -->
@@ -277,8 +287,12 @@
 						}
 					});
 					
+					if (refList.length > 0) {
+						$('#refTable').show();
+					}
+					
 					// seq 순서대로 정렬 후 append
-					function renderLineUserList(list, callback) {
+					function renderLineUserList(list, targetId, callback) {
 						list.sort(function(a, b) {
 							return a.seq - b.seq;
 						});
@@ -325,7 +339,7 @@
 									$resDate.text('');
 								}
 								var $row = $('<tr>').append($name).append($status).append($resDate);
-								$('#approvalLineList').append($row);
+								$('#' + targetId).append($row);
 								// 의견 리스트 렌더링
 								if (resData && resData.comment) {
 									var $item = $('<div>').addClass('comment-item')
@@ -353,10 +367,9 @@
 					}
 					
 					// 콜백을 이용해서 협조자, 결재자, 참조자 순서로 순차 실행
-					renderLineUserList(coopList, function() {
-						renderLineUserList(approvList, function() {
-							renderLineUserList(refList);
-						});
+					var combinedList = coopList.concat(approvList);
+					renderLineUserList(combinedList, 'approvalLineList', function() {
+						renderLineUserList(refList, 'cooperatorLineList');
 					});
 				},
 				error: function(){
