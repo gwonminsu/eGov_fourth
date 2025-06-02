@@ -45,6 +45,16 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 		
 		// 기안문이 사용한 라인의 라인 유저 목록 조회하여
 		List<LineUserVO> lineUserList = lineUserService.getLineLineUserList(vo.getApprovalLineIdx());
+		
+		// 리스트에 협조자 있는지 검사
+		boolean hasCoop = false;
+		for (LineUserVO lineUser : lineUserList) {
+			if (lineUser.getType().equals("coop")) {
+				hasCoop = true;
+				break;
+			}
+		}
+		
 		for (LineUserVO lineUser : lineUserList) {
 			ApprovalLineSnapshotVO snapUser = new ApprovalLineSnapshotVO();
 			// 데이터 세팅 후
@@ -52,7 +62,13 @@ public class ApprovalReqServiceImpl extends EgovAbstractServiceImpl implements A
 			snapUser.setUserIdx(lineUser.getApprovalUserIdx());
 			snapUser.setSeq(lineUser.getSeq());
 			snapUser.setType(lineUser.getType());
-			snapUser.setIsLocked(!(lineUser.getType().equals("coop") && lineUser.getSeq() == 0)); // coope 타입의 seq가 0인 결재자만 false, 나머지 true
+			if ("coop".equals(lineUser.getType()) && lineUser.getSeq() == 0) {
+				snapUser.setIsLocked(false); // coop + seq 0 → 잠금 해제
+			} else if (!hasCoop && "approv".equals(lineUser.getType()) && lineUser.getSeq() == 0) {
+				snapUser.setIsLocked(false); // coop 없고 approv + seq 0 → 잠금 해제
+			} else {
+				snapUser.setIsLocked(true); // 그 외는 잠금
+			}
 			approvalLineSnapshotService.createApprovalLineSnapshot(snapUser); // 기안문을 결재할 사용자 생성
 		}
 		log.info("INSERT 에약 일정({})에 예약 마감 기안문({}) 등록 성공", vo.getProgramScheduleIdx(), vo.getIdx());

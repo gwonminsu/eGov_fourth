@@ -66,7 +66,7 @@
 		GROUP BY
 			ar.idx, ar.approval_line_idx, ar.program_schedule_idx, ar.req_user_idx,
 			u.user_name, ar.doc_id, ar.title, ar.content, ar.status, ar.created_at
-		ORDER BY ar.created_at DESC
+		ORDER BY (SUBSTRING(ar.idx FROM 7))::int DESC
 		LIMIT #{recordCountPerPage}
  		OFFSET #{firstIndex}
 	</select>

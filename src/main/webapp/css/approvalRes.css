@@ -196,3 +196,7 @@ table.user-list-table td:nth-child(3) {
 #btnReject:hover {
 	background-color: #a71d2a;
 }
+button.disabled {
+	opacity: 0.5;
+	cursor: not-allowed !important;
+}

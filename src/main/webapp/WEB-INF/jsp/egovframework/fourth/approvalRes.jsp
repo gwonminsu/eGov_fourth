@@ -339,6 +339,19 @@
 						processNext();
 					}
 					
+					// 로그인한 사용자가 참조자인 경우 반려 비활성화
+					var isRef = false;
+					for (var i = 0; i < userList.length; i++) {
+						var user = userList[i];
+						if (user.type === 'ref' && user.userIdx === sessionUserIdx) {
+							isRef = true;
+							break;
+						}
+					}
+					if (isRef) {
+						$('#btnReject').prop('disabled', true).addClass('disabled');
+					}
+					
 					// 콜백을 이용해서 협조자, 결재자, 참조자 순서로 순차 실행
 					renderLineUserList(coopList, function() {
 						renderLineUserList(approvList, function() {

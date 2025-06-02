@@ -29,8 +29,6 @@ import egovframework.fourth.homework.service.ApprovalResVO;
 import egovframework.fourth.homework.service.AttachService;
 import egovframework.fourth.homework.service.AttachVO;
 import egovframework.fourth.homework.service.LineUserService;
-import egovframework.fourth.homework.service.LineUserVO;
-import egovframework.fourth.homework.service.ProgramVO;
 
 @RestController
 @RequestMapping("/api/approval")

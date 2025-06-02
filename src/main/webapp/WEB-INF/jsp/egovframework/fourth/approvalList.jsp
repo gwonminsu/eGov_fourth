@@ -58,14 +58,14 @@
 			
 			// '처음으로' 버튼
 			if (currentPage > 1) {
-				$pg.append('<a href="#" onclick="loadSurveyList(1);return false;">' + '<img src="' + FIRST_IMG_URL + '" border="0"/></a>&#160;');
+				$pg.append('<a href="#" onclick="loadApprovalList(1);return false;">' + '<img src="' + FIRST_IMG_URL + '" border="0"/></a>&#160;');
 			} else {
 				$pg.append('<img src="' + FIRST_IMG_URL + '" border="0" class="disabled"/>&#160;');
 			}
 			
 			// '이전 10페이지' 버튼
 			if (startPage > 1) {
-			    $pg.append('<a href="#" onclick="loadSurveyList(' + (startPage - 1) + ');return false;">' + '<img src="' + PREV_IMG_URL + '" border="0"/></a>&#160;');
+			    $pg.append('<a href="#" onclick="loadApprovalList(' + (startPage - 1) + ');return false;">' + '<img src="' + PREV_IMG_URL + '" border="0"/></a>&#160;');
 			} else {
 				$pg.append('<img src="' + PREV_IMG_URL + '" border="0" class="disabled"/>&#160;');
 			}
@@ -76,7 +76,7 @@
 			        $pg.append('<strong>' + i + '</strong>&#160;'); // 선택된 페이지만 굵게
 			    } else {
 			        $pg.append(
-			          '<a href="#" onclick="loadSurveyList(' + i + ');return false;">' +
+			          '<a href="#" onclick="loadApprovalList(' + i + ');return false;">' +
 			           i +
 			          '</a>&#160;'
 			        );
@@ -85,14 +85,14 @@
 			
 			// '다음 10페이지' 버튼
 			if (endPage < totalPages) {
-			    $pg.append('<a href="#" onclick="loadSurveyList(' + (endPage + 1) + ');return false;">' + '<img src="' + NEXT_IMG_URL + '" border="0"/></a>&#160;');
+			    $pg.append('<a href="#" onclick="loadApprovalList(' + (endPage + 1) + ');return false;">' + '<img src="' + NEXT_IMG_URL + '" border="0"/></a>&#160;');
 			} else {
 				$pg.append('<img src="' + NEXT_IMG_URL + '" border="0" class="disabled"/>&#160;');
 			}
 			
 			// '마지막으로' 버튼
 			if (currentPage < totalPages) {
-			    $pg.append('<a href="#" onclick="loadSurveyList(' + totalPages + ');return false;">' + '<img src="' + LAST_IMG_URL + '" border="0"/></a>&#160;');
+			    $pg.append('<a href="#" onclick="loadApprovalList(' + totalPages + ');return false;">' + '<img src="' + LAST_IMG_URL + '" border="0"/></a>&#160;');
 			} else {
 				$pg.append('<img src="' + LAST_IMG_URL + '" border="0" class="disabled"/>&#160;');
 			}
@@ -180,6 +180,11 @@
 	                	$tbody.append($noDataRow);
 	                	return;
 	                }
+	                
+	                // 응답을 저장할 배열과 카운터
+	                var resultList = new Array(data.length);
+	                var loadedCount = 0;
+	                
 	                $.each(data, function(i, item) {
 	                	// console.log(JSON.stringify(item));
 	                	// 결재할 유저가 이 기안에 응답한 데이터를 조회
@@ -190,29 +195,40 @@
 							dataType: 'json',
 							data: JSON.stringify({ approvalReqIdx: item.idx, userIdx: sessionUserIdx }),
 							success: function(list){
-			                	var $tr = $('<tr>');
-			                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
-			                    	postTo('${approvalResUrl}', { idx: item.idx, programIdx: programIdx, pageIndex: currentPageIndex });
-			                    })
+			                    resultList[i] = { item: item, userResList: list }; // 위치 고정
+			                    loadedCount++;
+			                    
+			                    if (loadedCount === data.length) {
+			                    	$.each(resultList, function(_, entry) {
+			                            var item = entry.item;
+			                            var list = entry.userResList;
+			                            
+					                	var $tr = $('<tr>');
+					                    var $linkTitle = $('<a>').attr('href', 'javascript:void(0)').text(item.title).on('click', function() {
+					                    	postTo('${approvalResUrl}', { idx: item.idx, programIdx: programIdx, pageIndex: currentPageIndex });
+					                    })
 
-			                    // td 추가
-			                	$tr.append($('<td>').text(item.number));
-			                    $tr.append($('<td>').append($linkTitle));
-			                    $tr.append($('<td>').text(item.userName));
-			                    $tr.append($('<td>').text((list && list.length > 0) ? 'O' : 'X'));
-			                    var statusText = '';
-			                    if (item.status === 'PENDING') {
-			                    	statusText = '결재 진행 중';
-			                    } else if (item.status === 'APPROVED') {
-			                    	statusText = '결재 완료';
-			                    } else if (item.status === 'REJECTED') {
-			                    	statusText = '반려됨';
-			                    } else {
-			                    	statusText = '알 수 없음';
+					                    // td 추가
+					                	$tr.append($('<td>').text(item.number));
+					                    $tr.append($('<td>').append($linkTitle));
+					                    $tr.append($('<td>').text(item.userName));
+					                    $tr.append($('<td>').text((list && list.length > 0) ? 'O' : 'X'));
+					                    var statusText = '';
+					                    if (item.status === 'PENDING') {
+					                    	statusText = '결재 진행 중';
+					                    } else if (item.status === 'APPROVED') {
+					                    	statusText = '결재 완료';
+					                    } else if (item.status === 'REJECTED') {
+					                    	statusText = '반려됨';
+					                    } else {
+					                    	statusText = '알 수 없음';
+					                    }
+					                    $tr.append($('<td>').text(statusText));
+					                    $tr.append($('<td>').text(item.createdAt));
+										$tbody.append($tr);
+			                    	});
+			                    	renderPagination(totalCount, pageIndex);
 			                    }
-			                    $tr.append($('<td>').text(statusText));
-			                    $tr.append($('<td>').text(item.createdAt));
-								$tbody.append($tr);
 							},
 							error: function(){
 								alert('응답 조회 중 에러 발생');
@@ -220,7 +236,7 @@
 							}
 						});
 	                });
-	                renderPagination(totalCount, pageIndex);
+	                
 	            },
 	            error: function(xhr, status, error) {
 	                console.error('기안문 목록을 불러오는 중 에러 발생:', error);

@@ -553,8 +553,8 @@
 				
 			    var approvers = gatherUsers('#approverList li', 'approv');
 			    var cooperators = gatherUsers('#cooperatorList li', 'coop');
-			    if (approvers.length < 1 || cooperators.length < 1) {
-			    	alert('협조자와 결재자는 필수로 등록 하셔야 합니다.');
+			    if (approvers.length < 1) {
+			    	alert('결재자는 필수로 등록 하셔야 합니다.');
 			    	return;
 			    }
 			    var references = gatherUsers('#referenceList li', 'ref');

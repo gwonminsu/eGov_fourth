@@ -332,6 +332,7 @@
 	
 			// 저장 버튼
 			$('#btnSave').on('click', function () {
+				if (!confirm('이대로 저장 하시겠습니까?')) return;
 				var isValid = true;
 				
 				// 전화번호 검증
