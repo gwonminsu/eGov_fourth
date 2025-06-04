@@ -142,7 +142,7 @@
     			data: JSON.stringify({ programIdx: currentProgramIdx }),
     			success: function(list){
 					programSchedules = list;
-					// console.log(JSON.stringify(programSchedules));
+					console.log(JSON.stringify(programSchedules));
 					
 					// Toast UI 에 맞는 스케줄 객체로 변환
 					var schedules = programSchedules.map(function(item){
@@ -235,7 +235,7 @@
 						console.log(JSON.stringify(schedule));
 						var bookerCnt = schedule.raw.bookerCount; // 예약인 수
 						var possible = bookerCnt < schedule.raw.capacity ? ' 예약 가능' : ' 예약 불가';
-						if (schedule.raw.closeReqState === 'APPROVED') {
+						if (schedule.raw.closeReqState !== 'NONE') {
 							possible = ' 예약 마감됨';
 						}
 						var date = schedule.raw.startDatetime.substr(0,10);
