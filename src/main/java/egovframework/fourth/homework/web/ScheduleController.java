@@ -57,6 +57,12 @@ public class ScheduleController {
     // 프로그램 일정 수정
     @PostMapping(value="/updateSchedule.do", consumes="application/json", produces="application/json")
     public Map<String, String> modifySchedule(@RequestBody ProgramScheduleVO vo) throws Exception {
+		ProgramScheduleVO schedule = programScheduleService.getProgramSchedule(vo.getIdx());
+		// 일정의 새로운 capacity가 기존 예약인 수보다 적으면 튕굼
+		if (vo.getCapacity() < schedule.getBookerCount()) {
+			log.info("예약 수정 거부: 제한 인원 수 초과");
+			return Collections.singletonMap("error","수정하려는 제한 인원 수가 현재 예약된 인원 수보다 적습니다.");
+		}
     	programScheduleService.modifyProgramSchedule(vo);
     	return Collections.singletonMap("status","OK");
     }
