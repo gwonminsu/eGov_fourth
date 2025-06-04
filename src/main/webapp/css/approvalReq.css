@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+/* 정보 알림 */
+p.info-desc {
+	font-size: 0.85rem;
+	color: #004085;
+	background: #e9ecef;
+	padding: 8px;
+	margin-top: 10px;
+}
+
 /* form-table(기안문 등록 폼) 스타일 */
 table.form-table {
 	width: 100%;

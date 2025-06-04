@@ -52,6 +52,8 @@
 </head>
 <body>
 	<h2 id="formTitle">예약 마감 기안문</h2>
+	
+	<p class="info-desc" style="display: none;"></p>
 
 	<table class="form-table">
 		<tr>
@@ -608,6 +610,7 @@
 				console.log('선택된 결재라인 idx:', approvalLineIdx);
 				alert('[' + selectedLineName + ']을 결재 라인으로 선택했습니다')
 				$('.black-bg').removeClass('show-modal');
+				$('.info-desc').show().text('※ 현재 선택한 라인 이름: ' + selectedLineName);
 			});
 			
 			/* ------------------- 결재 라인 선택 모달 관련 스크립트 끝 -------------------  */
